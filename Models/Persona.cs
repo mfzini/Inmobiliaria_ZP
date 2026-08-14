@@ -16,4 +16,10 @@ public class Persona
     [Required, EmailAddress]
     public string Email { get; set; } = "";
 
+
+    public override string ToString()
+    {
+        return $"Persona {{Nombre={Nombre}, Apellido={Apellido}, DNI={Dni}, Telefono={Telefono}, Email={Email}}}";
+    }
+
 }
