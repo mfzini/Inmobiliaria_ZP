@@ -1,9 +1,10 @@
 using inmobiliaria.Models;
+using inmobiliaria.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace inmobiliaria.Controllers;
 
-public class PersonaController : Controller
+public class PersonaController(PersonaRepository repo) : Controller
 {
     [HttpGet]
     public IActionResult Index()
@@ -12,8 +13,8 @@ public class PersonaController : Controller
     }
 
     [HttpPost]
-    public IActionResult Index(Persona persona)
+    public int Index(Persona persona)
     {
-        return View(persona);
+        return repo.Create(persona);
     }
 }
