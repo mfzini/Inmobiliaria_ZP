@@ -13,8 +13,9 @@ public class PersonaController(PersonaRepository repo) : Controller
     }
 
     [HttpPost]
-    public int Index(Persona persona)
+    public IActionResult Index(Persona persona)
     {
-        return repo.Create(persona);
+        //return repo.Create(persona);
+        return RedirectToAction();
     }
 }

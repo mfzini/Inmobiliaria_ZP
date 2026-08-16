@@ -4,18 +4,18 @@ using System.ComponentModel.DataAnnotations;
 public class Pago
 {
     [Key]
-    public int IdPago {get; set; }
+    public string Id {get; set; }
     [Required]
-    public int IdReserva{get; set;}
+    public required Reserva Reserva{get; set;}
     [Required]
-    public decimal monto {get; set;}
+    public decimal Monto {get; set;}
     [Required]
-    public string concepto {get; set;}
+    public required string Concepto {get; set;}
     [Required]
-    public DateTime fecha {get; set;}
+    public DateTime Fecha {get; set;}
     public override string ToString()
     {
-        return $"Pago {{Monto={monto}, Concepto={concepto}, Fecha={fecha}}}";
+        return $"Pago {{Monto={Monto}, Concepto={Concepto}, Fecha={Fecha}}}";
     }
 
 }

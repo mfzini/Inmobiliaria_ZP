@@ -19,4 +19,70 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         connection.Open();
         return command.ExecuteNonQuery();
     }
+    public Persona? FindByDni(int dni)
+    {
+        var query = @"select * from Personas where dni = @dni";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("dni", dni);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        if (!reader.HasRows) return null;
+        reader.Read();
+        var persona = new Persona
+        {
+            Dni = reader.GetInt32("dni"),
+            Nombre = reader.GetString("nombre"),
+            Apellido = reader.GetString("apellido"),
+            Telefono = reader.GetString("telefono"),
+            Email = reader.GetString("email")
+        };
+        return persona;
+    }
+
+    public int Update(Persona persona)
+    {
+        var query = @"update Personas set nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono where dni = @dni";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@dni", persona.Dni);
+        command.Parameters.AddWithValue("@nombre", persona.Nombre);
+        command.Parameters.AddWithValue("@apellido", persona.Apellido);
+        command.Parameters.AddWithValue("@email", persona.Email);
+        command.Parameters.AddWithValue("@telefono", persona.Telefono);
+        connection.Open();
+        return command.ExecuteNonQuery();
+    }
+
+    public int Delete(Persona persona)
+    {
+        var query = @"delete from Personas where dni = @dni";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("dni", persona.Dni);
+        connection.Open();
+        return command.ExecuteNonQuery();
+    }
+
+    public List<Persona> ListAll()
+    {
+        var query = @"select * from Personas";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        List<Persona> personas = [];
+        while (reader.Read())
+        {
+            personas.Add(new Persona
+            {
+                Dni = reader.GetInt32("dni"),
+                Nombre = reader.GetString("nombre"),
+                Apellido = reader.GetString("apellido"),
+                Telefono = reader.GetString("telefono"),
+                Email = reader.GetString("email")
+            });
+        }
+        return personas;
+    }
 }

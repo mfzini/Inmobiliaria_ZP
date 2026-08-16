@@ -4,21 +4,24 @@ using System.ComponentModel.DataAnnotations;
 public class Inmueble
 {
     [Key]
-    public int idInmueble {get; set;}
+    public string Id {get; set;}
     [Required]
-    public int idPropietario {get; set;}
+    public Persona Propietario {get; set;}
     [Required]
-    public string tipo {get; set;}
+    public string Tipo {get; set;}
     [Required]
-    public string direccion {get; set;}
+    public string Direccion {get; set;}
     [Required]
-    public string capacidad {get; set;}
+    public string Capacidad {get; set;}
     [Required]
-    public decimal precio {get; set;}
+    public decimal Precio {get; set;}
     [Required]
-    public bool listado {get; set;}
+    public bool Listado {get; set;}
+
+    public decimal Latitud {get; set;}
+    public decimal Longitud {get; set;}
     public override string ToString()
     {
-        return $"Inmueble {{Tipo={tipo}, Direccion={direccion}, Capacidad={capacidad}, Precio={precio}, Listado={listado}}}";
+        return $"Inmueble {{Tipo={Tipo}, Direccion={Direccion}, Capacidad={Capacidad}, Precio={Precio}, Listado={Listado}}}";
     }
 }
