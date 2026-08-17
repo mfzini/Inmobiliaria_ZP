@@ -1,0 +1,44 @@
+@model Persona
+@{
+    ViewData["Title"] = "Editar Persona";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Editar Persona</h3>
+
+            <form asp-action="Editar" method="post">
+                <div class="mb-3">
+                    <label asp-for="Dni" class="form-label text-white">DNI: </label>
+                    <input asp-for="Dni" class="form-control bg-dark text-white border-secondary" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label text-white">Nombre: </label>
+                    <input asp-for="Nombre" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Apellido" class="form-label text-white">Apellido: </label>
+                    <input asp-for="Apellido" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label text-white">Email: </label>
+                    <input asp-for="Email" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Telefono" class="form-label text-white">Telefono: </label>
+                    <input asp-for="Telefono" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary border-secondary text-white">Guardar 📝</button>
+                    <a asp-action="Listar" class="btn btn-danger">Cancelar ✖️</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

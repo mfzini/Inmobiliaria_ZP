@@ -1,0 +1,40 @@
+@model List<inmobiliaria.Models.Persona>
+@{
+    ViewData["Title"] = "Listar Personas";
+}
+
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Listado de personas: </h2>
+        <a asp-action="Registrar" class="btn btn-primary">➕ Registrar Persona 👤</a>
+    </div>
+
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>DNI 📃</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email ✉️</th>
+                <th>Teléfono 📞</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Dni</td>
+                    <td>@p.Nombre</td>
+                    <td>@p.Apellido</td>
+                    <td>@p.Email</td>
+                    <td>@p.Telefono</td>
+                    <td class="text-end">
+                        <a asp-action="Editar" asp-route-id="@p.Dni" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
+                        <a asp-action="Eliminar" asp-route-id="@p.Dni" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

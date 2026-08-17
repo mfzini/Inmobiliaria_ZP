@@ -7,15 +7,35 @@ namespace inmobiliaria.Controllers;
 public class PersonaController(PersonaRepository repo) : Controller
 {
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Registrar()
     {
         return View();
     }
 
     [HttpPost]
-    public IActionResult Index(Persona persona)
+    public IActionResult Registrar(Persona persona)
     {
         //return repo.Create(persona);
         return RedirectToAction();
     }
+
+    [HttpGet]
+    public IActionResult Listar()
+    {
+        return View(new List<Persona>());
+    }
+
+    [HttpGet]
+    public IActionResult Editar()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult Eliminar(int id)
+    {
+        return View();
+    }
+
+
 }
