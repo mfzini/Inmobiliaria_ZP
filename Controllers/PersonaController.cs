@@ -15,20 +15,45 @@ public class PersonaController(PersonaRepository repo) : Controller
     [HttpPost]
     public IActionResult Registrar(Persona persona)
     {
-        //return repo.Create(persona);
+        repo.Create(persona);
         return RedirectToAction();
     }
 
     [HttpGet]
     public IActionResult Listar()
     {
-        return View(new List<Persona>());
+        return View(repo.ListAll());
     }
 
     [HttpGet]
-    public IActionResult Editar()
+    public IActionResult Editar(string id)
     {
-        return View();
+        if (id == null)
+        {
+            return Redirect("/Persona/Listar");
+        }
+        try
+        {
+            var dni = int.Parse(id);
+            var persona = repo.FindByDni(dni);
+            if (persona == null)
+            {
+                Response.StatusCode = 404;
+                // todo.
+            }
+            return View(persona);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return Redirect("/Persona/Listar");
+        }
+    }
+    [HttpPost]
+    public IActionResult Editar(Persona persona)
+    {
+        repo.Update(persona);
+        return Redirect("/Persona/Listar");
     }
 
     [HttpGet]
