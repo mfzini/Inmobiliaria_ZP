@@ -85,4 +85,47 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         }
         return personas;
     }
+
+    public List<Persona> ListPropietarios()
+    {
+        List<Persona> propietarios = [];
+        var query = @"select distinct dni, nombre, apellido, email, telefono from Personas join Inmuebles on dni = propietario";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            propietarios.Add(new Inquilino
+            {
+                Dni = reader.GetInt32(nameof(Inquilino.Dni)),
+                Nombre = reader.GetString(nameof(Inquilino.Nombre)),
+                Apellido = reader.GetString(nameof(Inquilino.Apellido)),
+                Telefono = reader.GetString(nameof(Inquilino.Telefono)),
+                Email = reader.GetString(nameof(Inquilino.Email))
+            });
+        }
+        return propietarios;
+    }
+    public List<Persona> ListInquilinos()
+    {
+        List<Persona> inquilinos = [];
+        var query = @"select distinct dni, nombre, apellido, email, telefono from Personas join Reservas on dni = inquilino";
+        MySqlConnection connection = new(connectionString);
+        MySqlCommand command = new(query, connection);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            inquilinos.Add(new Inquilino
+            {
+                Dni = reader.GetInt32(nameof(Inquilino.Dni)),
+                Nombre = reader.GetString(nameof(Inquilino.Nombre)),
+                Apellido = reader.GetString(nameof(Inquilino.Apellido)),
+                Telefono = reader.GetString(nameof(Inquilino.Telefono)),
+                Email = reader.GetString(nameof(Inquilino.Email))
+            });
+        }
+        return inquilinos;
+    }
 }
