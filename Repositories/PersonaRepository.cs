@@ -42,9 +42,9 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         return persona;
     }
 
-    public int Update(Persona persona)
+    public int Update(Persona persona, string oldDni)
     {
-        var query = @"update Personas set nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono where dni = @dni";
+        var query = @"update Personas set dni=@dni, nombre=@nombre, apellido=@apellido, email=@email, telefono=@telefono where dni = @oldDni";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@dni", persona.Dni);
@@ -52,6 +52,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         command.Parameters.AddWithValue("@apellido", persona.Apellido);
         command.Parameters.AddWithValue("@email", persona.Email);
         command.Parameters.AddWithValue("@telefono", persona.Telefono);
+        command.Parameters.AddWithValue("@oldDni", oldDni);
         connection.Open();
         return command.ExecuteNonQuery();
     }

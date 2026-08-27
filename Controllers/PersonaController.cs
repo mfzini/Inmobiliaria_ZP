@@ -34,7 +34,7 @@ public class PersonaController(PersonaRepository repo) : Controller
     {
         if (id == null)
         {
-            return Redirect("/Persona/Listar");
+            return RedirectToAction(nameof(Listar));
         }
         try
         {
@@ -50,14 +50,18 @@ public class PersonaController(PersonaRepository repo) : Controller
         catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
-            return Redirect("/Persona/Listar");
+            return RedirectToAction(nameof(Listar));
         }
     }
     [HttpPost]
-    public IActionResult Editar(Persona persona)
+    public IActionResult Editar(Persona persona, string oldDni)
     {
-        repo.Update(persona);
-        return Redirect("/Persona/Listar");
+        if (!ModelState.IsValid)
+        {
+            return View(persona);
+        }
+        repo.Update(persona, oldDni);
+        return RedirectToAction(nameof(Listar));
     }
 
     [HttpGet]

@@ -23,6 +23,7 @@ create table if not exists Inmuebles(
     listado boolean default false,
     constraint fk_inmbueble_propietario foreign key (propietario)
         references Personas(dni)
+        ON UPDATE CASCADE
 );
 
 create table if not exists Reservas(
@@ -32,7 +33,8 @@ create table if not exists Reservas(
         references Inmuebles(id),
     inquilino varchar(64) not null,
     constraint fk_reserva_inquilino foreign key (inquilino)
-        references Personas(dni),
+        references Personas(dni)
+        ON UPDATE CASCADE,
     fecha_inicio date not null,
     fecha_fin date not null
 );
