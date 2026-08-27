@@ -4,7 +4,7 @@ create database if not exists inmobiliaria_pz;
 use inmobiliaria_pz;
 
 create table if not exists Personas(
-    dni int primary key,
+    dni varchar(64) primary key,
     apellido varchar(64) not null,
     nombre varchar(64) not null,
     email varchar(64) unique not null,
@@ -13,7 +13,7 @@ create table if not exists Personas(
 
 create table if not exists Inmuebles(
     id varchar(36) primary key default (uuid()),
-    propietario int not null,
+    propietario varchar(64) not null,
     tipo varchar(64) not null,
     direccion varchar(64) not null,
     latitud decimal(9,6),
@@ -30,7 +30,7 @@ create table if not exists Reservas(
     inmueble varchar(36) not null,
     constraint fk_reserva_inmueble foreign key (inmueble)
         references Inmuebles(id),
-    inquilino int not null,
+    inquilino varchar(64) not null,
     constraint fk_reserva_inquilino foreign key (inquilino)
         references Personas(dni),
     fecha_inicio date not null,

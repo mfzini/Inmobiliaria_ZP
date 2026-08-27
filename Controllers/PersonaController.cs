@@ -15,6 +15,10 @@ public class PersonaController(PersonaRepository repo) : Controller
     [HttpPost]
     public IActionResult Registrar(Persona persona)
     {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
         repo.Create(persona);
         return RedirectToAction();
     }

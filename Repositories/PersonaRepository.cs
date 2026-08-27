@@ -1,4 +1,5 @@
 using inmobiliaria.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MySql.Data.MySqlClient;
 
 namespace inmobiliaria.Repositories;
@@ -7,8 +8,9 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
 {
     public int Create(Persona persona)
     {
+        
         var query = @"insert into Personas (dni, nombre, apellido, email, telefono)
-            values (@dni, @nombre, @apellido, @email, @telefono)";
+        values (@dni, @nombre, @apellido, @email, @telefono)";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("dni", persona.Dni);
@@ -31,7 +33,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         reader.Read();
         var persona = new Persona
         {
-            Dni = reader.GetInt32("dni"),
+            Dni = reader.GetString("dni"),
             Nombre = reader.GetString("nombre"),
             Apellido = reader.GetString("apellido"),
             Telefono = reader.GetString("telefono"),
@@ -76,7 +78,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         {
             personas.Add(new Persona
             {
-                Dni = reader.GetInt32("dni"),
+                Dni = reader.GetString("dni"),
                 Nombre = reader.GetString("nombre"),
                 Apellido = reader.GetString("apellido"),
                 Telefono = reader.GetString("telefono"),
@@ -98,7 +100,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         {
             propietarios.Add(new Propietario
             {
-                Dni = reader.GetInt32(nameof(Propietario.Dni)),
+                Dni = reader.GetString(nameof(Propietario.Dni)),
                 Nombre = reader.GetString(nameof(Propietario.Nombre)),
                 Apellido = reader.GetString(nameof(Propietario.Apellido)),
                 Telefono = reader.GetString(nameof(Propietario.Telefono)),
@@ -119,7 +121,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         {
             inquilinos.Add(new Inquilino
             {
-                Dni = reader.GetInt32(nameof(Inquilino.Dni)),
+                Dni = reader.GetString(nameof(Inquilino.Dni)),
                 Nombre = reader.GetString(nameof(Inquilino.Nombre)),
                 Apellido = reader.GetString(nameof(Inquilino.Apellido)),
                 Telefono = reader.GetString(nameof(Inquilino.Telefono)),

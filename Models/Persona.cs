@@ -5,19 +5,19 @@ public class Persona
 {
 
     [Key]
-    [Required]
-    public int Dni { get; set; }
+    [Required(ErrorMessage = "El DNI es obligatorio.")]
+    public string Dni { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "El Nombre es obligatorio.")]
     public string Nombre { get; set; } = "";
 
-    [Required]
+    [Required(ErrorMessage = "El Apellido es obligatorio.")]
     public string Apellido { get; set; } = "";
 
-    [Display(Name = "Teléfono")]
-    public string Telefono { get; set; } = "";
+    [Display(Name = "Telefono")]
+    public string? Telefono { get; set; } = "";
 
-    [Required, EmailAddress]
+    [Required(ErrorMessage = "El email es obligatorio."), EmailAddress(ErrorMessage = "El formato del email no es valido.")]
     public string Email { get; set; } = "";
 
     public override string ToString()
