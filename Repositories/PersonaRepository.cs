@@ -96,13 +96,13 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            propietarios.Add(new Inquilino
+            propietarios.Add(new Propietario
             {
-                Dni = reader.GetInt32(nameof(Inquilino.Dni)),
-                Nombre = reader.GetString(nameof(Inquilino.Nombre)),
-                Apellido = reader.GetString(nameof(Inquilino.Apellido)),
-                Telefono = reader.GetString(nameof(Inquilino.Telefono)),
-                Email = reader.GetString(nameof(Inquilino.Email))
+                Dni = reader.GetInt32(nameof(Propietario.Dni)),
+                Nombre = reader.GetString(nameof(Propietario.Nombre)),
+                Apellido = reader.GetString(nameof(Propietario.Apellido)),
+                Telefono = reader.GetString(nameof(Propietario.Telefono)),
+                Email = reader.GetString(nameof(Propietario.Email))
             });
         }
         return propietarios;
