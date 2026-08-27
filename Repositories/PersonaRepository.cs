@@ -111,8 +111,8 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
     {
         List<Persona> inquilinos = [];
         var query = @"select distinct dni, nombre, apellido, email, telefono from Personas join Reservas on dni = inquilino";
-        MySqlConnection connection = new(connectionString);
-        MySqlCommand command = new(query, connection);
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
         connection.Open();
         var reader = command.ExecuteReader();
         while (reader.Read())
