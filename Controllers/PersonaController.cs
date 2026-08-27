@@ -59,8 +59,21 @@ public class PersonaController(PersonaRepository repo) : Controller
     [HttpGet]
     public IActionResult Eliminar(int id)
     {
-        return View();
+        var persona = repo.FindByDni(id);
+        if(persona == null)
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+        return View(persona);
     }
 
+    [HttpPost]
+    public IActionResult Eliminar(Persona persona)
+    {
+        repo.Delete(persona);
+        return RedirectToAction(nameof(Listar));
+    }
+
+    
 
 }
