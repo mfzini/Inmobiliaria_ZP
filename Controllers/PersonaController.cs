@@ -38,8 +38,7 @@ public class PersonaController(PersonaRepository repo) : Controller
         }
         try
         {
-            var dni = int.Parse(id);
-            var persona = repo.FindByDni(dni);
+            var persona = repo.FindByDni(id);
             if (persona == null)
             {
                 Response.StatusCode = 404;
@@ -65,7 +64,7 @@ public class PersonaController(PersonaRepository repo) : Controller
     }
 
     [HttpGet]
-    public IActionResult Eliminar(int id)
+    public IActionResult Eliminar(string id)
     {
         var persona = repo.FindByDni(id);
         if(persona == null)

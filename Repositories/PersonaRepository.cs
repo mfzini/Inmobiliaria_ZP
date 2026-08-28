@@ -21,7 +21,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         connection.Open();
         return command.ExecuteNonQuery();
     }
-    public Persona? FindByDni(int dni)
+    public Persona? FindByDni(string dni)
     {
         var query = @"select * from Personas where dni = @dni";
         using MySqlConnection connection = new(connectionString);
@@ -30,7 +30,10 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         connection.Open();
         var reader = command.ExecuteReader();
         if (!reader.HasRows) return null;
-        reader.Read();
+        if (!reader.Read())
+        {
+            return null;
+        }
         var persona = new Persona
         {
             Dni = reader.GetString("dni"),

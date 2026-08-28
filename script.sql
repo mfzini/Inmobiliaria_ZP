@@ -11,6 +11,11 @@ create table if not exists Personas(
     telefono varchar(64)
 );
 
+create table if not exists TipoInmueble(
+	id int auto_increment primary key,
+	nombre varchar(20) not null
+);
+
 create table if not exists Inmuebles(
     id varchar(36) primary key default (uuid()),
     propietario varchar(64) not null,
