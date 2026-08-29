@@ -30,4 +30,10 @@ public class InmuebleController(InmuebleRepository repo) : Controller
         return View();
     }
 
+    [HttpGet]
+    public IActionResult Detalle()
+    {
+        return View();
+    }
+
 }

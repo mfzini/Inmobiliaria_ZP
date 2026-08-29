@@ -15,7 +15,14 @@ public class TipoInmuebleController(InmuebleRepository repo) : Controller // tod
     [HttpGet]
     public IActionResult Listar()
     {
-        return View(new List<TipoInmueble>());
+        var listaTipos = new List<TipoInmueble>
+        {
+            new TipoInmueble { Id = 1, Nombre = "Casa" },
+            new TipoInmueble { Id = 2, Nombre = "Departamento" },
+            new TipoInmueble { Id = 3, Nombre = "PH" },
+        };
+
+        return View(listaTipos);
     }
 
     [HttpGet]
@@ -29,5 +36,18 @@ public class TipoInmuebleController(InmuebleRepository repo) : Controller // tod
     {
         return View();
     }
+
+    [HttpGet]
+    public IActionResult Detalles()
+    {   
+        var tipo = new TipoInmueble
+    {
+        Id = 1,
+        Nombre = "Casa"
+    };
+
+    return View(tipo);
+}
+
 
 }

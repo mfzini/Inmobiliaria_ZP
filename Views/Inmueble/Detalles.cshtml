@@ -1,0 +1,40 @@
+@model inmobiliaria.Models.Inmueble
+@{
+    ViewData["Title"] = "Detalles del Inmueble";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Detalles del Inmueble 🏠</h3>
+
+            <dl class="row">
+                <dt class="col-sm-4 text-secondary">ID:</dt>
+                <dd class="col-sm-8">@Model.Id</dd>
+
+                <dt class="col-sm-4 text-secondary">Direccion:</dt>
+                <dd class="col-sm-8">@Model.Direccion</dd>
+
+                <dt class="col-sm-4 text-secondary">Propietario:</dt>
+                <dd class="col-sm-8">@Model.Propietario.Nombre @Model.Propietario.Apellido DNI: @Model.Propietario.Dni</dd>
+
+                <dt class="col-sm-4 text-secondary">Tipo:</dt>
+                <dd class="col-sm-8">@Model.Tipo.Nombre</dd>
+
+                <dt class="col-sm-4 text-secondary">Capacidad:</dt>
+                <dd class="col-sm-8">@Model.Capacidad personas</dd>
+
+                <dt class="col-sm-4 text-secondary">Precio por Dia:</dt>
+                <dd class="col-sm-8">$@Model.Precio</dd>
+
+                <dt class="col-sm-4 text-secondary">Coordenadas:</dt>
+                <dd class="col-sm-8">Lat: @Model.Latitud, Long: @Model.Longitud</dd>
+            </dl>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
+                <a asp-action="Listar" class="btn btn-secondary">Volver al Listado</a>
+            </div>
+        </div>
+    </div>
+</div>

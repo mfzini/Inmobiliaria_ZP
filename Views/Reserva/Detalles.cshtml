@@ -1,0 +1,35 @@
+@model inmobiliaria.Models.Reserva
+@{
+    ViewData["Title"] = "Detalles de la Reserva";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Detalles de Reserva</h3>
+
+            <dl class="row">
+                <dt class="col-sm-4 text-secondary">ID Reserva:</dt>
+                <dd class="col-sm-8">@Model.Id</dd>
+
+                <dt class="col-sm-4 text-secondary">Inmueble:</dt>
+                <dd class="col-sm-8">@Model.Inmueble.Direccion</dd>
+
+                <dt class="col-sm-4 text-secondary">Inquilino:</dt>
+                <dd class="col-sm-8">@Model.Inquilino.Nombre @Model.Inquilino.Apellido (DNI: @Model.Inquilino.Dni)</dd>
+
+                <dt class="col-sm-4 text-secondary">Fecha Inicio:</dt>
+                <dd class="col-sm-8">@Model.FechaInicio.ToString()</dd>
+
+                <dt class="col-sm-4 text-secondary">Fecha Fin:</dt>
+                <dd class="col-sm-8">@Model.FechaFin.ToString()</dd>
+
+            </dl>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
+                <a asp-action="Listar" class="btn btn-secondary">Volver al Listado</a>
+            </div>
+        </div>
+    </div>
+</div>
