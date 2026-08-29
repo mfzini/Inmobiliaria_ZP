@@ -1,0 +1,34 @@
+@model List<inmobiliaria.Models.TipoInmueble>
+@{
+    ViewData["Title"] = "Listar Tipos de Inmueble";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tipos de Inmueble: </h2>
+        <a asp-action="Registrar" class="btn btn-primary">➕ Nuevo Tipo 🏢</a>
+    </div>
+
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th class="text-end">Acciones ⚙️</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in Model)
+            {
+                <tr>
+                    <td>@t.Id</td>
+                    <td>@t.Nombre</td>
+                    <td class="text-end">
+                        <a asp-action="Editar" asp-route-id="@t.Id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
+                        <a asp-action="Eliminar" asp-route-id="@t.Id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

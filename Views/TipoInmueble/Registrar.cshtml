@@ -1,0 +1,24 @@
+@model inmobiliaria.Models.TipoInmueble
+@{
+    ViewData["Title"] = "Registrar Tipo de Inmueble";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Registrar Tipo</h3>
+
+            <form asp-action="Registrar" method="post">
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label text-white">Nombre / Tipo: </label>
+                    <input asp-for="Nombre" class="form-control bg-dark text-white border-secondary" placeholder="Ej: Casa, Departamento, etc">
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-dark border-secondary text-white">Registrar 📝</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
