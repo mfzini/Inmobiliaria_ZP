@@ -39,7 +39,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
             Dni = reader.GetString("dni"),
             Nombre = reader.GetString("nombre"),
             Apellido = reader.GetString("apellido"),
-            Telefono = reader.GetString("telefono"),
+            Telefono = reader["telefono"] as string,
             Email = reader.GetString("email")
         };
         return persona;
@@ -85,7 +85,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
                 Dni = reader.GetString("dni"),
                 Nombre = reader.GetString("nombre"),
                 Apellido = reader.GetString("apellido"),
-                Telefono = reader.GetString("telefono"),
+                Telefono = reader["telefono"] as string,
                 Email = reader.GetString("email")
             });
         }

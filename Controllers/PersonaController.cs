@@ -20,7 +20,8 @@ public class PersonaController(PersonaRepository repo) : Controller
             return View();
         }
         repo.Create(persona);
-        return RedirectToAction();
+        return RedirectToAction(nameof(Listar));
+
     }
 
     [HttpGet]
@@ -67,7 +68,7 @@ public class PersonaController(PersonaRepository repo) : Controller
     public IActionResult Eliminar(string id)
     {
         var persona = repo.FindByDni(id);
-        if(persona == null)
+        if (persona == null)
         {
             return RedirectToAction(nameof(Listar));
         }
@@ -81,6 +82,6 @@ public class PersonaController(PersonaRepository repo) : Controller
         return RedirectToAction(nameof(Listar));
     }
 
-    
+
 
 }
