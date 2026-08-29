@@ -107,7 +107,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
                 Dni = reader.GetString(nameof(Propietario.Dni)),
                 Nombre = reader.GetString(nameof(Propietario.Nombre)),
                 Apellido = reader.GetString(nameof(Propietario.Apellido)),
-                Telefono = reader.GetString(nameof(Propietario.Telefono)),
+                Telefono = reader[nameof(Inquilino.Telefono)] as string,
                 Email = reader.GetString(nameof(Propietario.Email))
             });
         }
@@ -128,7 +128,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
                 Dni = reader.GetString(nameof(Inquilino.Dni)),
                 Nombre = reader.GetString(nameof(Inquilino.Nombre)),
                 Apellido = reader.GetString(nameof(Inquilino.Apellido)),
-                Telefono = reader.GetString(nameof(Inquilino.Telefono)),
+                Telefono = reader[nameof(Inquilino.Telefono)] as string,
                 Email = reader.GetString(nameof(Inquilino.Email))
             });
         }
