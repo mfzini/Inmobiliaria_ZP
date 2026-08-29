@@ -1,0 +1,65 @@
+@model inmobiliaria.Models.Inmueble
+@{
+    ViewData["Title"] = "Editar Inmueble";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Editar Inmueble</h3>
+
+            <form asp-action="Editar" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Propietario: </label>
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">Seleccione un propietario</option>
+                        <option value="1">Juan Perez</option>
+                        <option value="2">Maria Gomez</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Tipo de Inmueble: </label>
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">Seleccione un tipo</option>
+                        <option value="1">Casa</option>
+                        <option value="2">Departamento</option>
+                        <option value="3">Monoambiente</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Direccion" class="form-label text-white">Direccion: </label>
+                    <input asp-for="Direccion" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Capacidad" class="form-label text-white">Capacidad: </label>
+                    <input asp-for="Capacidad" type="number" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Precio" class="form-label text-white">Precio: </label>
+                    <input asp-for="Precio" type="number" step="0.01" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Latitud" class="form-label text-white">Latitud: </label>
+                    <input asp-for="Latitud" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Longitud" class="form-label text-white">Longitud: </label>
+                    <input asp-for="Longitud" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary border-secondary text-white">Guardar 📝</button>
+                    <a asp-action="Listar" class="btn btn-danger">Cancelar ✖️</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+@model inmobiliaria.Models.Reserva
+@{
+    ViewData["Title"] = "Editar Reserva";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="bg-black text-white p-4 rounded border border-secondary">
+            <h3 class="text-center mb-4 text-white">Editar Reserva</h3>
+
+            <form asp-action="Editar" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Inmueble: </label>
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">Seleccione un inmueble</option>
+                        <option value="1">Av. San Martin 123 (Casa)</option>
+                        <option value="2">Belgrano 456 (Departamento)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Inquilino: </label>
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">Seleccione un inquilino</option>
+                        <option value="1">Carlos Lopez</option>
+                        <option value="2">Ana Fernandez</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FechaInicio" class="form-label text-white">Fecha de Inicio: </label>
+                    <input asp-for="FechaInicio" type="date" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FechaFin" class="form-label text-white">Fecha de Fin: </label>
+                    <input asp-for="FechaFin" type="date" class="form-control bg-dark text-white border-secondary">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary border-secondary text-white">Guardar 📝</button>
+                    <a asp-action="Listar" class="btn btn-danger">Cancelar ✖️</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
