@@ -18,8 +18,8 @@ public class Inmueble
     [Required]
     public bool Listado {get; set;}
 
-    public string? Latitud {get; set;}
-    public string? Longitud {get; set;}
+    public decimal Latitud {get; set;}
+    public decimal Longitud {get; set;}
     public override string ToString()
     {
         return $"Inmueble {{Tipo={Tipo}, Direccion={Direccion}, Capacidad={Capacidad}, Precio={Precio}, Listado={Listado}}}";

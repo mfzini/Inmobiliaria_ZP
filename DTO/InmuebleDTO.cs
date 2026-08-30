@@ -6,18 +6,18 @@ namespace inmobiliaria.DTO;
 public class InmuebleDTO
 {
     public required string? Propietario {get; set;}
-    [Required]
+    [Required(ErrorMessage = "El dni es obligatorio")]
     public required int Tipo {get; set;}
-    [Required]
+    [Required(ErrorMessage = "El tipo de inmueble es obligatorio")]
     public required string? Direccion {get; set;}
-    [Required]
+    [Required(ErrorMessage = "La direccion es obligatoria")]
     public required int Capacidad {get; set;}
-    [Required]
+    [Required(ErrorMessage = "La capacidad es obligatoria")]
     public decimal Precio {get; set;}
-    [Required]
+    [Required(ErrorMessage = "El Precio es obligatorio")]
     public bool Listado {get; set;}
 
-    public string? Latitud {get; set;}
-    public string? Longitud {get; set;}
+    public decimal Latitud {get; set;}
+    public decimal Longitud {get; set;}
 
 }

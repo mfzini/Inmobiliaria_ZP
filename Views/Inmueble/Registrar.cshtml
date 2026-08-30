@@ -11,7 +11,8 @@
             <form asp-action="Registrar" method="post">
                 <div class="mb-3">
                     <label class="form-label text-white">Propietario: </label>
-                    <input type="text" asp-for="Propietario.Dni" class="form-control bg-dark text-white border-secondary">
+                    <input type="text" asp-for="Propietario" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Propietario" class="text-danger"></span>
                     <!--select class="form-select bg-dark text-white border-secondary">
                         <option value="">Seleccione un propietario</option>
                         <option value="1">Juan Perez</option>
@@ -21,7 +22,8 @@
 
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
-                    <input asp-for="Tipo.Id" class="form-control bg-dark text-white border-secondary">
+                    <input asp-for="Tipo" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
                     <!--select class="form-select bg-dark text-white border-secondary">
                         <option value="">Seleccione un tipo</option>
                         <option value="1">Casa</option>
@@ -33,31 +35,37 @@
                 <div class="mb-3">
                     <label class="form-label text-white">Direccion: </label>
                     <input asp-for="Direccion" type="text" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Capacidad: </label>
                     <input asp-for="Capacidad" type="number" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Capacidad" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Precio: </label>
                     <input asp-for="Precio" type="number" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Precio" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Latitud: </label>
                     <input asp-for="Latitud" type="text" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Latitud" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Longitud: </label>
                     <input asp-for="Longitud" type="text" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Longitud" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3 form-check">
                     <input asp-for="Listado" type="checkbox" class="form-check-input bg-dark border-secondary">
                     <label asp-for="Listado" class="form-check-label text-white">Esta disponible?</label>
+                    <span asp-validation-for="Listado" class="text-danger"></span>
                 </div>
 
                 <div class="d-grid mt-4">

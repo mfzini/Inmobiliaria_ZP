@@ -211,8 +211,8 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
                 Email = reader.GetString("email")
             },
             Direccion = reader.GetString("direccion"),
-            Latitud = reader.GetString("latitud"),
-            Longitud = reader.GetString("longitud"),
+            Latitud = reader.GetDecimal("latitud"),
+            Longitud = reader.GetDecimal("longitud"),
             Tipo = new TipoInmueble
             {
                 Id = reader.GetInt16("t_id"),
@@ -252,11 +252,12 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@id", id);
         connection.Open();
         var reader = command.ExecuteReader();
+        reader.Read();
         return new TipoInmueble
         {
             Id = reader.GetInt16("id"),
             Nombre = reader.GetString("nombre")
         };
-
+    
     }
 }

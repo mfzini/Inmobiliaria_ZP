@@ -20,20 +20,28 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     public IActionResult Registrar(InmuebleDTO dto)
     {
 
-        /*if (!ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            return View(inmueble);
-        }*/
-        Persona propietario = personaRepo.FindByDni(dto.Propietario);
-        TipoInmueble tipo = inmuebleRepo.FindTipoByID(dto.Tipo);
+            return View(dto);
+        }
 
-        /* Inmueble inmueble = new Inmueble
+        Persona? propietario = personaRepo.FindByDni(dto.Propietario);
+        TipoInmueble? tipo = inmuebleRepo.FindTipoByID(dto.Tipo);
+
+        Inmueble inmueble = new Inmueble
         {
             Propietario = propietario,
             Tipo = tipo,
-            }
+            Direccion = dto.Direccion,
+            Capacidad = dto.Capacidad,
+            Precio = dto.Precio,
+            Listado = dto.Listado,
+            Latitud = dto.Latitud,
+            Longitud = dto.Longitud
+        };
+
         inmuebleRepo.Create(inmueble);
-        */
+
         return RedirectToAction(nameof(Listar));
 
     }
@@ -42,7 +50,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     [HttpGet]
     public IActionResult Listar()
     {
-        return View();
+        return View(inmuebleRepo.GetPage());
     }
 
     [HttpGet]
@@ -55,6 +63,13 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     public IActionResult Eliminar()
     {
         return View();
+    }
+
+    [HttpPost]
+    public IActionResult Eliminar(Inmueble inmueble)
+    {
+        inmuebleRepo.Delete(inmueble);
+        return RedirectToAction(nameof(Listar));
     }
 
     [HttpGet]
