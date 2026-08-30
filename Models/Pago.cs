@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 public class Pago
 {
     [Key]
-    public string Id {get; set; }
+    public string? Id {get; set; }
     [Required]
     public required Reserva Reserva{get; set;}
     [Required]

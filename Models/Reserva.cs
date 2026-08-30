@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 public class Reserva
 {
     [Key]
-    public string Id {get; set;}
+    public string? Id {get; set;}
     [Required]
-    public Inmueble Inmueble {get; set;}
+    public Inmueble? Inmueble {get; set;}
     [Required]
-    public Inquilino Inquilino {get; set;}
+    public Inquilino? Inquilino {get; set;}
     [Required]
     public DateTime FechaInicio { get; set;}
     [Required]

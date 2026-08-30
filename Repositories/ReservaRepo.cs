@@ -7,6 +7,13 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
 {
     public int Create(Reserva reserva)
     {
+        if (reserva.Inmueble == null || reserva.Inmueble.Id == null)
+        {
+            throw new InvalidDataException("Falta setear Inmueble");
+        } else if (reserva.Inquilino == null || reserva.Inquilino.Dni == null)
+        {
+            throw new InvalidDataException("Falta setear Inquilino");
+        }
         var id = Guid.NewGuid().ToString();
         var query = @"insert into Reservas (id, inmueble, inquilino, fecha_inicio, fecha_fin) values
             (@id, @inmueble, @inquilino, @fecha_inicio, @fecha_fin)";
