@@ -207,7 +207,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
                 Dni = reader.GetString("dni"),
                 Nombre = reader.GetString("p_nombre"),
                 Apellido = reader.GetString("apellido"),
-                Telefono = reader.GetString("telefono"),
+                Telefono = reader["telefono"] as string,
                 Email = reader.GetString("email")
             },
             Direccion = reader.GetString("direccion"),
@@ -215,7 +215,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             Longitud = reader.GetDecimal("longitud"),
             Tipo = new TipoInmueble
             {
-                Id = reader.GetInt16("t_id"),
+                Id = reader.GetInt32("t_id"),
                 Nombre = reader.GetString("t_nombre")
             },
             Capacidad = reader.GetInt32("capacidad"),
@@ -263,7 +263,10 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
 
     public Inmueble? GetById(string id)
     {
-        var query = @"select * from Inmuebles where id = @id";
+        var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        join Personas p on p.dni = propietario
+        join TipoInmueble t on t.id = i.tipo
+        where i.id = @id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
