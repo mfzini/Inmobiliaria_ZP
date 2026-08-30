@@ -9,13 +9,30 @@ public class InmuebleController(InmuebleRepository repo) : Controller
     [HttpGet]
     public IActionResult Registrar()
     {
+        
         return View();
+
+    
     }
+
+    [HttpPost]
+    public IActionResult Registrar(Inmueble inmueble)
+    {
+        
+        /*if (!ModelState.IsValid)
+        {
+            return View(inmueble);
+        }*/
+        repo.Create(inmueble);
+        return RedirectToAction(nameof(Listar));
+
+    }
+
 
     [HttpGet]
     public IActionResult Listar()
     {
-        return View(new List<Inmueble>());
+        return View();
     }
 
     [HttpGet]
