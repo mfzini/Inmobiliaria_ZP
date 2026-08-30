@@ -244,7 +244,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return command.ExecuteNonQuery();
     }
 
-    public TipoInmueble FindTipoByID(int id)
+    public TipoInmueble? FindTipoByID(int id)
     {
         var query = @"select * from TipoInmueble where id = @id";
         using MySqlConnection connection = new(connectionString);
@@ -259,5 +259,22 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             Nombre = reader.GetString("nombre")
         };
     
+    }
+
+    public Inmueble? GetById(string id)
+    {
+        var query = @"select * from Inmuebles where id = @id";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@id", id);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        if (reader.Read())
+        {
+            return ParseInmueble(reader);
+        }
+
+        return null;
     }
 }

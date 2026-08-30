@@ -28,7 +28,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("dni", dni);
         connection.Open();
-        var reader = command.ExecuteReader();
+        using var reader = command.ExecuteReader();
         if (!reader.HasRows) return null;
         if (!reader.Read())
         {
@@ -76,7 +76,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
-        var reader = command.ExecuteReader();
+        using var reader = command.ExecuteReader();
         List<Persona> personas = [];
         while (reader.Read())
         {
@@ -99,7 +99,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
-        var reader = command.ExecuteReader();
+        using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             propietarios.Add(new Propietario
@@ -120,7 +120,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
-        var reader = command.ExecuteReader();
+        using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             inquilinos.Add(new Inquilino
