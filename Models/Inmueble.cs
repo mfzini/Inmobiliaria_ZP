@@ -6,13 +6,13 @@ public class Inmueble
     [Key]
     public string? Id {get; set;}
     [Required]
-    public required Persona Propietario {get; set;}
+    public Persona? Propietario {get; set;}
     [Required]
-    public required TipoInmueble Tipo {get; set;}
+    public TipoInmueble? Tipo {get; set;}
     [Required]
-    public required string Direccion {get; set;}
+    public string? Direccion {get; set;}
     [Required]
-    public required int Capacidad {get; set;}
+    public int Capacidad {get; set;}
     [Required]
     public decimal Precio {get; set;}
     [Required]
