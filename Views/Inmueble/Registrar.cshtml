@@ -10,26 +10,17 @@
 
             <form asp-action="Registrar" method="post">
                 <div class="mb-3">
-                    <label class="form-label text-white">Propietario: </label>
+                    <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
                     <input type="text" asp-for="Propietario" class="form-control bg-dark text-white border-secondary">
                     <span asp-validation-for="Propietario" class="text-danger"></span>
-                    <!--select class="form-select bg-dark text-white border-secondary">
-                        <option value="">Seleccione un propietario</option>
-                        <option value="1">Juan Perez</option>
-                        <option value="2">Maria Gomez</option>
-                    </select-->
+                    
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
                     <input asp-for="Tipo" class="form-control bg-dark text-white border-secondary">
                     <span asp-validation-for="Tipo" class="text-danger"></span>
-                    <!--select class="form-select bg-dark text-white border-secondary">
-                        <option value="">Seleccione un tipo</option>
-                        <option value="1">Casa</option>
-                        <option value="2">Departamento</option>
-                        <option value="3">Monoambiente</option>
-                    </select-->
+                    
                 </div>
 
                 <div class="mb-3">

@@ -10,31 +10,27 @@
 
             <form asp-action="Registrar" method="post">
                 <div class="mb-3">
-                    <label class="form-label text-white">Inmueble: </label>
-                    <select class="form-select bg-dark text-white border-secondary">
-                        <option value="">Seleccione un inmueble</option>
-                        <option value="1">Av. San Martin 123 (Casa)</option>
-                        <option value="2">Belgrano 456 (Departamento)</option>
-                    </select>
+                    <label asp-for="Inmueble" class="form-label text-white">Inmueble: </label>
+                    <input type="text" asp-for="Inmueble" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Inmueble" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-white">Inquilino: </label>
-                    <select class="form-select bg-dark text-white border-secondary">
-                        <option value="">Seleccione un inquilino</option>
-                        <option value="1">Carlos Lopez</option>
-                        <option value="2">Ana Fernandez</option>
-                    </select>
+                    <label asp-for="Inquilino" class="form-label text-white">Inquilino: </label>
+                    <input type="text" asp-for="Inquilino" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="Inquilino" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-white">Fecha de Inicio: </label>
-                    <input type="date" class="form-control bg-dark text-white border-secondary">
+                    <label asp="FechaInicio" class="form-label text-white">Fecha de Inicio: </label>
+                    <input asp="FechaInicio" type="date" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="FechaInicio" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-white">Fecha de Fin: </label>
-                    <input type="date" class="form-control bg-dark text-white border-secondary">
+                    <label asp="FechaFin" class="form-label text-white">Fecha de Fin: </label>
+                    <input asp="FechaFin" type="date" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="FechaFin" class="text-danger"></span>
                 </div>
 
                 <div class="d-grid mt-4">
