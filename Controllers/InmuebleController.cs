@@ -121,22 +121,67 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     }
 
     [HttpGet]
-    public IActionResult Eliminar()
+    public IActionResult Eliminar(string id)
     {
-        return View();
+        if (string.IsNullOrEmpty(id))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
+        try
+        {
+            var inmueble = inmuebleRepo.GetById(id);
+            if(inmueble == null)
+            {
+                Response.StatusCode = 404;
+                // todo.
+            }
+            return View(inmueble);
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
+
     }
 
     [HttpPost]
     public IActionResult Eliminar(Inmueble inmueble)
     {
-        inmuebleRepo.Delete(inmueble);
-        return RedirectToAction(nameof(Listar));
+        try
+        {
+            inmuebleRepo.Delete(inmueble);
+            return RedirectToAction(nameof(Listar));    
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
+        
     }
 
     [HttpGet]
-    public IActionResult Detalle()
+    public IActionResult Detalles(string id)
     {
-        return View();
+        if (string.IsNullOrEmpty(id))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
+        try
+        {
+            var inmueble = inmuebleRepo.GetById(id);
+            if(inmueble == null)
+            {
+                Response.StatusCode = 404;
+                // todo.
+            }
+            return View(inmueble);
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
     }
 
 }
