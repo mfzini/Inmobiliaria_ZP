@@ -83,16 +83,16 @@ public class PersonaController(PersonaRepository repo) : Controller
     }
 
     [HttpGet]
-    public IActionResult Detalles(string dni)
+    public IActionResult Detalles(string id)
     {
-        if (string.IsNullOrEmpty(dni))
+        if (string.IsNullOrEmpty(id))
         {
             return RedirectToAction(nameof(Listar));
         }
 
         try
         {
-            var persona = repo.FindByDni(dni);
+            var persona = repo.FindByDni(id);
             if(persona == null)
             {
                 Response.StatusCode = 404;
