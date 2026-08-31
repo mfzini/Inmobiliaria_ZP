@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<PersonaRepository>();
 builder.Services.AddScoped<InmuebleRepository>();
-// todo: agregar reserva cuando este hecho
+builder.Services.AddScoped<ReservaRepo>();
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

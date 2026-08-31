@@ -81,7 +81,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where fecha_fin < now()
+            where fecha_fin >= now()
             order by fecha_inicio
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);

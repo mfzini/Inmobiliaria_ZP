@@ -8,7 +8,7 @@ public class Reserva
     [Required]
     public Inmueble? Inmueble {get; set;}
     [Required]
-    public Inquilino? Inquilino {get; set;}
+    public Persona? Inquilino {get; set;}
     [Required]
     public DateTime FechaInicio { get; set;}
     [Required]
