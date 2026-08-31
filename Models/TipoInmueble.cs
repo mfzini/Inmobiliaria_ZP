@@ -7,5 +7,5 @@ public class TipoInmueble
     public int Id {get; set;}
 
     [Required]
-    public required string Nombre {get; set;}
+    public string? Nombre {get; set;}
 }

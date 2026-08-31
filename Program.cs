@@ -6,6 +6,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<PersonaRepository>();
 builder.Services.AddScoped<InmuebleRepository>();
 builder.Services.AddScoped<ReservaRepo>();
+builder.Services.AddScoped<TipoInmuebleRepo>();
 
 
 var app = builder.Build();

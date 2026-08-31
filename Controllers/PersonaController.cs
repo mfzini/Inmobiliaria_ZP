@@ -82,6 +82,31 @@ public class PersonaController(PersonaRepository repo) : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public IActionResult Detalles(string dni)
+    {
+        if (string.IsNullOrEmpty(dni))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
+        try
+        {
+            var persona = repo.FindByDni(dni);
+            if(persona == null)
+            {
+                Response.StatusCode = 404;
+                //todo
+            }
+            return View(persona);
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
+
+    }
+
 
 
 }

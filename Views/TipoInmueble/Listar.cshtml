@@ -24,9 +24,7 @@
                     <td>@t.Id</td>
                     <td>@t.Nombre</td>
                     <td class="text-end">
-                        <a asp-action="Editar" asp-route-id="@t.Id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
                         <a asp-action="Eliminar" asp-route-id="@t.Id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
-                        <a asp-action="Detalles" asp-route-id="@t.Id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
                     </td>
                 </tr>
             }

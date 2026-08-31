@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace inmobiliaria.Controllers;
 
-public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaRepository personaRepo) : Controller
+public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaRepository personaRepo, TipoInmuebleRepo tipoInmuebleRepo) : Controller
 {
     [HttpGet]
     public IActionResult Registrar()
@@ -26,7 +26,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         }
 
         Persona? propietario = personaRepo.FindByDni(dto.Propietario);
-        TipoInmueble? tipo = inmuebleRepo.FindTipoByID(dto.Tipo);
+        TipoInmueble? tipo = tipoInmuebleRepo.FindTipoByID(dto.Tipo);
 
         Inmueble inmueble = new Inmueble
         {
@@ -101,7 +101,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         }
 
         Persona? propietario = personaRepo.FindByDni(dto.Propietario);
-        TipoInmueble? tipo = inmuebleRepo.FindTipoByID(dto.Tipo);
+        TipoInmueble? tipo = tipoInmuebleRepo.FindTipoByID(dto.Tipo);
 
         Inmueble inmueble = new Inmueble
         {

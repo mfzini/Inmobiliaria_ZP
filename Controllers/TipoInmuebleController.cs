@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace inmobiliaria.Controllers;
 
-public class TipoInmuebleController(InmuebleRepository repo) : Controller // todo: cambiar por tipoinmueble
+public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller 
 {
     [HttpGet]
     public IActionResult Registrar()
@@ -12,42 +12,43 @@ public class TipoInmuebleController(InmuebleRepository repo) : Controller // tod
         return View();
     }
 
+    [HttpPost]
+    public IActionResult Registrar(TipoInmueble tipo)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+        tipoRepo.CreateTipoInmueble(tipo);
+        return RedirectToAction(nameof(Listar));
+    }
+
     [HttpGet]
     public IActionResult Listar()
     {
-        var listaTipos = new List<TipoInmueble>
+        return View(tipoRepo.ListAll());
+    }
+
+    [HttpGet]
+    public IActionResult Eliminar(int id)
+    {
+        
+        var tipo = tipoRepo.FindTipoByID(id);
+        if(tipo == null)
         {
-            new TipoInmueble { Id = 1, Nombre = "Casa" },
-            new TipoInmueble { Id = 2, Nombre = "Departamento" },
-            new TipoInmueble { Id = 3, Nombre = "PH" },
-        };
-
-        return View(listaTipos);
+            return RedirectToAction(nameof(Listar));
+        }
+        return View(tipo);
     }
 
-    [HttpGet]
-    public IActionResult Editar()
+    [HttpPost]
+    public IActionResult Eliminar(TipoInmueble tipo)
     {
-        return View();
+        tipoRepo.DeleteTipoInmueble(tipo);
+        return RedirectToAction(nameof(Listar));
     }
 
-    [HttpGet]
-    public IActionResult Eliminar()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public IActionResult Detalles()
-    {   
-        var tipo = new TipoInmueble
-    {
-        Id = 1,
-        Nombre = "Casa"
-    };
-
-    return View(tipo);
-}
+    
 
 
 }
