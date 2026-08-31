@@ -93,6 +93,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
         Reserva reserva = new Reserva
         {
+            Id = id,
             Inmueble = inmueble,
             Inquilino = inquilino,
             FechaInicio = dto.FechaInicio,

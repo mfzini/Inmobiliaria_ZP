@@ -25,8 +25,8 @@
                 <tr>
                     <td>@r.Inmueble.Direccion</td>
                     <td>@r.Inquilino.Nombre @r.Inquilino.Apellido</td>
-                    <td>@r.FechaInicio.ToString()</td>
-                    <td>@r.FechaFin.ToString()</td>
+                    <td>@r.FechaInicio.ToString("dd-MM-yyyy")</td>
+                    <td>@r.FechaFin.ToString("dd-MM-yyyy")</td>
                     <td class="text-end">
                         <a asp-action="Editar" asp-route-id="@r.Id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
                         <a asp-action="Eliminar" asp-route-id="@r.Id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
