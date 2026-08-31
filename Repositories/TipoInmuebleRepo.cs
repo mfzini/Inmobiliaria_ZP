@@ -44,7 +44,6 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
         return command.ExecuteNonQuery();
     }
 
-    //mas vale que sobre y no que falte xd
     public TipoInmueble? FindTipoByID(int id)
     {
         var query = @"select * from TipoInmueble where id = @id";
@@ -52,13 +51,13 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
         connection.Open();
-        var reader = command.ExecuteReader();
+        using var reader = command.ExecuteReader();
         if (!reader.Read()) return null;
         return new TipoInmueble
         {
             Id = reader.GetInt16("id"),
             Nombre = reader.GetString("nombre")
         };
-    
+
     }
 }
