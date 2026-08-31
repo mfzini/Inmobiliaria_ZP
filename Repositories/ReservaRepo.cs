@@ -51,6 +51,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         var query = @"delete from Reservas where id=@id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@id", reserva.Id);
         connection.Open();
         return command.ExecuteNonQuery();
     }

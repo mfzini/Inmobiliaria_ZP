@@ -252,7 +252,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@id", id);
         connection.Open();
         var reader = command.ExecuteReader();
-        reader.Read();
+        if (!reader.Read()) return null;
         return new TipoInmueble
         {
             Id = reader.GetInt16("id"),
