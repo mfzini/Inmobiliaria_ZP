@@ -224,43 +224,6 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         };
     }
 
-    public void CreateTipoInmueble(TipoInmueble tipo)
-    {
-        var query = "insert into TipoInmueble (nombre) values (@nombre)";
-        using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
-        command.Parameters.AddWithValue("@nombre", tipo.Nombre);
-        connection.Open();
-        command.ExecuteNonQuery();
-        tipo.Id = Convert.ToInt32(command.LastInsertedId);
-    }
-    public int DeleteTipoInmueble(TipoInmueble tipo)
-    {
-        var query = "delete from TipoInmueble where id = @id";
-        using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
-        command.Parameters.AddWithValue("@id", tipo.Id);
-        connection.Open();
-        return command.ExecuteNonQuery();
-    }
-
-    public TipoInmueble? FindTipoByID(int id)
-    {
-        var query = @"select * from TipoInmueble where id = @id";
-        using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
-        command.Parameters.AddWithValue("@id", id);
-        connection.Open();
-        var reader = command.ExecuteReader();
-        if (!reader.Read()) return null;
-        return new TipoInmueble
-        {
-            Id = reader.GetInt16("id"),
-            Nombre = reader.GetString("nombre")
-        };
-    
-    }
-
     public Inmueble? GetById(string id)
     {
         var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
