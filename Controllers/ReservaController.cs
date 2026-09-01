@@ -25,6 +25,17 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         Persona? inquilino = personaRepo.FindByDni(dto.Inquilino);
         Inmueble? inmueble = inmuebleRepo.GetById(dto.Inmueble);
         
+        if (inquilino == null)
+        {
+            ModelState.AddModelError("Inquilino", "Ese inquilino no existe");
+        }
+
+        if (inmueble == null)
+        {
+            ModelState.AddModelError("Inmueble", "No existe ese inmueble");
+        }
+
+
         Reserva reserva = new Reserva
         {
             Inmueble = inmueble,
@@ -89,6 +100,17 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
         Persona? inquilino = personaRepo.FindByDni(dto.Inquilino);
         Inmueble? inmueble = inmuebleRepo.GetById(dto.Inmueble);
+
+        if (inquilino == null)
+        {
+            ModelState.AddModelError("Inquilino", "Ese inquilino no existe");
+        }
+
+        if (inmueble == null)
+        {
+            ModelState.AddModelError("Inmueble", "No existe ese inmueble");
+        }
+
 
         Reserva reserva = new Reserva
         {
