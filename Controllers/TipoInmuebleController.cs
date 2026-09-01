@@ -17,10 +17,18 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View();
+            return View(tipo);
         }
-        tipoRepo.CreateTipoInmueble(tipo);
-        return RedirectToAction(nameof(Listar));
+        try
+        {
+            tipoRepo.CreateTipoInmueble(tipo);
+            return RedirectToAction(nameof(Listar));    
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
+        
     }
 
     [HttpGet]
@@ -44,11 +52,15 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
     [HttpPost]
     public IActionResult Eliminar(TipoInmueble tipo)
     {
-        tipoRepo.DeleteTipoInmueble(tipo);
-        return RedirectToAction(nameof(Listar));
+        try
+        {
+            tipoRepo.DeleteTipoInmueble(tipo);
+            return RedirectToAction(nameof(Listar));    
+        } catch(Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
     }
-
-    
-
 
 }

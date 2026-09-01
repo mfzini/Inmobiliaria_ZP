@@ -27,6 +27,17 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
         Persona? propietario = personaRepo.FindByDni(dto.Propietario);
         TipoInmueble? tipo = tipoInmuebleRepo.FindTipoByID(dto.Tipo);
+        
+        if (propietario == null)
+        {
+            ModelState.AddModelError("Propietario", "Esa persona no existe");
+        }
+
+        if (tipo == null)
+        {
+            ModelState.AddModelError("Tipo", "No existe ese tipo de inmueble");
+        }
+
 
         Inmueble inmueble = new Inmueble
         {
@@ -65,8 +76,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             var inmueble = inmuebleRepo.GetById(id);
             if(inmueble == null)
             {
-                Response.StatusCode = 404;
-                //todo.
+                return NotFound();
             }
 
             var dto = new InmuebleDTO
@@ -103,6 +113,16 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         Persona? propietario = personaRepo.FindByDni(dto.Propietario);
         TipoInmueble? tipo = tipoInmuebleRepo.FindTipoByID(dto.Tipo);
 
+        if (propietario == null)
+        {
+            ModelState.AddModelError("Propietario", "Esa persona no existe.");
+        }
+
+        if (tipo == null)
+        {
+            ModelState.AddModelError("Tipo", "No existe ese tipo de inmueble");
+        }
+
         Inmueble inmueble = new Inmueble
         {
             Id = id,
@@ -133,8 +153,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             var inmueble = inmuebleRepo.GetById(id);
             if(inmueble == null)
             {
-                Response.StatusCode = 404;
-                // todo.
+                return NotFound();
             }
             return View(inmueble);
         } catch(Exception e)
@@ -148,6 +167,11 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     [HttpPost]
     public IActionResult Eliminar(Inmueble inmueble)
     {
+        if (string.IsNullOrEmpty(inmueble.Id))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
         try
         {
             inmuebleRepo.Delete(inmueble);
@@ -173,8 +197,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             var inmueble = inmuebleRepo.GetById(id);
             if(inmueble == null)
             {
-                Response.StatusCode = 404;
-                // todo.
+                return NotFound();
             }
             return View(inmueble);
         } catch(Exception e)

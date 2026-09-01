@@ -7,6 +7,7 @@ public class ReservaDTO
 {
     [Key]
     [Required(ErrorMessage = "El dni de inquilino es obligatorio")]
+    [StringLength(20, ErrorMessage = "El DNI no puede superar los 20 caracteres")]
     public string? Inquilino {get; set;}
     [Required(ErrorMessage = "El Inmueble es obligatorio")]
     public string? Inmueble {get; set;}

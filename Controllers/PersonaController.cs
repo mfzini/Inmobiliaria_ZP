@@ -19,6 +19,13 @@ public class PersonaController(PersonaRepository repo) : Controller
         {
             return View();
         }
+        
+        if(repo.FindByDni(persona.Dni) != null)
+        {
+            ModelState.AddModelError("Dni", "Ya existe una persona con ese DNI");
+            return View(persona);
+        }
+
         repo.Create(persona);
         return RedirectToAction(nameof(Listar));
 
@@ -42,8 +49,7 @@ public class PersonaController(PersonaRepository repo) : Controller
             var persona = repo.FindByDni(id);
             if (persona == null)
             {
-                Response.StatusCode = 404;
-                // todo.
+                return NotFound();
             }
             return View(persona);
         }
@@ -53,6 +59,7 @@ public class PersonaController(PersonaRepository repo) : Controller
             return RedirectToAction(nameof(Listar));
         }
     }
+
     [HttpPost]
     public IActionResult Editar(Persona persona, string oldDni)
     {
@@ -60,6 +67,13 @@ public class PersonaController(PersonaRepository repo) : Controller
         {
             return View(persona);
         }
+
+        if(persona.Dni != oldDni && repo.FindByDni(persona.Dni) != null)
+        {
+            ModelState.AddModelError("Dni", "Ese Dni que ingresaste ya lo tiene otra persona");
+            return View(persona);
+        }
+
         repo.Update(persona, oldDni);
         return RedirectToAction(nameof(Listar));
     }
@@ -78,8 +92,22 @@ public class PersonaController(PersonaRepository repo) : Controller
     [HttpPost]
     public IActionResult Eliminar(Persona persona)
     {
-        repo.Delete(persona);
-        return RedirectToAction(nameof(Listar));
+
+        if(string.IsNullOrEmpty(persona.Dni))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
+        try
+        {
+            repo.Delete(persona);
+            return RedirectToAction(nameof(Listar));    
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return RedirectToAction(nameof(Listar));
+        }
     }
 
     [HttpGet]
@@ -95,8 +123,7 @@ public class PersonaController(PersonaRepository repo) : Controller
             var persona = repo.FindByDni(id);
             if(persona == null)
             {
-                Response.StatusCode = 404;
-                //todo
+                return NotFound();
             }
             return View(persona);
         } catch(Exception e)

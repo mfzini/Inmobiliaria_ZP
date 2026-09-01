@@ -57,8 +57,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             var reserva = reservaRepo.FindByID(id);
             if(reserva == null)
             {
-                Response.StatusCode = 404;
-                //todo
+                return NotFound();
             }
             var dto = new ReservaDTO
             {
@@ -117,8 +116,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             var reserva = reservaRepo.FindByID(id);
             if(reserva == null)
             {
-                Response.StatusCode = 404;
-                // todo.
+                return NotFound();
             }
             return View(reserva);
         } catch(Exception e)
@@ -156,8 +154,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             var reserva = reservaRepo.FindByID(id);
             if(reserva == null)
             {
-                Response.StatusCode = 404;
-                // todo.
+                return NotFound();
             }
             return View(reserva);
         } catch(Exception e)
