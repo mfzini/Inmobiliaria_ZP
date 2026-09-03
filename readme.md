@@ -13,14 +13,14 @@
 
 ## 📐 Modelado de Datos
 
-El diagrama de entidad-relacion se encuentra en la carpeta docs, consideramos
-persona como inquilino y propietario.
+El diagrama de entidad-relacion se encuentra en la carpeta `docs`, consideramos
+**Persona** tanto como inquilinos y propietarios.
 
-Para probar el abm:
-localhost:5192/persona/registrar
-localhost:5192/persona/listar
-localhost:5192/persona/editar
-localhost:5192/persona/eliminar
+![Diagrama](docs/Diagrama.png)
 
-Para levantar la base de datos, ejecuten el script.sql
-BDs compatibles: MariaDB y MySQL
+### Para levantar la base de datos: 
+
+1. **Ejecutar el script.sql** en su gestor de base de datos de preferencia (BDs compatibles MariaDB y MySQL):
+
+2. **Cadena de conexión:** Modificar la propiedad `DefaultConnection` (o el nombre que uses) en el archivo `appsettings.json` para que coincida con sus credenciales locales.
+
