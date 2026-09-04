@@ -207,4 +207,17 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         }
     }
 
+    [HttpGet]
+    public IActionResult Fotos(string id = "1")
+    {
+        var inmuebleMock = new inmobiliaria.Models.Inmueble
+        {
+            Id= id,
+            Direccion = "siempre viva 321"
+        };
+
+        return View(inmuebleMock);
+    }
+
+
 }

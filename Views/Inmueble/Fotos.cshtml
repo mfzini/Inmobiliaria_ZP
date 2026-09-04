@@ -1,0 +1,39 @@
+@model inmobiliaria.Models.Inmueble
+
+<div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Fotos de: DIRECCION</h4>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Volver</a>
+    </div>
+
+    <div class="row">
+        <!-- seccion portada -->
+        <div class="col-md-5">
+            <h5>Portada</h5>
+            
+            <div id="contenedorPortada" class="mb-2">
+                <!-- aca va la imagen de portada -->
+            </div>
+
+            <form id="formPortada">
+                <input type="file" id="inputPortada" class="form-control mb-2" accept="image/*" />
+                <button type="submit" class="btn btn-primary btn-sm">Guardar Portada</button>
+            </form>
+        </div>
+
+        <!-- seccion fotos interior -->
+        <div class="col-md-7">
+            <h5>Fotos del Interior</h5>
+
+            <form id="formInterior" class="mb-3">
+                <input type="file" id="inputInterior" class="form-control mb-2" accept="image/*" multiple />
+                <button type="submit" class="btn btn-success btn-sm">Subir Fotos</button>
+            </form>
+
+            <h6>Actuales:</h6>
+            <div id="galeriaActual" class="d-flex flex-wrap gap-2">
+                <!-- aca van las fotos del interior -->
+            </div>
+        </div>
+    </div>
+</div>
