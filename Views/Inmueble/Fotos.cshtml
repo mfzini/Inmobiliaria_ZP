@@ -1,8 +1,8 @@
 @model inmobiliaria.Models.Inmueble
 
-<div class="container mt-3">
+<div id="appFotos" class="container mt-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Fotos de: DIRECCION</h4>
+        <h4>Fotos de: @Model.Direccion</h4>
         <a asp-action="Index" class="btn btn-secondary btn-sm">Volver</a>
     </div>
 
@@ -11,13 +11,19 @@
         <div class="col-md-5">
             <h5>Portada</h5>
             
-            <div id="contenedorPortada" class="mb-2">
-                <!-- aca va la imagen de portada -->
+            <div class="mb-2">
+                <img v-if="urlPortada" v-bind:src="urlPortada" class="img-fluid rounded border shadow-sm w-100" alt="portada">
+                <div v-else class="alert alert-light text-center border py-4 text-muted">
+                    No hay foto de portada
+                </div>
             </div>
 
-            <form id="formPortada">
-                <input type="file" id="inputPortada" class="form-control mb-2" accept="image/*" />
-                <button type="submit" class="btn btn-primary btn-sm">Guardar Portada</button>
+            <form v-on:submit.prevent="subirPortada">
+                <input type="file" ref="filePortada" class="form-control mb-2" accept="image/*" />
+                <button type="submit" class="btn btn-primary btn-sm" v-bind:disabled="cargandoPortada">
+                    <span v-if="cargandoPortada">Guardando</span>
+                    <span v-else>Guardar Portada</span>
+                </button>
             </form>
         </div>
 
@@ -25,15 +31,140 @@
         <div class="col-md-7">
             <h5>Fotos del Interior</h5>
 
-            <form id="formInterior" class="mb-3">
-                <input type="file" id="inputInterior" class="form-control mb-2" accept="image/*" multiple />
-                <button type="submit" class="btn btn-success btn-sm">Subir Fotos</button>
+            <form v-on:submit.prevent="subirGaleria" class="mb-3">
+                <input type="file" ref="fileGaleria" v-on:change="previsualizar" class="form-control mb-2" accept="image/*" multiple />
+                
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <img v-for="img in vistasPrevias" v-bind:src="img" width="80" height="60" class="rounded border">
+                </div>
+
+                <button type="submit" class="btn btn-success btn-sm" v-bind:disabled="cargandoGaleria">Subir Fotos</button>
             </form>
 
-            <h6>Actuales:</h6>
-            <div id="galeriaActual" class="d-flex flex-wrap gap-2">
-                <!-- aca van las fotos del interior -->
+            <h6>Fotos Actuales:</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <div v-for="foto in galeria" v-bind:key="foto.id" class="text-center">
+                    <img v-bind:src="foto.url" width="120" height="90" class="rounded d-block mb-1">
+                    <button type="button" v-on:click="eliminarFoto(foto.id)" class="btn btn-outline-danger btn-sm py-0">Borrar</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        Vue.createApp({
+            data(){
+                return{
+                    inmuebleId: @Model.Id,
+                    urlPortada: '',
+                    galeria: [],
+                    vistasPrevias: [],
+                    cargandoPortada: false,
+                    cargandoGaleria: false
+
+                };
+            },
+            methods:{
+                async subirPortada(){
+                    const input = this.$refs.filePortada;
+                    if(!input.files || input.files.length == 0){
+                        alert("selecciona una foto para la portada");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("portadaFile", input.files[0]);
+
+                    this.cargandoPortada = true;
+
+                    try{
+                        const res = await fetch(`/Imagenes/CambiarPortada/${this.inmuebleId}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!res.ok) throw new Error();
+
+                        const data = await res.json();
+                        this.urlPortada = data.url;
+                        input.value = "";
+                        alert("se subio la portada correctamente");
+                        
+                    } catch(error){
+                        console.error(error);
+                        alert("error subiendo la portada");
+                    } finally{
+                        this.cargandoPortada = false;
+                    }
+                },
+
+                previsualizar(event){
+                    this.vistasPrevias = [];
+                    const files = event.target.files;
+                    if(!files) return;
+
+                    [...files].forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.vistasPrevias.push(e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                },
+
+                async subirGaleria(){
+                    const input = this.$refs.fileGaleria;
+                    if(!input.files || input.files.length == 0){
+                        alert("selecciona al menos una imagen");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    for (let i = 0; i < input.files.length; i++) {
+                        formData.append("imagenes", input.files[i]);
+                    }
+
+                    this.cargandoGaleria = true;
+
+                    try{
+                        const res = await fetch(`/Imagenes/Alta/${this.inmuebleId}`, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        this.galeria = await res.json();
+
+                        this.vistasPrevias = [];
+                        input.value = "";
+                    } catch(error){
+                        console.error(error);
+                        alert("error subiendo las imagenes");
+                    } finally{
+                        this.cargandoGaleria = false;
+                    }
+                },
+
+
+                async eliminarFoto(imagenId){
+                    try{
+                        const res = await fetch(`/Imagenes/Eliminar/${imagenId}`, {
+                            method:"POST"
+                        });
+
+                        if(!res.ok) throw new Error();
+
+                        const imagenes = await res.json();
+                        this.galeria = imagenes;
+                        alert("imagen eliminada con exito");
+                    } catch(error){
+                        console.error(error);
+                        alert("error eliminando la imagen");
+                    }
+                }
+            }
+        }).mount('#appFotos');
+    </script>
+}
+
