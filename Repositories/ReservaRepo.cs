@@ -89,13 +89,53 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         using MySqlCommand command = new(query, connection);
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
-        while(reader.Read())
+        while (reader.Read())
         {
             reservas.Add(ParseReserva(reader));
         }
         return reservas;
     }
 
+    public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta)
+    {
+        List<Reserva> reservas = [];
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+            from Reservas r
+            join Personas p on p.dni = r.inquilino
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            where fecha_inicio >= @desde and fecha_fin <= @hasta
+            order by fecha_inicio";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            reservas.Add(ParseReserva(reader));
+        }
+        return reservas;
+    }
+    public List<Reserva> ListarFinalizanEnXDias(int dias)
+    {
+        List<Reserva> reservas = [];
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+            from Reservas r
+            join Personas p on p.dni = r.inquilino
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            where fecha_fin between curdate() and curdate() + interval 30 day
+            order by fecha_inicio";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            reservas.Add(ParseReserva(reader));
+        }
+        return reservas;
+    }
     private static Reserva ParseReserva(MySqlDataReader reader)
     {
         var nombre = reader.GetString("p_nombre");
@@ -128,6 +168,47 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             FechaInicio = fecha_inicio,
             FechaFin = fecha_fin
         };
+    }
 
+    public List<Reserva> ListarPorInmueble(Inmueble inmueble)
+    {
+        List<Reserva> reservas = [];
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+            from Reservas r
+            join Personas p on p.dni = r.inquilino
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            where inmueble = @inmueble";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@inmueble", inmueble.Id);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            reservas.Add(ParseReserva(reader));
+        }
+        return reservas;
+    }
+
+    public List<Reserva> ListarNoFinalizadasPorInmueble(Inmueble inmueble)
+    {
+        List<Reserva> reservas = [];
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+            from Reservas r
+            join Personas p on p.dni = r.inquilino
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            where r.inmueble = @inmueble and fecha_fin > curdate()";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@inmueble", inmueble.Id);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            reservas.Add(ParseReserva(reader));
+        }
+        return reservas;
     }
 }

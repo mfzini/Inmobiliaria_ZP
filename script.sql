@@ -31,6 +31,15 @@ create table if not exists Inmuebles(
         ON UPDATE CASCADE
 );
 
+create table if no exists ImagenesInmuebles(
+    id varchar(36) primary key default (uuid()),
+    inmueble varchar(36) not null,
+    location varchar(250) not null,
+    constraint fk_imagen_inmuebles foreign key (inmueble)
+        references Inmuebles(id)
+        on delete cascade
+);
+
 create table if not exists Reservas(
     id varchar(36) primary key default (uuid()),
     inmueble varchar(36) not null,

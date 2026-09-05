@@ -243,4 +243,72 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
 
         return null;
     }
+
+    public List<Inmueble> ListConMasReservas365Dias()
+    {
+        List<Inmueble> inmuebles = [];
+        var query = @"select *, count(r.id) as total_reservas, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        from Reservas r
+        join Inmuebles i on i.id = r.inmueble
+        join TipoInmueble t on t.id = i.tipo
+        join Personas p on p.dni = i.propietario
+        where datediff(now(), r.fecha_inicio) < 365
+        group by r.inmueble
+        order by total_reservas desc
+        limit 5;";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            inmuebles.Add(ParseInmueble(reader));
+        }
+        return inmuebles;
+    }
+    public List<Inmueble> ListSinReservasEnXDias(int dias)
+    {
+        List<Inmueble> inmuebles = [];
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+            from Inmuebles i
+            join Personas p on p.dni = i.propietario
+            join TipoInmueble t on t.id = i.tipo
+            left join Reservas r on i.id = r.inmueble and r.fecha_inicio >= now() - interval @dias day
+            where r.id is null;";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@dias", dias);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            inmuebles.Add(ParseInmueble(reader));
+        }
+        return inmuebles;
+    }
+
+    public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta)
+    {
+        List<Inmueble> inmuebles = [];
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        where i.listado = 1
+        and not exists (
+            select 1 from reservas r
+            where i.id = r.inmueble
+            and r.fecha_inicio <= @hasta
+            and r.fecha_fin >= @desde
+        )";
+
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@desde", desde.ToString("yyyy-MM-dd"));
+        command.Parameters.AddWithValue("@hasta", hasta.ToString("yyyy-MM-dd"));
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            inmuebles.Add(ParseInmueble(reader));
+        }
+        return inmuebles;
+    }
 }

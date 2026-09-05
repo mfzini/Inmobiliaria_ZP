@@ -60,4 +60,20 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
         };
 
     }
+
+     public TipoInmueble? FindTipoByNombre(string nombre)
+    {
+        var query = @"select * from TipoInmueble where nombre = @nombre";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@nombre", nombre);
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        if (!reader.Read()) return null;
+        return new TipoInmueble
+        {
+            Id = reader.GetInt16("id"),
+            Nombre = reader.GetString("nombre")
+        };
+    }
 }
