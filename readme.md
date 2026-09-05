@@ -13,6 +13,8 @@
 
 ## 📐 Modelado de Datos
 
+## ESTO ES LA PRIMERA ENTREGA
+
 El diagrama de entidad-relacion se encuentra en la carpeta docs, consideramos
 persona como inquilino y propietario.
 
