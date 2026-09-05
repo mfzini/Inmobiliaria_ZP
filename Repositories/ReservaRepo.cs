@@ -82,7 +82,6 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where fecha_fin >= now()
             order by fecha_inicio
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
@@ -203,6 +202,29 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@inmueble", inmueble.Id);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            reservas.Add(ParseReserva(reader));
+        }
+        return reservas;
+    }
+
+     public List<Reserva> ListarNoFinalizadas(int page = 1, int limit = 10)
+    {
+        List<Reserva> reservas = [];
+        var query = @$"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+            from Reservas r
+            join Personas p on p.dni = r.inquilino
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            where fecha_fin > curdate()
+            limit {(page - 1) * limit}, {limit}";
+           
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())

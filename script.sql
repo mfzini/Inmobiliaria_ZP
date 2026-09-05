@@ -8,7 +8,7 @@ create table if not exists Personas(
     apellido varchar(64) not null,
     nombre varchar(64) not null,
     email varchar(64) unique not null,
-    telefono varchar(64)
+    telefono varchar(64) default "_"
 );
 
 create table if not exists TipoInmueble(
@@ -21,9 +21,9 @@ create table if not exists Inmuebles(
     propietario varchar(64) not null,
     tipo varchar(64) not null,
     direccion varchar(64) not null,
-    latitud decimal(9,6),
-    longitud decimal(9,6),
-    capacidad tinyint not null,
+    latitud decimal(9,6) default 0,
+    longitud decimal(9,6) default 0,
+    capacidad tinyint not null default 1,
     precio decimal(10,2) default 0,
     listado boolean default false,
     constraint fk_inmbueble_propietario foreign key (propietario)

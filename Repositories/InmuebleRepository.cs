@@ -311,4 +311,24 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         }
         return inmuebles;
     }
+
+    public List<Inmueble> ListarByDireccion(string direccion)
+    {
+        List<Inmueble> inmuebles = [];
+        var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+            join Personas p on i.propietario = p.dni
+            join TipoInmueble t on i.tipo = t.id
+            where i.direccion = @direccion";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@direccion", direccion);
+        connection.Open();
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            inmuebles.Add(ParseInmueble(reader));
+        }
+        return inmuebles;
+    }
 }
