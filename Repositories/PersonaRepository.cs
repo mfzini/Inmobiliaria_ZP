@@ -141,7 +141,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         var query = "select * from Personas where nombre like @nombre";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
-        command.Parameters.AddWithValue("@nombre", "%".Concat(nombre).Concat("%"));
+        command.Parameters.AddWithValue("@nombre", "%"+nombre+"%");
         connection.Open();
         using var reader = command.ExecuteReader();
         while (reader.Read())
