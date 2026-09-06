@@ -134,6 +134,20 @@ public class PersonaController(PersonaRepository repo) : Controller
 
     }
 
+    [HttpGet]
+    public IActionResult BuscarNombre(string nombreBuscado)
+    {
+        try
+        {
+            var res = repo.FindByNombre(nombreBuscado);
+            return Json(new {Datos = res});
+        } catch(Exception e)
+        {
+            return Json(new {Error = e.Message});
+        }
+    }
+
+
 
 
 }

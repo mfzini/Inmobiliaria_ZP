@@ -11,9 +11,9 @@
             <form asp-action="Registrar" method="post">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input type="text" asp-for="Propietario" class="form-control bg-dark text-white border-secondary">
+                    <select name="Propietario" id="Propietario" class="form-control bg-dark text-white border-secondary">
+                    </select>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
-                    
                 </div>
 
                 <div class="mb-3">
@@ -66,3 +66,37 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#Propietario').select2({
+                placeholder: "Escribi para buscar propietario...",
+                minimumInputLength: 3,
+                ajax: {
+                    delay: 250,
+                    dataType: "json",
+                    cache: true,
+                    url: function (params){
+                        let q = params.term ? encodeURIComponent(params.term) : "";
+                        return `/Persona/BuscarNombre/${q}`;
+                    },
+                    processResults: function (res){
+                        const listaNombres = res.datos || [];
+                        return: {
+                            results: listaNombres.map(p => {
+                                id: p.dni,
+                                text: `${p.nombre} ${p.apellido} (DNI: ${p.dni})`
+                            }))
+                        };
+                    }
+                }
+            });
+        });
+    </script>
+}
