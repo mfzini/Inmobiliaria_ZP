@@ -11,8 +11,10 @@
             <form asp-action="Registrar" method="post">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <select name="Propietario" id="Propietario" class="form-control bg-dark text-white border-secondary">
-                    </select>
+                    <input list="options" name="Propietario" id="Propietario" class="form-control bg-dark text-white border-secondary">
+                    <datalist id="options">
+                        <option value="juanito">juanito</option>
+                    </datalist>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
 
@@ -74,7 +76,24 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function() {
+    //todo: limpiar, coso...
+        document.addEventListener("DOMContentLoaded", e => {
+            const options = document.getElementById("options");
+            const inputPropietario = document.getElementById("Propietario");
+
+            inputPropietario.addEventListener("change", async e => {
+                let q = inputPropietario.value.trim();
+                const personas = await fetch(`/Persona/BuscarNombre/?nombreBuscado=${q}`).then(r => r.json());
+                personas.forEach(persona => {
+                    let option = document.createElement("option");
+                    option.value = persona.nombre;
+                    option.innerText = persona.nombre;
+                    options.appendChild(option);
+                })
+
+            });
+        })
+        @* $(document).ready(function() {
             $('#Propietario').select2({
                 placeholder: "Escribi para buscar propietario...",
                 minimumInputLength: 3,
@@ -97,6 +116,6 @@
                     }
                 }
             });
-        });
+        }); *@
     </script>
 }

@@ -321,7 +321,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             where i.direccion like @direccion";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
-        command.Parameters.AddWithValue("@direccion", "%"+direccion+"%");
+        command.Parameters.Add("@direccion", MySqlDbType.VarChar).Value = "%"+direccion+"%";
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
 

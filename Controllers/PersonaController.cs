@@ -139,8 +139,7 @@ public class PersonaController(PersonaRepository repo) : Controller
     {
         try
         {
-            var res = repo.FindByNombre(nombreBuscado);
-            return Json(new {Datos = res});
+            return Json(repo.FindByNombre(nombreBuscado));
         } catch(Exception e)
         {
             return Json(new {Error = e.Message});
