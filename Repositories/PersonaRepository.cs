@@ -8,7 +8,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
 {
     public int Create(Persona persona)
     {
-        
+
         var query = @"insert into Personas (dni, nombre, apellido, email, telefono)
         values (@dni, @nombre, @apellido, @email, @telefono)";
         using MySqlConnection connection = new(connectionString);
@@ -133,5 +133,27 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
             });
         }
         return inquilinos;
+    }
+
+    public List<Persona> FindByNombre(string nombre)
+    {
+        List<Persona> personas = [];
+        var query = "select * from Personas where nombre like %@nombre%";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            personas.Add(new Persona
+            {
+                Dni = reader.GetString(nameof(Persona.Dni)),
+                Nombre = reader.GetString(nameof(Persona.Nombre)),
+                Apellido = reader.GetString(nameof(Persona.Apellido)),
+                Telefono = reader[nameof(Persona.Telefono)] as string,
+                Email = reader.GetString(nameof(Persona.Email))
+            });
+        }
+        return personas;
     }
 }
