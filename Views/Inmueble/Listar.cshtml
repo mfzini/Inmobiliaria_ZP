@@ -3,11 +3,25 @@
     ViewData["Title"] = "Listar Inmuebles";
 }
 
-<div class="container mt-4">
+<div id="listado" class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Listado de inmuebles: </h2>
         <a asp-action="Registrar" class="btn btn-primary">➕ Registrar Inmueble 🏠</a>
     </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <form v-on:submit.prevent="buscar" class="d-flex gap-2">
+                <input type="text" 
+                v-model="busqueda" 
+                class="form-control" 
+                placeholder="Buscar por direccion 🔍" />
+                <button type="submit" class="btn btn-secondary">Buscar</button>
+            </form>
+        </div>
+    </div>
+
 
     <table class="table table-dark table-hover">
         <thead>
@@ -22,22 +36,53 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var i in Model)
-            {
-                <tr>
-                    <td>@i.Direccion</td>
-                    <td>@i.Propietario.Nombre @i.Propietario.Apellido</td>
-                    <td>@i.Tipo.Nombre</td>
-                    <td>@i.Capacidad</td>
-                    <td>$@i.Precio</td>
-                    <td>@i.Listado</td>
-                    <td class="text-end">
-                        <a asp-action="Editar" asp-route-id="@i.Id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
-                        <a asp-action="Eliminar" asp-route-id="@i.Id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
-                        <a asp-action="Detalles" asp-route-id="@i.Id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
-                    </td>
-                </tr>
-            }
+            <tr v-for="i in lista" v-bind:key="i.id">
+                <td>{{ i.direccion }}</td>
+                <td>{{ i.propietario?.nombre }} {{ i.propietario?.apellido }}</td>
+                <td>{{ i.tipo?.nombre }}</td>
+                <td>{{ i.capacidad }}</td>
+                <td>${{ i.precio }}</td>
+                <td>{{ i.listado }}</td>
+                <td class="text-end">
+                    <a :href="'/Inmueble/Editar/' + i.id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
+                    <a :href="'/Inmueble/Eliminar/' + i.id" class="btn btn-sm btn-outline-danger me-1">❌ Eliminar</a>
+                    <a :href="'/Inmueble/Detalles/' + i.id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
+                    <a :href="'/Inmueble/Fotos/' + i.id" class="btn btn-sm btn-outline-warning">📷 Fotos</a>
+                </td>
+            </tr>
+            <tr v-if="lista.length === 0">
+                <td colspan="7" class="text-center text-muted py-3">No se encontraron inmuebles</td>
+            </tr>
         </tbody>
     </table>
 </div>
+
+@section Scripts{
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                    busqueda: '',
+                    lista: []
+                };
+            },
+            methods:{
+                async buscar(){
+                    try{
+                        const res = await fetch(`/Inmueble/BuscarPorDireccion?direccion=${this.busqueda}`);
+                        if(!res.ok) throw new Error();
+                        const data = await res.json();
+                        this.lista = data;
+                    } catch(error){
+                        console.error("Error buscando: ", error);
+                    }
+                }
+            },
+            mounted(){
+                this.buscar();
+            }
+        }).mount('#listado');
+    </script>
+}
+
+

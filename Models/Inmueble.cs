@@ -20,6 +20,10 @@ public class Inmueble
 
     public decimal Latitud {get; set;}
     public decimal Longitud {get; set;}
+
+    public string? Portada { get; set; }
+    public IList<Imagen> Imagenes { get; set; } = new List<Imagen>();
+
     public override string ToString()
     {
         return $"Inmueble {{Tipo={Tipo}, Direccion={Direccion}, Capacidad={Capacidad}, Precio={Precio}, Listado={Listado}}}";

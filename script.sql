@@ -31,7 +31,7 @@ create table if not exists Inmuebles(
         ON UPDATE CASCADE
 );
 
-create table if no exists ImagenesInmuebles(
+create table if not exists ImagenesInmuebles(
     id varchar(36) primary key default (uuid()),
     inmueble varchar(36) not null,
     location varchar(250) not null,

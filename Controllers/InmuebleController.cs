@@ -65,6 +65,17 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     }
 
     [HttpGet]
+    public IActionResult BuscarPorDireccion(string? direccion)
+    {
+        if (string.IsNullOrWhiteSpace(direccion))
+        {
+            return Json(inmuebleRepo.GetPage());
+        }
+
+        return Json(inmuebleRepo.ListarByDireccion(direccion));
+    }
+
+    [HttpGet]
     public IActionResult Editar(string id)
     {
         if(string.IsNullOrEmpty(id))
@@ -218,6 +229,9 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
         return View(inmuebleMock);
     }
+
+    
+
 
 
 }
