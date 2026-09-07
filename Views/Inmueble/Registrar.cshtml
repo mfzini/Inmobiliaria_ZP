@@ -16,19 +16,28 @@
                     placeholder="Escribi para buscar propietario" 
                     v-model="busquedaPropietario" 
                     @@input="buscarPropietarios">
-                <datalist id="options">
-                    <option value="" disabled selected>Elegi un propietario</option>
+                    <datalist id="options">
                         <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
                             {{ persona.nombre }} {{ persona.apellido }} ({{ persona.dni }})
                         </option>
-                </datalist>
+                    </datalist>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
-                    <input asp-for="Tipo" class="form-control bg-dark text-white border-secondary">
+                    <input id="buscadorTipo" 
+                    class="form-control bg-dark text-white border-secondary"
+                    placeholder="Escribi para buscar tipo"
+                    v-model="busquedaTipo"
+                    @@input="buscarTipos">
+                    <select name="Tipo" class="form-select bg-dark text-white border-secondary">
+                        <option value="" disabled selected>Elegi un tipo de inmueble</option>
+                        <option v-for="t in tipos" :key="t.id" :value="t.id">
+                            {{ t.nombre }}
+                        </option>
+                    </select>
                     <span asp-validation-for="Tipo" class="text-danger"></span>
-                    
                 </div>
 
                 <div class="mb-3">
@@ -83,7 +92,11 @@
                 return {
                     busquedaPropietario: '',
                     personas: [],
-                    timer: null
+                    timerPropietario: null,
+
+                    busquedaTipo: '',
+                    tipos: [],
+                    timerTipo: null
                 };
             },
             methods:{
@@ -100,6 +113,22 @@
                             }
                         } else {
                             this.personas = [];
+                        }
+                    }, 300);
+                },
+                buscarTipos(){
+                    clearTimeout(this.timer); 
+                    this.timerTipo = setTimeout(async () => {
+                        let tipoBuscado = this.busquedaTipo.trim();
+                        if(tipoBuscado.length >= 2){
+                            try {
+                                this.t = await fetch(`/TipoInmueble/BuscarTipo/?tipoBuscado=${tipoBuscado}`)
+                                .then(r => r.json());
+                            } catch (e) {
+                                console.error("error buscando tipos de inmuebles:", e);
+                            }
+                        } else {
+                            this.tipos = [];
                         }
                     }, 300);
                 }

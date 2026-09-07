@@ -186,7 +186,31 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
     }
 
+    [HttpGet]
+    public IActionResult BuscarDireccion(string direccionBuscada)
+    {
+        try
+        {
+            var res = inmuebleRepo.ListarByDireccion(direccionBuscada);
+            return Json(res);
+        } catch (Exception e)
+        {
+            return Json(new { Error = e.Message });
+        }
+    }
 
-
+    [HttpGet]
+    public IActionResult BuscarInquilino(string nombreBuscado)
+    {
+        try
+        {
+            var res = personaRepo.FindByNombre(nombreBuscado);
+            return Json(res);
+        }
+        catch (Exception e)
+        {
+            return Json(new { Error = e.Message });
+        }
+    }
 
 }

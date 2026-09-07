@@ -63,4 +63,18 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
         }
     }
 
+    [HttpGet]
+    public IActionResult buscarTipo(string tipoBuscado)
+    {
+        try
+        {
+            var res = tipoRepo.FindTipoByNombreLike(tipoBuscado);
+            return Json(res);
+        }catch(Exception e)
+        {
+            return Json(new {Error = e.Message});
+        }
+    }
+
+
 }

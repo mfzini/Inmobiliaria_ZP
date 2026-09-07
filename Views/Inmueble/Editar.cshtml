@@ -8,18 +8,38 @@
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Editar Inmueble</h3>
 
-            <form asp-action="Editar" method="post">
+            <form asp-action="Editar" method="post" id="edicionInmueble">
                 <input type="hidden" name="id" value="@ViewBag.InmuebleId"/>
 
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input asp-for="Propietario" class="form-control bg-dark text-white border-secondary"/>
+                    <input id="buscadorPropietario" 
+                        class="form-control bg-dark text-white border-secondary"
+                        placeholder="Escribi para buscar propietario" 
+                        v-model="busquedaPropietario" 
+                        @@input="buscarPropietarios">
+                    <select name="Propietario" class="form-select bg-dark text-white border-secondary">
+                        <option value="@Model.Propietario" selected>@ViewBag.TextoPropietario</option>
+                        <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
+                            ({{ persona.dni }}) {{ persona.nombre }} {{ persona.apellido }}
+                        </option>
+                    </select>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Tipo" class="form-label text-white">Tipo de Inmueble: </label>
-                    <input asp-for="Tipo" type="number" class="form-control bg-dark text-white border-secondary"/>
+                    <label class="form-label text-white">Tipo de Inmueble: </label>
+                    <input id="buscadorTipo" 
+                        class="form-control bg-dark text-white border-secondary"
+                        placeholder="Escribi para buscar tipo"
+                        v-model="busquedaTipo"
+                        @@input="buscarTipos">
+                    <select name="Tipo" class="form-select bg-dark text-white border-secondary">
+                        <option value="@Model.Tipo" selected>@ViewBag.TextoTipo</option>
+                        <option v-for="t in tipos" :key="t.id" :value="t.id">
+                            {{ t.nombre }}
+                        </option>
+                    </select>
                     <span asp-validation-for="Tipo" class="text-danger"></span>
                 </div>
 
@@ -64,3 +84,55 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                    busquedaPropietario: '',
+                    personas: [],
+                    timerPropietario: null,
+
+                    busquedaTipo: '',
+                    tipos: [],
+                    timerTipo: null
+                };
+            },
+            methods:{
+                buscarPropietarios(){
+                    clearTimeout(this.timerPropietario); 
+                    this.timerPropietario = setTimeout(async () => {
+                        let nombreBuscado = this.busquedaPropietario.trim();
+                        if(nombreBuscado.length >= 2){
+                            try {
+                                this.personas = await fetch(`/Persona/BuscarNombre?nombreBuscado=${nombreBuscado}`)
+                                    .then(r => r.json());
+                            } catch (e) {
+                                console.error("error buscando personas:", e);
+                            }
+                        } else {
+                            this.personas = [];
+                        }
+                    }, 300);
+                },
+                buscarTipos(){
+                    clearTimeout(this.timerTipo); 
+                    this.timerTipo = setTimeout(async () => {
+                        let tipoBuscado = this.busquedaTipo.trim();
+                        if(tipoBuscado.length >= 2){
+                            try {
+                                this.tipos = await fetch(`/TipoInmueble/BuscarTipo?tipoBuscado=${tipoBuscado}`)
+                                    .then(r => r.json());
+                            } catch (e) {
+                                console.error("error buscando tipos de inmuebles:", e);
+                            }
+                        } else {
+                            this.tipos = [];
+                        }
+                    }, 300);
+                }
+            }
+        }).mount('#edicionInmueble');
+    </script>
+}

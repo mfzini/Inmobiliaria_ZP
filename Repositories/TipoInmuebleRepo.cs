@@ -61,7 +61,7 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
 
     }
 
-     public TipoInmueble? FindTipoByNombre(string nombre)
+    public TipoInmueble? FindTipoByNombre(string nombre)
     {
         var query = @"select * from TipoInmueble where nombre = @nombre";
         using MySqlConnection connection = new(connectionString);
@@ -76,4 +76,28 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
             Nombre = reader.GetString("nombre")
         };
     }
+
+    public List<TipoInmueble> FindTipoByNombreLike(string nombre)
+    {
+        nombre = "%" + nombre + "%";
+        List<TipoInmueble> tipos = [];
+        var query = "select * from TipoInmueble where nombre like @nombre";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.Add("@nombre", MySqlDbType.VarChar).Value = nombre;
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            tipos.Add(new TipoInmueble
+            {
+                Id = reader.GetInt32("id"),
+                Nombre = reader.GetString("nombre")
+            });
+        }
+        return tipos;
+    }
+
+
+
 }
