@@ -1,4 +1,4 @@
-@model inmobiliaria.Models.Inmueble
+@model inmobiliaria.DTO.InmuebleDTO
 @{
     ViewData["Title"] = "Registrar Inmueble";
 }
@@ -8,13 +8,20 @@
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Registrar Inmueble</h3>
 
-            <form asp-action="Registrar" method="post">
+            <form asp-action="Registrar" method="post" id="registroInmueble">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input list="options" name="Propietario" id="Propietario" class="form-control bg-dark text-white border-secondary">
-                    <datalist id="options">
-                        <option value="juanito">juanito</option>
-                    </datalist>
+                    <input id="buscadorPropietario" 
+                    class="form-control bg-dark text-white border-secondary"
+                    placeholder="Escribi para buscar propietario" 
+                    v-model="busquedaPropietario" 
+                    @@input="buscarPropietarios">
+                    <select name="Propietario" class="form-select bg-dark text-white border-secondary">
+                        <option value="" disabled selected>Elegi un propietario</option>
+                        <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
+                            ({{ persona.dni }}) {{ persona.nombre }} {{ persona.apellido }}
+                        </option>
+                    </select>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
 
@@ -71,24 +78,33 @@
 
 
 @section Scripts {
-    <script type="text/javascript">
-    
-        document.addEventListener("DOMContentLoaded", e => {
-            const options = document.getElementById("options");
-            const inputPropietario = document.getElementById("Propietario");
-
-            inputPropietario.addEventListener("change", async e => {
-                let q = inputPropietario.value.trim();
-                const personas = await fetch(`/Persona/BuscarNombre/?nombreBuscado=${q}`).then(r => r.json());
-                personas.forEach(persona => {
-                    let option = document.createElement("option");
-                    option.value = persona.nombre;
-                    option.innerText = persona.nombre;
-                    options.appendChild(option);
-                })
-
-            });
-        })
-        
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                    busquedaPropietario: '',
+                    personas: [],
+                    timer: null
+                };
+            },
+            methods:{
+                buscarPropietarios(){
+                    clearTimeout(this.timer); 
+                    this.timer = setTimeout(async () => {
+                        let nombreBuscado = this.busquedaPropietario.trim();
+                        if(nombreBuscado.length >= 2){
+                            try {
+                                this.personas = await fetch(`/Persona/BuscarNombre/?nombreBuscado=${nombreBuscado}`)
+                                .then(r => r.json());
+                            } catch (e) {
+                                console.error("error buscando personas:", e);
+                            }
+                        } else {
+                            this.personas = [];
+                        }
+                    }, 300);
+                }
+            }
+        }).mount('#registroInmueble');
     </script>
 }

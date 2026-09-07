@@ -38,6 +38,10 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             ModelState.AddModelError("Tipo", "No existe ese tipo de inmueble");
         }
 
+        if (!ModelState.IsValid)
+        {
+            return View(dto);
+        }
 
         Inmueble inmueble = new Inmueble
         {
