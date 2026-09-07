@@ -11,20 +11,19 @@
             <form asp-action="Registrar" method="post" id="registroInmueble">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input id="buscadorPropietario" 
+                    <input id="buscadorPropietario" list="options"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar propietario" 
                     v-model="busquedaPropietario" 
                     @@input="buscarPropietarios">
-                    <select name="Propietario" class="form-select bg-dark text-white border-secondary">
-                        <option value="" disabled selected>Elegi un propietario</option>
+                <datalist id="options">
+                    <option value="" disabled selected>Elegi un propietario</option>
                         <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
-                            ({{ persona.dni }}) {{ persona.nombre }} {{ persona.apellido }}
+                            {{ persona.nombre }} {{ persona.apellido }} ({{ persona.dni }})
                         </option>
-                    </select>
+                </datalist>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
                     <input asp-for="Tipo" class="form-control bg-dark text-white border-secondary">

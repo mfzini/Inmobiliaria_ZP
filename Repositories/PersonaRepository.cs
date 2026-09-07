@@ -138,7 +138,7 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
     {
         nombre = "%" + nombre + "%";
         List<Persona> personas = [];
-        var query = "select * from Personas where nombre like @nombre or apellido like @nombre";
+        var query = "select * from Personas where nombre like @nombre or apellido like @nombre or dni like @nombre";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.Add("@nombre", MySqlDbType.VarChar).Value = nombre;
