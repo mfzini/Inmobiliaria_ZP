@@ -38,7 +38,7 @@
         <tbody>
             <tr v-for="i in lista" v-bind:key="i.id">
                 <td>{{ i.direccion }}</td>
-                <td>{{ i.propietario?.nombre }} {{ i.propietario?.apellido }}</td>
+                <td>{{ i.propietario?.nombre }} {{ i.propietario?.apellido }} ({{ i.propietario?.dni }})</td>
                 <td>{{ i.tipo?.nombre }}</td>
                 <td>{{ i.capacidad }}</td>
                 <td>${{ i.precio }}</td>

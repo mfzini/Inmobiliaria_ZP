@@ -27,16 +27,17 @@
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
                     <input id="buscadorTipo" 
+                    list="opcionesTipo"
+                    name="Tipo"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar tipo"
                     v-model="busquedaTipo"
                     @@input="buscarTipos">
-                    <select name="Tipo" class="form-select bg-dark text-white border-secondary">
-                        <option value="" disabled selected>Elegi un tipo de inmueble</option>
+                    <datalist id="opcionesTipo">
                         <option v-for="t in tipos" :key="t.id" :value="t.id">
                             {{ t.nombre }}
                         </option>
-                    </select>
+                    </datalist>
                     <span asp-validation-for="Tipo" class="text-danger"></span>
                 </div>
 
@@ -101,8 +102,8 @@
             },
             methods:{
                 buscarPropietarios(){
-                    clearTimeout(this.timer); 
-                    this.timer = setTimeout(async () => {
+                    clearTimeout(this.timerPropietario); 
+                    this.timerPropietario = setTimeout(async () => {
                         let nombreBuscado = this.busquedaPropietario.trim();
                         if(nombreBuscado.length >= 2){
                             try {
@@ -117,12 +118,12 @@
                     }, 300);
                 },
                 buscarTipos(){
-                    clearTimeout(this.timer); 
+                    clearTimeout(this.timerTipo); 
                     this.timerTipo = setTimeout(async () => {
                         let tipoBuscado = this.busquedaTipo.trim();
                         if(tipoBuscado.length >= 2){
                             try {
-                                this.t = await fetch(`/TipoInmueble/BuscarTipo/?tipoBuscado=${tipoBuscado}`)
+                                this.tipos = await fetch(`/TipoInmueble/BuscarTipo/?tipoBuscado=${tipoBuscado}`)
                                 .then(r => r.json());
                             } catch (e) {
                                 console.error("error buscando tipos de inmuebles:", e);

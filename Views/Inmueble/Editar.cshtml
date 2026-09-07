@@ -13,33 +13,37 @@
 
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input id="buscadorPropietario" 
+                    <input id="buscadorPropietario"
+                        list="opcionesPropietario"
+                        name="Propietario"
+                        value="@Model.Propietario" 
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi para buscar propietario" 
                         v-model="busquedaPropietario" 
                         @@input="buscarPropietarios">
-                    <select name="Propietario" class="form-select bg-dark text-white border-secondary">
-                        <option value="@Model.Propietario" selected>@ViewBag.TextoPropietario</option>
+                    <datalist id="opcionesPropietario">
                         <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
-                            ({{ persona.dni }}) {{ persona.nombre }} {{ persona.apellido }}
+                            {{ persona.nombre }} {{ persona.apellido }} ({{ persona.dni }})
                         </option>
-                    </select>
+                    </datalist>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
                     <input id="buscadorTipo" 
+                        list="opcionesTipo"
+                        name="Tipo"
+                        value="@Model.Tipo"
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi para buscar tipo"
                         v-model="busquedaTipo"
                         @@input="buscarTipos">
-                    <select name="Tipo" class="form-select bg-dark text-white border-secondary">
-                        <option value="@Model.Tipo" selected>@ViewBag.TextoTipo</option>
+                    <datalist id="opcionesTipo">
                         <option v-for="t in tipos" :key="t.id" :value="t.id">
                             {{ t.nombre }}
                         </option>
-                    </select>
+                    </datalist>
                     <span asp-validation-for="Tipo" class="text-danger"></span>
                 </div>
 
@@ -90,11 +94,11 @@
         Vue.createApp({
             data(){
                 return {
-                    busquedaPropietario: '',
+                    busquedaPropietario: '@Model.Propietario',
                     personas: [],
                     timerPropietario: null,
 
-                    busquedaTipo: '',
+                    busquedaTipo: '@Model.Tipo',
                     tipos: [],
                     timerTipo: null
                 };
