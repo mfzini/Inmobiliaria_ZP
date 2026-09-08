@@ -8,8 +8,8 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public int Create(Inmueble inmueble)
     {
         var id = Guid.NewGuid().ToString();
-        var query = @"insert into Inmuebles (id, propietario, direccion, latitud, longitud, tipo, capacidad, precio, listado)
-        values (@id, @propietario, @direccion, @latitud, @longitud, @tipo, @capacidad, @precio, @listado)";
+        var query = @"insert into Inmuebles (id, propietario, direccion, latitud, longitud, tipo, capacidad, precio, porcentaje_reserva, listado)
+        values (@id, @propietario, @direccion, @latitud, @longitud, @tipo, @capacidad, @precio, @porcentaje_reserva, @listado)";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
@@ -20,6 +20,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@tipo", inmueble.Tipo.Id);
         command.Parameters.AddWithValue("@capacidad", inmueble.Capacidad);
         command.Parameters.AddWithValue("@precio", inmueble.Precio);
+        command.Parameters.AddWithValue("@porcentaje_reserva", inmueble.PorcentajeReserva);
         command.Parameters.AddWithValue("@listado", inmueble.Listado);
         connection.Open();
         var r = command.ExecuteNonQuery();
@@ -47,6 +48,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             tipo=@tipo,
             capacidad=@capacidad,
             precio=@precio,
+            porcentaje_reserva=@porcentaje_reserva,
             listado=@listado
             where id=@id";
         using MySqlConnection connection = new(connectionString);
@@ -58,6 +60,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@tipo", inmueble.Tipo.Id);
         command.Parameters.AddWithValue("@capacidad", inmueble.Capacidad);
         command.Parameters.AddWithValue("@precio", inmueble.Precio);
+        command.Parameters.AddWithValue("@porcentaje_reserva", inmueble.PorcentajeReserva);
         command.Parameters.AddWithValue("@listado", inmueble.Listado);
         command.Parameters.AddWithValue("@id", inmueble.Id);
         connection.Open();
@@ -220,6 +223,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             },
             Capacidad = reader.GetInt32("capacidad"),
             Precio = reader.GetDecimal("precio"),
+            PorcentajeReserva = reader.GetDecimal("porcentaje_reserva"),
             Listado = reader.GetBoolean("listado")
         };
     }

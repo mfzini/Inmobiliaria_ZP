@@ -50,6 +50,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             Direccion = dto.Direccion,
             Capacidad = dto.Capacidad,
             Precio = dto.Precio,
+            PorcentajeReserva = dto.PorcentajeReserva,
             Listado = dto.Listado,
             Latitud = dto.Latitud,
             Longitud = dto.Longitud
@@ -101,6 +102,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
                 Direccion = inmueble.Direccion,
                 Capacidad = inmueble.Capacidad,
                 Precio = inmueble.Precio,
+                PorcentajeReserva = inmueble.PorcentajeReserva,
                 Listado = inmueble.Listado,
                 Latitud = inmueble.Latitud,
                 Longitud = inmueble.Longitud
@@ -148,6 +150,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             Direccion = dto.Direccion,
             Capacidad = dto.Capacidad,
             Precio = dto.Precio,
+            PorcentajeReserva = dto.PorcentajeReserva,
             Listado = dto.Listado,
             Latitud = dto.Latitud,
             Longitud = dto.Longitud

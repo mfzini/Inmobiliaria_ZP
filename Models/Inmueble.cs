@@ -16,6 +16,8 @@ public class Inmueble
     [Required]
     public decimal Precio {get; set;}
     [Required]
+    public decimal PorcentajeReserva {get; set;}
+    [Required]
     public bool Listado {get; set;}
 
     public decimal Latitud {get; set;}

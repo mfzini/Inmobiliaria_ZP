@@ -66,6 +66,12 @@
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="PorcentajeReserva" class="form-label text-white">Porcentaje de Reserva (%): </label>
+                    <input asp-for="PorcentajeReserva" type="number" step="0.01" min="0" max="100" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="PorcentajeReserva" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Latitud" class="form-label text-white">Latitud: </label>
                     <input asp-for="Latitud" class="form-control bg-dark text-white border-secondary">
                 </div>

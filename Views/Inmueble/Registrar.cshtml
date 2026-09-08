@@ -11,7 +11,7 @@
             <form asp-action="Registrar" method="post" id="registroInmueble">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input id="buscadorPropietario" list="options"
+                    <input asp-for="Propietario" id="buscadorPropietario" list="options"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar propietario" 
                     v-model="busquedaPropietario" 
@@ -57,6 +57,12 @@
                     <label class="form-label text-white">Precio: </label>
                     <input asp-for="Precio" type="number" class="form-control bg-dark text-white border-secondary">
                     <span asp-validation-for="Precio" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Porcentaje de Reserva (%): </label>
+                    <input asp-for="PorcentajeReserva" type="number" step="0.01" min="0" max="100" class="form-control bg-dark text-white border-secondary">
+                    <span asp-validation-for="PorcentajeReserva" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">

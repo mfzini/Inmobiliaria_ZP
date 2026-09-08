@@ -22,6 +22,10 @@ public class InmuebleDTO
     
     [Required(ErrorMessage = "El precio es obligatorio")]
     public decimal Precio {get; set;}
+
+    [Required(ErrorMessage = "El porcentaje de reserva es obligatorio")]
+    [Range(0, 100, ErrorMessage = "El porcentaje debe estar entre 0 y 100")]
+    public decimal PorcentajeReserva {get; set;}
     
     public bool Listado {get; set;}
 
