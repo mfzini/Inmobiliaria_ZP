@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
 using System.Runtime.InteropServices;
+using inmobiliaria.Repositories;
 
 namespace inmobiliaria.Controllers;
 
@@ -12,7 +13,7 @@ namespace inmobiliaria.Controllers;
 		public string Url { get; set; } = "";
     }   
 
-public class ImagenesController : Controller
+public class ImagenesController(ImagesRepo repoImages) : Controller
 {
     
     private static List<MockImagen> _imagenesBD = new List<MockImagen>(); // static para que los datos se mantengan
@@ -47,49 +48,26 @@ public class ImagenesController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alta(int id, List<IFormFile> imagenes, [FromServices] IWebHostEnvironment environment)
+    public async Task<IActionResult> Alta(string id, [FromForm]List<IFormFile> imagenes, [FromServices] IWebHostEnvironment environment)
     {
+        List<Imagen> galeria = [];
         if(imagenes == null || imagenes.Count == 0)
         {
             return BadRequest("no se recibieron los archivos para la galeria");
-        }
-        string rutaCarpeta = Path.Combine(environment.WebRootPath, "Uploads", "Inmuebles", id.ToString());
-        if (!Directory.Exists(rutaCarpeta))
-        {
-            Directory.CreateDirectory(rutaCarpeta);
         }
         foreach( var file in imagenes)
         {
             if (file.Length > 0)
             {
-                var extension = Path.GetExtension(file.FileName);
-                var nombreArchivo = $"{Guid.NewGuid()}{extension}";
-                var rutaFisica = Path.Combine(rutaCarpeta, nombreArchivo);
-
-                using (var stream = new FileStream(rutaFisica, FileMode.Create))
+                var img = new Imagen
                 {
-                    await file.CopyToAsync(stream);
-                }
-
-                _imagenesBD.Add(new MockImagen
-                {
-                    Id = _contadorId++,
-                    InmuebleId = id,
-                    Url = $"/Uploads/Inmuebles/{id}/{nombreArchivo}"    
-                });
-            }
-        }
-
-        List<MockImagen> galeria = new List<MockImagen>();
-
-        foreach( var img in _imagenesBD)
-        {
-            if(img.InmuebleId == id)
-            {
+                    OriginalName = $"{file.Name}.{file.FileName}",
+                    File = file
+                };
+                repoImages.Upload(img, id);
                 galeria.Add(img);
             }
         }
-
         return Ok(galeria);
     }
 
