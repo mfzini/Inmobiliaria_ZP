@@ -6,9 +6,13 @@
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	// Features to add to the dev container. More info: https://containers.dev/features.
+	"mounts": [
+		"source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	],
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {
-			"version": "latest"
+			"version": "os-provided"
 		}
 	},
 	// Configure tool-specific properties.
