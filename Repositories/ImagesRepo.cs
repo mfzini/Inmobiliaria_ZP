@@ -7,10 +7,11 @@ namespace inmobiliaria.Repositories;
 
 public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironment environment) : RepositorioBase(config)
 {
-    public int Upload(Imagen img, string inmuebleId)
+    
+    public void UploadPortada(Imagen img, string inmuebleId)
     {
         img.Id = Guid.NewGuid().ToString();
-        img.Url = $"/Uploads/Inmuebles/{inmuebleId}/{img.Id}";
+        img.Url = $"/Uploads/Inmuebles/{inmuebleId}/{img.Id}{Path.GetExtension(img.File!.FileName)}";
         string uploadPath = Path.Combine(environment.WebRootPath, "Uploads", "Inmuebles", inmuebleId);
         if (!Directory.Exists(uploadPath))
         {
@@ -19,7 +20,23 @@ public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironmen
         var filePath = Path.Combine(uploadPath, $"{img.Id}{Path.GetExtension(img.File!.FileName)}");
         using var stream = new FileStream(filePath, FileMode.Create);
         img.File.CopyTo(stream);
+    }
+    
+    public int UploadGaleria(Imagen img, string inmuebleId)
+    {
+        UploadPortada(img, inmuebleId);
         return Create(img, inmuebleId);
+    }
+    
+    public int GuardarPortada(string inmuebleId, string urlPortada)
+    {
+        var query = @"update Inmuebles set portada = @portada where id = @id";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@portada", urlPortada);
+        command.Parameters.AddWithValue("@id", inmuebleId);
+        connection.Open();
+        return command.ExecuteNonQuery();
     }
 
     private int Create(Imagen img, string inmuebleId)
@@ -49,9 +66,9 @@ public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironmen
         {
             images.Add(new Imagen
             {
-               Id = reader.GetString("id"),
-               OriginalName = reader.GetString("original_name"),
-               Url = reader.GetString("location")
+                Id = reader.GetString("id"),
+                OriginalName = reader.GetString("original_name"),
+                Url = reader.GetString("location")
             });
         }
         inmueble!.Imagenes = images;

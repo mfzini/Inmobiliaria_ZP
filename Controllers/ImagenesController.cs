@@ -6,51 +6,38 @@ using inmobiliaria.Repositories;
 
 namespace inmobiliaria.Controllers;
 
-    public class MockImagen // modelo de prueba
-    {
-        public int Id { get; set; }
-		public int InmuebleId { get; set; }
-		public string Url { get; set; } = "";
-    }   
-
-public class ImagenesController(ImagesRepo repoImages) : Controller
+public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEnvironment environment) : Controller
 {
-    
-    private static List<MockImagen> _imagenesBD = new List<MockImagen>(); // static para que los datos se mantengan
-    private static int _contadorId =1;  // lo puse para simular el autoincremental
+
+    [HttpGet]
+    public IActionResult TraerFotos(string id)
+    {
+        var inmueble = new Inmueble{Id=id};
+        repoImages.Load(inmueble);
+        return Ok(inmueble.Imagenes);
+    }
 
     [HttpPost]
-    public async Task<IActionResult> CambiarPortada(int id, IFormFile portadaFile, [FromServices] IWebHostEnvironment environment)
+    public async Task<IActionResult> CambiarPortada(string id, IFormFile portadaFile)
     {
         if(portadaFile == null || portadaFile.Length == 0)
         {
             return BadRequest("tenes que seleccionar un archivo de portada");
         }
-        string wwwPath = environment.WebRootPath;
-        string rutaCarpeta = Path.Combine(wwwPath, "Uploads", "Inmuebles");
-        if (!Directory.Exists(rutaCarpeta))
+        var img = new Imagen
         {
-            Directory.CreateDirectory(rutaCarpeta);
-        }
-        
-        var extension = Path.GetExtension(portadaFile.FileName);
-        var nombreArchivo = $"portada_{id}_{Guid.NewGuid()}{extension}";
-        var rutaFisica = Path.Combine(rutaCarpeta, nombreArchivo);
-        
-        using( var stream = new FileStream(rutaFisica, FileMode.Create))
-        {
-            await portadaFile.CopyToAsync(stream);
-        }
+            OriginalName = portadaFile.FileName,
+            File = portadaFile
+        };
+        repoImages.UploadPortada(img, id);
+        repoImages.GuardarPortada(id, img.Url);
 
-        string urlRelativa = $"/Uploads/Inmuebles/{nombreArchivo}";
-
-        return Ok(new { url = urlRelativa});
+        return Ok(new { url = img.Url});
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alta(string id, [FromForm]List<IFormFile> imagenes, [FromServices] IWebHostEnvironment environment)
+    public async Task<IActionResult> Alta(string id, [FromForm]List<IFormFile> imagenes)
     {
-        List<Imagen> galeria = [];
         if(imagenes == null || imagenes.Count == 0)
         {
             return BadRequest("no se recibieron los archivos para la galeria");
@@ -61,56 +48,26 @@ public class ImagenesController(ImagesRepo repoImages) : Controller
             {
                 var img = new Imagen
                 {
-                    OriginalName = $"{file.Name}.{file.FileName}",
+                    OriginalName = file.FileName,
                     File = file
                 };
-                repoImages.Upload(img, id);
-                galeria.Add(img);
+                repoImages.UploadGaleria(img, id);
             }
         }
-        return Ok(galeria);
+        var inmueble = new Inmueble {Id= id};
+        repoImages.Load(inmueble);
+        return Ok(inmueble.Imagenes);
     }
-
 
     [HttpPost]
-    public IActionResult Eliminar(int id, [FromServices] IWebHostEnvironment environment)
+    public IActionResult Eliminar(string id)
     {
-        MockImagen fotoAEliminar = null;
-        foreach(var img in _imagenesBD)
+        if (string.IsNullOrEmpty(id))
         {
-            if(img.Id == id)
-            {
-                fotoAEliminar = img;
-                break;
-            }
+            return BadRequest("el id de la imagen es obligatorio");
         }
-
-        if(fotoAEliminar == null)
-        {
-            return NotFound("esa foto no existe.");
-        }
-        
-        var rutaRelativaLimpia = fotoAEliminar.Url.TrimStart('/');
-        var rutaFisica = Path.Combine(environment.WebRootPath, rutaRelativaLimpia);
-
-        if (System.IO.File.Exists(rutaFisica))
-        {
-            System.IO.File.Delete(rutaFisica);
-        }
-
-        int inmuebleId = fotoAEliminar.InmuebleId;
-        _imagenesBD.Remove(fotoAEliminar);
-
-        List<MockImagen> galeriaRestante = new List<MockImagen>();
-        foreach(var img in _imagenesBD)
-        {
-            if(img.InmuebleId == inmuebleId)
-            {
-                galeriaRestante.Add(img);
-            }
-        }
-
-        return Ok(galeriaRestante);
+        var img = new Imagen {Id = id};
+        repoImages.Delete(img);
+        return Ok();
     }
-
 }

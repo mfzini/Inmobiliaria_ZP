@@ -26,6 +26,7 @@ create table if not exists Inmuebles(
     capacidad tinyint not null default 1,
     precio decimal(10,2) default 0,
     porcentaje_reserva decimal(10,2) not null default 0,
+    portada varchar(250) default null,
     listado boolean default false,
     constraint fk_inmbueble_propietario foreign key (propietario)
         references Personas(dni)

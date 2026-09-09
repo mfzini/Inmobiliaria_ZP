@@ -224,7 +224,8 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             Capacidad = reader.GetInt32("capacidad"),
             Precio = reader.GetDecimal("precio"),
             PorcentajeReserva = reader.GetDecimal("porcentaje_reserva"),
-            Listado = reader.GetBoolean("listado")
+            Listado = reader.GetBoolean("listado"),
+            Portada = reader["portada"] as string
         };
     }
 

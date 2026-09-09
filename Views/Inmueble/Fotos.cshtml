@@ -34,7 +34,7 @@
 
             <form v-on:submit.prevent="subirGaleria" class="mb-3">
                 <input type="file" ref="fileGaleria" v-on:change="previsualizar" class="form-control mb-2"
-                       accept="image/*" multiple />
+                    accept="image/*" multiple />
 
                 <div class="d-flex flex-wrap gap-2 mb-2">
                     <img v-for="img in vistasPrevias" v-bind:src="img" width="80" height="60" class="rounded border">
@@ -62,7 +62,7 @@
                 data() {
                     return {
                         inmuebleId: "@Model.Id",
-                        urlPortada: '',
+                        urlPortada: "@Model.Portada",
                         galeria: [],
                         vistasPrevias: [],
                         cargandoPortada: false,
@@ -84,7 +84,7 @@
                         this.cargandoPortada = true;
 
                         try {
-                            const res = await fetch(`/Imagenes/CambiarPortada/${this.inmuebleId}`, {
+                            const res = await fetch(`/Imagenes/CambiarPortada?id=${this.inmuebleId}`, {
                                 method: 'POST',
                                 body: formData
                             });
@@ -133,7 +133,7 @@
                         this.cargandoGaleria = true;
 
                         try {
-                            const res = await fetch(`/Imagenes/Alta/${this.inmuebleId}`, {
+                            const res = await fetch(`/Imagenes/Alta?id=${this.inmuebleId}`, {
                                 method: "POST",
                                 body: formData,
                             });
@@ -153,20 +153,32 @@
 
                     async eliminarFoto(imagenId) {
                         try {
-                            const res = await fetch(`/Imagenes/Eliminar/${imagenId}`, {
+                            const res = await fetch(`/Imagenes/Eliminar?id=${imagenId}`, {
                                 method: "POST"
                             });
 
                             if (!res.ok) throw new Error();
 
-                            const imagenes = await res.json();
-                            this.galeria = imagenes;
+                            this.galeria = this.galeria.filter(foto => foto.id !== imagenId);
                             alert("imagen eliminada con exito");
                         } catch (error) {
                             console.error(error);
                             alert("error eliminando la imagen");
                         }
+                    },
+
+                    async cargarFotos(){
+                        try{
+                            const res= await fetch(`/Imagenes/TraerFotos?id=${this.inmuebleId}`);
+                            if(res.ok) this.galeria = await res.json();
+                        } catch(error){
+                            console.error(error);
+                            alert("error cargando las fotos");
+                        }
                     }
+                },
+                mounted(){
+                    this.cargarFotos();
                 }
             }).mount('#appFotos');
         </script>

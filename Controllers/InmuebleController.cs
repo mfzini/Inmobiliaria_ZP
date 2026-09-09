@@ -228,15 +228,16 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     }
 
     [HttpGet]
-    public IActionResult Fotos(string id = "1")
+    public IActionResult Fotos(string id)
     {
-        var inmuebleMock = new inmobiliaria.Models.Inmueble
-        {
-            Id= id,
-            Direccion = "siempre viva 321"
-        };
+        var inmueble = inmuebleRepo.GetById(id);
 
-        return View(inmuebleMock);
+        if(inmueble == null)
+        {
+            return NotFound();
+        }
+
+        return View(inmueble);
     }
 
     
