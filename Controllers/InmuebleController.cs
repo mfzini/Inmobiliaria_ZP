@@ -109,8 +109,8 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             };
 
             ViewBag.InmuebleId = id;
-            ViewBag.TextoPropietario = $"Actual: ({inmueble.Propietario.Dni}) {inmueble.Propietario.Nombre} {inmueble.Propietario.Apellido}";
-            ViewBag.TextoTipo = $"Actual: {inmueble.Tipo.Nombre}";
+            ViewBag.TextoPropietario = $"{inmueble.Propietario.Nombre} {inmueble.Propietario.Apellido} ({inmueble.Propietario.Dni})";
+            ViewBag.TextoTipo = inmueble.Tipo.Nombre;
             return View(dto);
 
         }catch(Exception e)

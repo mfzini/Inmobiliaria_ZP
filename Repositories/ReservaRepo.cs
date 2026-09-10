@@ -58,7 +58,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
 
     public Reserva? FindByID(string id)
     {
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -77,7 +77,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> GetPage(int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -138,11 +138,13 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     private static Reserva ParseReserva(MySqlDataReader reader)
     {
         var nombre = reader.GetString("p_nombre");
+        var apellido = reader.GetString("p_apellido");
         var telefono = reader["telefono"] as string;
         var inquilino = new Inquilino
         {
             Dni = reader.GetString("inquilino"),
             Nombre = nombre,
+            Apellido = apellido,
             Telefono = telefono
         };
 

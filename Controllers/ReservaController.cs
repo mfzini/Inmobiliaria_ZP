@@ -79,6 +79,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             };
 
             ViewBag.ReservaId = id;
+            ViewBag.TextoInmueble = reserva.Inmueble.Direccion;
+            ViewBag.TextoInquilino = $"{reserva.Inquilino.Nombre} {reserva.Inquilino.Apellido} ({reserva.Inquilino.Dni})";
             return View(dto);
 
         } catch(Exception e)

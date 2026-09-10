@@ -24,7 +24,7 @@
             {
                 <tr>
                     <td>@r.Inmueble.Direccion</td>
-                    <td>@r.Inquilino.Nombre @r.Inquilino.Apellido</td>
+                    <td>@r.Inquilino?.Nombre @r.Inquilino?.Apellido (@r.Inquilino.Dni)</td>
                     <td>@r.FechaInicio.ToString("dd-MM-yyyy")</td>
                     <td>@r.FechaFin.ToString("dd-MM-yyyy")</td>
                     <td class="text-end">

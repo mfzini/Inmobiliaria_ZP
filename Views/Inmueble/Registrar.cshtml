@@ -11,14 +11,16 @@
             <form asp-action="Registrar" method="post" id="registroInmueble">
                 <div class="mb-3">
                     <label asp-for="Propietario" class="form-label text-white">Propietario: </label>
-                    <input asp-for="Propietario" id="buscadorPropietario" list="options"
+                    <input type="hidden" asp-for="Propietario" v-model="propietarioId">
+                    <input id="buscadorPropietario" list="options"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar propietario" 
                     v-model="busquedaPropietario" 
-                    @@input="buscarPropietarios">
+                    @@input="buscarPropietarios"
+                    @@change="rellenarPropietario">
                     <datalist id="options">
-                        <option v-for="persona in personas" :key="persona.dni" :value="persona.dni">
-                            {{ persona.nombre }} {{ persona.apellido }} ({{ persona.dni }})
+                        <option v-for="persona in personas" :key="persona.dni" 
+                        :value="persona.nombre + ' ' + persona.apellido + '(' + persona.dni + ')'">
                         </option>
                     </datalist>
                     <span asp-validation-for="Propietario" class="text-danger"></span>
@@ -26,16 +28,17 @@
 
                 <div class="mb-3">
                     <label class="form-label text-white">Tipo de Inmueble: </label>
+                    <input type="hidden" asp-for="Tipo" v-model="tipoId">
                     <input id="buscadorTipo" 
                     list="opcionesTipo"
-                    name="Tipo"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar tipo"
                     v-model="busquedaTipo"
-                    @@input="buscarTipos">
+                    @@input="buscarTipos"
+                    @@change="rellenarTipo">
                     <datalist id="opcionesTipo">
-                        <option v-for="t in tipos" :key="t.id" :value="t.id">
-                            {{ t.nombre }}
+                        <option v-for="t in tipos" :key="t.id" 
+                        :value="t.nombre">
                         </option>
                     </datalist>
                     <span asp-validation-for="Tipo" class="text-danger"></span>
@@ -97,10 +100,12 @@
         Vue.createApp({
             data(){
                 return {
+                    propietarioId: '',
                     busquedaPropietario: '',
                     personas: [],
                     timerPropietario: null,
 
+                    tipoId: '',
                     busquedaTipo: '',
                     tipos: [],
                     timerTipo: null
@@ -123,6 +128,15 @@
                         }
                     }, 300);
                 },
+
+                rellenarPropietario(){
+                    for (let p of this.personas) {
+                        if (this.busquedaPropietario.includes(p.dni)) {
+                            this.propietarioId = p.dni;
+                        }
+                    }
+                },
+
                 buscarTipos(){
                     clearTimeout(this.timerTipo); 
                     this.timerTipo = setTimeout(async () => {
@@ -138,8 +152,16 @@
                             this.tipos = [];
                         }
                     }, 300);
+                },
+
+                rellenarTipo() {
+                for (let t of this.tipos) {
+                    if (this.busquedaTipo == t.nombre) {
+                        this.tipoId = t.id;
+                    }
                 }
             }
-        }).mount('#registroInmueble');
-    </script>
+        }
+    }).mount('#registroInmueble');
+</script>
 }

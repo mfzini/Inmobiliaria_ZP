@@ -11,16 +11,16 @@
             <form asp-action="Registrar" method="post" id="registroReserva">
                 <div class="mb-3">
                     <label asp-for="Inmueble" class="form-label text-white">Inmueble: </label>
+                    <input type="hidden" asp-for="Inmueble" v-model="inmuebleId" />
                     <input id="buscadorInmueble" 
                         list="opcionesInmueble"
-                        name="Inmueble"
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi direccion para buscar" 
                         v-model="busquedaInmueble" 
-                        @@input="buscarInmuebles">
+                        @@input="buscarInmuebles"
+                        @@change="rellenarInmueble">
                     <datalist id="opcionesInmueble">
-                        <option v-for="inm in inmuebles" :key="inm.id" :value="inm.id">
-                            {{ inm.direccion }} (Precio: ${{ inm.precio }})
+                        <option v-for="inm in inmuebles" :key="inm.id" :value="inm.direccion">
                         </option>
                     </datalist>
                     <span asp-validation-for="Inmueble" class="text-danger"></span>
@@ -28,16 +28,17 @@
 
                 <div class="mb-3">
                     <label asp-for="Inquilino" class="form-label text-white">Inquilino: </label>
+                    <input type="hidden" asp-for="Inquilino" v-model="inquilinoId" />
                     <input id="buscadorInquilino" 
                         list="opcionesInquilino"
-                        name="Inquilino"
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi para buscar inquilino" 
                         v-model="busquedaInquilino" 
-                        @@input="buscarInquilinos">
+                        @@input="buscarInquilinos"
+                        @@change="rellenarInquilino">
                     <datalist id="opcionesInquilino">
-                        <option v-for="persona in inquilinos" :key="persona.dni" :value="persona.dni">
-                            {{ persona.nombre }} {{ persona.apellido }} ({{ persona.dni }})
+                        <option v-for="persona in inquilinos" :key="persona.dni" 
+                        :value="persona.nombre + ' ' + persona.apellido + '(' + persona.dni + ')'">
                         </option>
                     </datalist>
                     <span asp-validation-for="Inquilino" class="text-danger"></span>
@@ -68,10 +69,12 @@
         Vue.createApp({
             data(){
                 return {
+                    inmuebleId: '',
                     busquedaInmueble: '',
                     inmuebles: [],
                     timerInmueble: null,
 
+                    inquilinoId: '',
                     busquedaInquilino: '',
                     inquilinos: [],
                     timerInquilino: null
@@ -94,6 +97,15 @@
                         }
                     }, 300);
                 },
+
+                rellenarInmueble(){
+                    for (let inm of this.inmuebles) {
+                        if (this.busquedaInmueble == inm.direccion) {
+                            this.inmuebleId = inm.id;
+                        }
+                    }
+                },
+
                 buscarInquilinos(){
                     clearTimeout(this.timerInquilino); 
                     this.timerInquilino = setTimeout(async () => {
@@ -109,10 +121,18 @@
                             this.inquilinos = [];
                         }
                     }, 300);
+                },
+
+                rellenarInquilino(){
+                    for (let p of this.inquilinos) {
+                        if (this.busquedaInquilino.includes(p.dni)) {
+                            this.inquilinoId = p.dni;
+                        }
+                    }
                 }
             }
         }).mount('#registroReserva');
-    </script>
+</script>
 }
 
 
