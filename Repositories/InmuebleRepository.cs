@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace inmobiliaria.Repositories;
 
-public class InmuebleRepository(IConfiguration configuration, ImagesRepo repoImagenes) : RepositorioBase(configuration)
+public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(configuration)
 {
     public int Create(Inmueble inmueble)
     {
@@ -309,7 +309,7 @@ public class InmuebleRepository(IConfiguration configuration, ImagesRepo repoIma
         return inmuebles;
     }
 
-private Inmueble ParseInmueble(MySqlDataReader reader)
+private static Inmueble ParseInmueble(MySqlDataReader reader)
     {
         var inmueble = new Inmueble
         {
@@ -335,7 +335,6 @@ private Inmueble ParseInmueble(MySqlDataReader reader)
             PorcentajeReserva = reader.GetDecimal("porcentaje_reserva"),
             Listado = reader.GetBoolean("listado"),
         };
-        repoImagenes.Load(inmueble);
         return inmueble;
     }
 }
