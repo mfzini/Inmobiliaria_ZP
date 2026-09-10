@@ -22,7 +22,7 @@ create table if not exists Inmuebles(
     tipo int not null,
     constraint fk_inmbueble_tipo foreign key (tipo)
         references TipoInmueble(id)
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
     direccion varchar(64) not null,
     latitud decimal(9,6) default 0,
     longitud decimal(9,6) default 0,
