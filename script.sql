@@ -41,10 +41,9 @@ create table if not exists ImagenesInmuebles(
     inmueble varchar(36) not null,
     original_name varchar(250) not null,
     location varchar(250) not null,
-    is_portada boolean default 0;
+    is_portada boolean default 0,
     constraint fk_imagen_inmuebles foreign key (inmueble)
         references Inmuebles(id)
-        on delete cascade
 );
 
 create table if not exists Reservas(
