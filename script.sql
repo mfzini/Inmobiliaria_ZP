@@ -58,6 +58,11 @@ create table if not exists Reservas(
     fecha_inicio date not null,
     fecha_fin date not null
 );
+create table if not exists ConceptoPago(
+    id varchar(36) primary key default (uuid())
+        on update cascade,
+    nombre varchar(20) not null
+);
 
 create table if not exists Pagos(
     id varchar(36) primary key default (uuid()),
@@ -65,6 +70,8 @@ create table if not exists Pagos(
     constraint fk_pago_reserva foreign key (reserva)
         references Reservas(id),
     monto decimal(10,2) not null,
-    concepto varchar(64) not null,
+    concepto varchar(36) not null,
+    constraint fk_concepto_pago foreign key (concepto)
+        references ConceptoPago(id),
     fecha timestamp default now()
 );
