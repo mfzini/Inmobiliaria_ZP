@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 
 namespace inmobiliaria.Repositories;
 
-public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(configuration)
+public class InmuebleRepository(IConfiguration configuration, ImagesRepo repoImagenes) : RepositorioBase(configuration)
 {
     public int Create(Inmueble inmueble)
     {
@@ -49,7 +49,8 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             capacidad=@capacidad,
             precio=@precio,
             porcentaje_reserva=@porcentaje_reserva,
-            listado=@listado
+            listado=@listado,
+            portada = @portada
             where id=@id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -62,6 +63,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@precio", inmueble.Precio);
         command.Parameters.AddWithValue("@porcentaje_reserva", inmueble.PorcentajeReserva);
         command.Parameters.AddWithValue("@listado", inmueble.Listado);
+        command.Parameters.AddWithValue("@portada", inmueble.Portada.Id);
         command.Parameters.AddWithValue("@id", inmueble.Id);
         connection.Open();
         return command.ExecuteNonQuery();
@@ -199,36 +201,6 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-
-    private static Inmueble ParseInmueble(MySqlDataReader reader)
-    {
-        return new Inmueble
-        {
-            Id = reader.GetString("i_id"),
-            Propietario = new Propietario
-            {
-                Dni = reader.GetString("dni"),
-                Nombre = reader.GetString("p_nombre"),
-                Apellido = reader.GetString("apellido"),
-                Telefono = reader["telefono"] as string,
-                Email = reader.GetString("email")
-            },
-            Direccion = reader.GetString("direccion"),
-            Latitud = reader.GetDecimal("latitud"),
-            Longitud = reader.GetDecimal("longitud"),
-            Tipo = new TipoInmueble
-            {
-                Id = reader.GetInt32("t_id"),
-                Nombre = reader.GetString("t_nombre")
-            },
-            Capacidad = reader.GetInt32("capacidad"),
-            Precio = reader.GetDecimal("precio"),
-            PorcentajeReserva = reader.GetDecimal("porcentaje_reserva"),
-            Listado = reader.GetBoolean("listado"),
-            Portada = reader["portada"] as string
-        };
-    }
-
     public Inmueble? GetById(string id)
     {
         var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
@@ -335,5 +307,35 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             inmuebles.Add(ParseInmueble(reader));
         }
         return inmuebles;
+    }
+
+private Inmueble ParseInmueble(MySqlDataReader reader)
+    {
+        var inmueble = new Inmueble
+        {
+            Id = reader.GetString("i_id"),
+            Propietario = new Propietario
+            {
+                Dni = reader.GetString("dni"),
+                Nombre = reader.GetString("p_nombre"),
+                Apellido = reader.GetString("apellido"),
+                Telefono = reader["telefono"] as string,
+                Email = reader.GetString("email")
+            },
+            Direccion = reader.GetString("direccion"),
+            Latitud = reader.GetDecimal("latitud"),
+            Longitud = reader.GetDecimal("longitud"),
+            Tipo = new TipoInmueble
+            {
+                Id = reader.GetInt32("t_id"),
+                Nombre = reader.GetString("t_nombre")
+            },
+            Capacidad = reader.GetInt32("capacidad"),
+            Precio = reader.GetDecimal("precio"),
+            PorcentajeReserva = reader.GetDecimal("porcentaje_reserva"),
+            Listado = reader.GetBoolean("listado"),
+        };
+        repoImagenes.Load(inmueble);
+        return inmueble;
     }
 }

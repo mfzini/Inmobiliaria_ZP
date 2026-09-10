@@ -6,13 +6,13 @@ using inmobiliaria.Repositories;
 
 namespace inmobiliaria.Controllers;
 
-public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEnvironment environment) : Controller
+public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEnvironment environment, InmuebleRepository repoInmueble) : Controller
 {
 
     [HttpGet]
     public IActionResult TraerFotos(string id)
     {
-        var inmueble = new Inmueble{Id=id};
+        var inmueble = new Inmueble { Id = id };
         repoImages.Load(inmueble);
         return Ok(inmueble.Imagenes);
     }
@@ -20,7 +20,9 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
     [HttpPost]
     public async Task<IActionResult> CambiarPortada(string id, IFormFile portadaFile)
     {
-        if(portadaFile == null || portadaFile.Length == 0)
+        var inmueble = repoInmueble.GetById(id);
+
+        if (portadaFile == null || portadaFile.Length == 0)
         {
             return BadRequest("tenes que seleccionar un archivo de portada");
         }
@@ -29,20 +31,21 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
             OriginalName = portadaFile.FileName,
             File = portadaFile
         };
-        repoImages.UploadPortada(img, id);
-        repoImages.GuardarPortada(id, img.Url);
 
-        return Ok(new { url = img.Url});
+        repoImages.Upload(img, inmueble);
+
+        return Ok(new { url = img.Url });
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alta(string id, [FromForm]List<IFormFile> imagenes)
+    public async Task<IActionResult> Alta(string id, [FromForm] List<IFormFile> imagenes)
     {
-        if(imagenes == null || imagenes.Count == 0)
+        if (imagenes == null || imagenes.Count == 0)
         {
             return BadRequest("no se recibieron los archivos para la galeria");
         }
-        foreach( var file in imagenes)
+        var inmueble = repoInmueble.GetById(id);
+        foreach (var file in imagenes)
         {
             if (file.Length > 0)
             {
@@ -51,11 +54,10 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
                     OriginalName = file.FileName,
                     File = file
                 };
-                repoImages.UploadGaleria(img, id);
+                repoImages.Upload(img, inmueble);
+                inmueble.Imagenes.Add(img);
             }
         }
-        var inmueble = new Inmueble {Id= id};
-        repoImages.Load(inmueble);
         return Ok(inmueble.Imagenes);
     }
 
@@ -66,7 +68,7 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
         {
             return BadRequest("el id de la imagen es obligatorio");
         }
-        var img = new Imagen {Id = id};
+        var img = new Imagen { Id = id };
         repoImages.Delete(img);
         return Ok();
     }

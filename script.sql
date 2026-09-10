@@ -19,7 +19,7 @@ create table if not exists TipoInmueble(
 create table if not exists Inmuebles(
     id varchar(36) primary key default (uuid()),
     propietario varchar(64) not null,
-    tipo varchar(64) not null,
+    tipo int not null,
     direccion varchar(64) not null,
     latitud decimal(9,6) default 0,
     longitud decimal(9,6) default 0,
@@ -38,6 +38,7 @@ create table if not exists ImagenesInmuebles(
     inmueble varchar(36) not null,
     original_name varchar(250) not null,
     location varchar(250) not null,
+    is_portada boolean default 0;
     constraint fk_imagen_inmuebles foreign key (inmueble)
         references Inmuebles(id)
         on delete cascade

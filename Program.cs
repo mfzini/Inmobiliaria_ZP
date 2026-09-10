@@ -4,10 +4,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<PersonaRepository>();
+builder.Services.AddScoped<ImagesRepo>();
 builder.Services.AddScoped<InmuebleRepository>();
 builder.Services.AddScoped<ReservaRepo>();
 builder.Services.AddScoped<TipoInmuebleRepo>();
-builder.Services.AddScoped<ImagesRepo>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
