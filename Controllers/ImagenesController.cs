@@ -12,9 +12,9 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
     [HttpGet]
     public IActionResult TraerFotos(string id)
     {
-        var inmueble = new Inmueble { Id = id };
+        var inmueble = repoInmueble.GetById(id);
         repoImages.Load(inmueble);
-        return Ok(inmueble.Imagenes);
+        return Ok(new { inmueble.Imagenes, inmueble.Portada});
     }
 
     [HttpPost]
@@ -29,7 +29,8 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
         var img = new Imagen
         {
             OriginalName = portadaFile.FileName,
-            File = portadaFile
+            File = portadaFile,
+            IsPortada = true
         };
 
         repoImages.Upload(img, inmueble);

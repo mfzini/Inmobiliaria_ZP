@@ -13,7 +13,7 @@
 
             <div class="mb-2">
                 <img v-if="urlPortada" v-bind:src="urlPortada" class="img-fluid rounded border shadow-sm w-100"
-                     alt="portada">
+                    alt="portada">
                 <div v-else class="alert alert-light text-center border py-4 text-muted">
                     No hay foto de portada
                 </div>
@@ -170,7 +170,11 @@
                     async cargarFotos(){
                         try{
                             const res= await fetch(`/Imagenes/TraerFotos?id=${this.inmuebleId}`);
-                            if(res.ok) this.galeria = await res.json();
+                            if(res.ok){
+                                let data = await res.json();
+                                this.galeria = data.imagenes;
+                                this.urlPortada = data.portada.url;
+                            } 
                         } catch(error){
                             console.error(error);
                             alert("error cargando las fotos");

@@ -26,7 +26,7 @@ public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironmen
     private int Create(Imagen img, Inmueble inmueble)
     {
         var query = @"insert into ImagenesInmuebles (id, inmueble, original_name, location, is_portada) values (
-            @id, @inmueble, @original_name, @location @isPortada)";
+            @id, @inmueble, @original_name, @location, @is_portada)";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", img.Id);
@@ -93,12 +93,16 @@ public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironmen
         command.Parameters.AddWithValue("@inmueble", inmueble?.Id);
         connection.Open();
         using var reader = command.ExecuteReader();
-        var portada = new Imagen
+        if (reader.Read())
         {
-            Id = reader.GetString("id"),
-            OriginalName = reader.GetString("original_name"),
-            Url = reader.GetString("location"),
-        };
-        inmueble.Portada = portada;
+            var portada = new Imagen
+            {
+                Id = reader.GetString("id"),
+                OriginalName = reader.GetString("original_name"),
+                Url = reader.GetString("location"),
+                IsPortada = true
+            };
+            inmueble.Portada = portada;
+        }
     }
 }
