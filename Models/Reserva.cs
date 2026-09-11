@@ -13,6 +13,8 @@ public class Reserva
     public DateTime FechaInicio { get; set;}
     [Required]
     public DateTime FechaFin {get; set;}
+
+    public List<Pago> Pagos { get; set; } = []; // otro detalle que agregue para mostrar pagos por reserva
     public override string ToString()
     {
         return $"Reserva {{FechaInicio={FechaInicio}, FechaFin={FechaFin}}}";

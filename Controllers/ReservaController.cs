@@ -53,7 +53,19 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
     [HttpGet]
     public IActionResult Listar()
     {
-        return View(reservaRepo.GetPage());
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult ListarTodas()
+    {
+        return Json(reservaRepo.GetPage());
+    }
+
+[   HttpGet]
+    public IActionResult ListarVigentes(DateTime desde, DateTime hasta)
+    {
+        return Json(reservaRepo.ListarVigentes(desde, hasta));
     }
 
     [HttpGet]

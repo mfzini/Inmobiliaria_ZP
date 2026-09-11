@@ -63,7 +63,14 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@precio", inmueble.Precio);
         command.Parameters.AddWithValue("@porcentaje_reserva", inmueble.PorcentajeReserva);
         command.Parameters.AddWithValue("@listado", inmueble.Listado);
-        command.Parameters.AddWithValue("@portada", inmueble.Portada.Id);
+        if(inmueble.Portada == null)
+        {
+            command.Parameters.AddWithValue("@portada", null);
+        }
+        else
+        {
+            command.Parameters.AddWithValue("@portada", inmueble.Portada.Id);
+        }
         command.Parameters.AddWithValue("@id", inmueble.Id);
         connection.Open();
         return command.ExecuteNonQuery();

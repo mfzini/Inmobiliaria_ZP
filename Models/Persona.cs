@@ -26,6 +26,8 @@ public class Persona
     StringLength(100, ErrorMessage = "El email no puede ser mayor a 100 caracteres")]
     public string Email { get; set; } = "";
 
+    public List<Inmueble> Inmuebles { get; set; } = new List<Inmueble>(); // agregue esto para listar por propietario
+
     public override string ToString()
     {
         return $"Persona {{Nombre={Nombre}, Apellido={Apellido}, DNI={Dni}, Telefono={Telefono}, Email={Email}}}";

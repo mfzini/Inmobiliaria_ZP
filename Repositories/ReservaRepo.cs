@@ -213,7 +213,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         return reservas;
     }
 
-     public List<Reserva> ListarNoFinalizadas(int page = 1, int limit = 10)
+    public List<Reserva> ListarNoFinalizadas(int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
         var query = @$"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
@@ -223,7 +223,6 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join TipoInmueble t on t.id = i.tipo
             where fecha_fin > curdate()
             limit {(page - 1) * limit}, {limit}";
-           
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
 

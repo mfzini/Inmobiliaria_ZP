@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace inmobiliaria.Controllers;
 
-public class PersonaController(PersonaRepository repo) : Controller
+public class PersonaController(PersonaRepository repo, InmuebleRepository inmuebleRepo) : Controller
 {
     [HttpGet]
     public IActionResult Registrar()
@@ -125,6 +125,7 @@ public class PersonaController(PersonaRepository repo) : Controller
             {
                 return NotFound();
             }
+            persona.Inmuebles = inmuebleRepo.FindByPropietarioDni(persona.Dni); 
             return View(persona);
         } catch(Exception e)
         {

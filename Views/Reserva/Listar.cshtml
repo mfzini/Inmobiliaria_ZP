@@ -3,10 +3,30 @@
     ViewData["Title"] = "Listar Reservas";
 }
 
-<div class="container mt-4">
+<div id="listadoReservas" class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Listado de reservas: </h2>
         <a asp-action="Registrar" class="btn btn-primary">➕ Registrar Reserva 📅</a>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <select v-model="filtro" v-on:change="cambiarFiltro" class="form-select form-select-sm bg-dark text-white border-secondary w-auto">
+            <option value="todas">Todas</option>
+            <option value="vigentes">Vigentes por fecha</option>
+            <option value="terminan_en">Terminan en X dias</option>
+        </select>
+
+        <!--inputs para vigentes-->
+        <span v-if="filtro == 'vigentes'" class="text-black align-self-center">Desde:</span>
+        <input v-if="filtro == 'vigentes'" type="date" v-model="desde" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+        
+        <span v-if="filtro == 'vigentes'" class="text-black align-self-center">Hasta:</span>
+        <input v-if="filtro == 'vigentes'" type="date" v-model="hasta" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+    
+        <!-- input para terminan en x dias -->
+        <span v-if="filtro == 'terminan_en'" class="text-black align-self-center">Dias:</span>
+        <input v-if="filtro == 'terminan_en'" type="number" v-model="dias" v-on:change="filtrar" placeholder="Cantidad de dias" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+
     </div>
 
     <table class="table table-dark table-hover">
@@ -20,20 +40,68 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var r in Model)
-            {
-                <tr>
-                    <td>@r.Inmueble.Direccion</td>
-                    <td>@r.Inquilino?.Nombre @r.Inquilino?.Apellido (@r.Inquilino.Dni)</td>
-                    <td>@r.FechaInicio.ToString("dd-MM-yyyy")</td>
-                    <td>@r.FechaFin.ToString("dd-MM-yyyy")</td>
+                <tr v-for="r in lista">
+                    <td>{{r.inmueble?.direccion}}</td>
+                    <td>{{r.inquilino?.nombre }} {{r.inquilino?.apellido }} ({{r.inquilino?.dni }})</td>
+                    <td>{{new Date(r.fechaInicio).toLocaleDateString()}}</td>
+                    <td>{{new Date(r.fechaFin).toLocaleDateString()}}</td>
                     <td class="text-end">
-                        <a asp-action="Editar" asp-route-id="@r.Id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
-                        <a asp-action="Eliminar" asp-route-id="@r.Id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
-                        <a asp-action="Detalles" asp-route-id="@r.Id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
+                        <a :href="'/Reserva/Editar/' + r.id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
+                        <a :href="'/Reserva/Eliminar/' + r.id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
+                        <a :href="'/Reserva/Detalles/' + r.id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
                     </td>
                 </tr>
-            }
+                <tr v-if="lista.length === 0">
+                    <td colspan="5" class="text-center text-white py-3">No se encontraron Reservas</td>
+                </tr>
         </tbody>
     </table>
 </div>
+
+
+
+@section Scripts{
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                    filtro: 'todas',
+                    desde: '',
+                    hasta: '',
+                    dias: '',
+                    lista: []
+                };
+            },
+            methods:{
+
+                async cargarTodas(){
+                    const res = await fetch('/Reserva/ListarTodas');
+                    this.lista = await res.json();
+                },
+
+                cambiarFiltro() {
+                    this.desde = '';
+                    this.hasta = '';
+                    this.dias = '';
+                    if(this.filtro == "todas"){
+                        this.cargarTodas();
+                    }
+                },
+
+                async filtrar() {
+                    if (this.filtro == "vigentes" && this.desde && this.hasta) {
+                        const res = await fetch(`/Reserva/ListarVigentes?desde=${this.desde}&hasta=${this.hasta}`);
+                        this.lista = await res.json();
+                    } else if (this.filtro == "terminan_en" && this.dias) {
+                        const res = await fetch(`/Reserva/ListarPorTerminar?dias=${this.dias}`);
+                        this.lista = await res.json();
+                    }
+                },
+
+            },
+            mounted(){
+                this.cargarTodas();
+            }
+        }).mount('#listadoReservas');
+    </script>
+}

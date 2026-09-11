@@ -142,6 +142,14 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             ModelState.AddModelError("Tipo", "No existe ese tipo de inmueble");
         }
 
+        if (!ModelState.IsValid)
+        {
+            ViewBag.InmuebleId = id;
+            return View(dto);
+        }
+
+        var inmuebleAntes = inmuebleRepo.GetById(id);
+
         Inmueble inmueble = new Inmueble
         {
             Id = id,
@@ -153,7 +161,8 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
             PorcentajeReserva = dto.PorcentajeReserva,
             Listado = dto.Listado,
             Latitud = dto.Latitud,
-            Longitud = dto.Longitud
+            Longitud = dto.Longitud,
+            Portada = inmuebleAntes?.Portada
         };
 
         inmuebleRepo.Update(inmueble);
@@ -240,7 +249,35 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return View(inmueble);
     }
 
-    
+    [HttpGet]
+    public IActionResult FiltrarPorEstado(string opcion, int dias)
+    {
+        if (opcion == "disponibles")
+        {
+            return Json(inmuebleRepo.FindByListingStatus(true));
+        }
+
+        if (opcion == "no_disponibles")
+        {
+            return Json(inmuebleRepo.FindByListingStatus(false));
+        }
+
+        if (opcion == "mas_reservados")
+        {
+            return Json(inmuebleRepo.ListConMasReservas365Dias());
+        }
+
+        if (opcion == "sin_reservas")
+        {
+            if(dias > 0)
+            {
+                return Json(inmuebleRepo.ListSinReservasEnXDias(dias));    
+            }
+            return Json(new List<Inmueble>());
+        }
+
+        return Json(inmuebleRepo.GetPage());
+    }
 
 
 
