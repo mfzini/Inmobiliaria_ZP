@@ -1,26 +1,26 @@
 @model inmobiliaria.Models.Inmueble
 
-<div id="appFotos" class="container mt-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Fotos de: @Model.Direccion</h4>
-        <a asp-action="Index" class="btn btn-secondary btn-sm">Volver</a>
+<div id="appFotos" class="container mt-4 text-dark">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-2 border-dark">
+        <h1 class="m-0 text-dark">Fotos de: @Model.Direccion</h4>
+        <a asp-action="Index" class="btn btn-secondary px-3">Volver</a>
     </div>
 
     <div class="row">
         <!-- seccion portada -->
-        <div class="col-md-5">
-            <h5>Portada</h5>
+        <div class="col-md-5 pe-md-4 border-end border-2 border-dark">
+            <h3 class="mb-3 text-dark">Portada</h3>
 
-            <div class="mb-2">
+            <div class="mb-3">
                 <img v-if="urlPortada" v-bind:src="urlPortada" class="img-fluid rounded border shadow-sm w-100"
                     alt="portada">
-                <div v-else class="alert alert-light text-center border py-4 text-muted">
+                <div v-else class="text-center border rounded py-4 text-muted bg-light">
                     No hay foto de portada
                 </div>
             </div>
 
             <form v-on:submit.prevent="subirPortada">
-                <input type="file" ref="filePortada" class="form-control mb-2" accept="image/*" />
+                <input type="file" ref="filePortada" class="form-control form-control-sm mb-2" accept="image/*" />
                 <button type="submit" class="btn btn-primary btn-sm" v-bind:disabled="cargandoPortada">
                     <span v-if="cargandoPortada">Guardando</span>
                     <span v-else>Guardar Portada</span>
@@ -29,11 +29,11 @@
         </div>
 
         <!-- seccion fotos interior -->
-        <div class="col-md-7">
-            <h5>Fotos del Interior</h5>
+        <div class="col-md-7 ps-md-4">
+            <h3 class="mb-3 text-dark">Fotos del Interior</h3>
 
             <form v-on:submit.prevent="subirGaleria" class="mb-3">
-                <input type="file" ref="fileGaleria" v-on:change="previsualizar" class="form-control mb-2"
+                <input type="file" ref="fileGaleria" v-on:change="previsualizar" class="form-control form-control-sm mb-2"
                     accept="image/*" multiple />
 
                 <div class="d-flex flex-wrap gap-2 mb-2">
@@ -44,12 +44,16 @@
                     Fotos</button>
                 </form>
 
-                <h6>Fotos Actuales:</h6>
-                <div class="d-flex flex-wrap gap-2">
-                    <div v-for="foto in galeria" v-bind:key="foto.id" class="text-center">
-                        <img v-bind:src="foto.url" width="120" height="90" class="rounded d-block mb-1">
-                        <button type="button" v-on:click="eliminarFoto(foto.id)"
-                                class="btn btn-outline-danger btn-sm py-0">Borrar</button>
+                <h5 class="text-secondary mt-3">Fotos Actuales:</h5>
+                <div class="row g-2 mt-2">
+                    <div v-for="foto in galeria" v-bind:key="foto.id" class="col-auto">
+                        <div class="bg-dark p-2 rounded text-center">
+                            <img v-bind:src="foto.url" width="120" height="90" class="rounded d-block mb-2">
+                            <div class="card-body p-1">
+                                <button type="button" v-on:click="eliminarFoto(foto.id)"
+                                class="btn btn-danger btn-sm w-100 py-0">Borrar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
