@@ -10,6 +10,16 @@ public class ImagesRepo(IConfiguration config, [FromServices] IWebHostEnvironmen
 
     public int Upload(Imagen img, Inmueble inmueble)
     {
+
+        if (img.IsPortada)
+        {
+            FetchPortada(inmueble);
+            if (inmueble.Portada != null)
+            {
+                Delete(inmueble.Portada);
+            }
+        }
+
         img.Id = Guid.NewGuid().ToString();
         img.Url = $"/Uploads/Inmuebles/{inmueble.Id}/{img.Id}{Path.GetExtension(img.File!.FileName)}";
         string uploadPath = Path.Combine(environment.WebRootPath, "Uploads", "Inmuebles", inmueble.Id);

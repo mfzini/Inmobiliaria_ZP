@@ -172,8 +172,8 @@
                             const res= await fetch(`/Imagenes/TraerFotos?id=${this.inmuebleId}`);
                             if(res.ok){
                                 let data = await res.json();
-                                this.galeria = data.imagenes;
-                                this.urlPortada = data.portada.url;
+                                this.galeria = data.imagenes || [];
+                                this.urlPortada = data.portada ? data.portada.url : null;
                             } 
                         } catch(error){
                             console.error(error);

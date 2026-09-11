@@ -56,9 +56,10 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
                     File = file
                 };
                 repoImages.Upload(img, inmueble);
-                inmueble.Imagenes.Add(img);
             }
         }
+
+        repoImages.Load(inmueble);
         return Ok(inmueble.Imagenes);
     }
 
