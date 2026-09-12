@@ -23,7 +23,7 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
     {
         var query = @"select *, p.id as p_id, c.id as c_id
             from Pagos p
-            join ConpectoPago c on c.id = p.concepto
+            join ConceptoPago c on c.id = p.concepto
             where id = @id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -41,7 +41,8 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
                 Nombre = reader.GetString("nombre")
             },
             Monto = reader.GetDecimal("monto"),
-            Fecha = reader.GetDateTime("fecha")
+            Fecha = reader.GetDateTime("fecha"),
+            Anulado = reader.GetBoolean("anulado")
         };
 
     }
@@ -52,7 +53,7 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
         var query = @"select p.*, p.id as p_id, c.id as c_id
             from Pagos p
             join join Reservas r on r.id = p.reserva
-            join ConpectoPago c on c.id = p.concepto
+            join ConceptoPago c on c.id = p.concepto
             where reserva = @reserva";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -70,7 +71,8 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
                     Nombre = reader.GetString("nombre")
                 },
                 Monto = reader.GetDecimal("monto"),
-                Fecha = reader.GetDateTime("fecha")
+                Fecha = reader.GetDateTime("fecha"),
+                Anulado = reader.GetBoolean("anulado")
             });
         }
         return pagos;

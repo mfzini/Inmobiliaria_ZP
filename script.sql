@@ -73,5 +73,7 @@ create table if not exists Pagos(
     concepto varchar(36) not null,
     constraint fk_concepto_pago foreign key (concepto)
         references ConceptoPago(id),
-    fecha timestamp default now()
+    fecha timestamp default now(),
+    anulado boolean default 0
+    
 );

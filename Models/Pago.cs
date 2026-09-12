@@ -13,6 +13,8 @@ public class Pago
     public ConceptoPago Concepto {get; set;}
     [Required]
     public DateTime Fecha {get; set;}
+
+    public Boolean Anulado {get; set;}
     public override string ToString()
     {
         return $"Pago {{Monto={Monto}, Concepto={Concepto}, Fecha={Fecha}}}";
