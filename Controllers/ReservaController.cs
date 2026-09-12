@@ -62,11 +62,18 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         return Json(reservaRepo.GetPage());
     }
 
-[   HttpGet]
+    [HttpGet]
     public IActionResult ListarVigentes(DateTime desde, DateTime hasta)
     {
         return Json(reservaRepo.ListarVigentes(desde, hasta));
     }
+
+    [HttpGet]
+    public IActionResult ListarPorTerminar(int dias)
+    {
+        return Json(reservaRepo.ListarFinalizanEnXDias(dias));
+    }
+
 
     [HttpGet]
     public IActionResult Editar(string id)

@@ -249,6 +249,13 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return View(inmueble);
     }
 
+
+    [HttpGet]
+    public IActionResult ListarDisponiblesPorFechas(DateTime desde, DateTime hasta)
+    {   
+        return Json(inmuebleRepo.ListarDisponibles(desde, hasta));
+    }
+
     [HttpGet]
     public IActionResult FiltrarPorEstado(string opcion, int dias)
     {

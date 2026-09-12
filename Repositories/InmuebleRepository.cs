@@ -63,7 +63,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@precio", inmueble.Precio);
         command.Parameters.AddWithValue("@porcentaje_reserva", inmueble.PorcentajeReserva);
         command.Parameters.AddWithValue("@listado", inmueble.Listado);
-        if(inmueble.Portada == null)
+        if (inmueble.Portada == null)
         {
             command.Parameters.AddWithValue("@portada", null);
         }
@@ -79,7 +79,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> FindByPropietarioDni(string dni)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
             where i.propietario = @dni";
@@ -99,7 +99,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> FindByListingStatus(bool listado, int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = $@"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
             where i.listado = @listado
@@ -120,7 +120,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> FindByPriceRange(decimal start, decimal end, int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = $@"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre  from Inmuebles i
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre  from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on i.tipo = t.id
             where i.precio between @start and @end
@@ -143,7 +143,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> GetPage(int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = $@"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
             order by i.precio
@@ -164,7 +164,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     {
         List<Inmueble> inmuebles = [];
 
-        var query = $@"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
             where i.capacidad >= @cap
@@ -187,7 +187,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     {
         List<Inmueble> inmuebles = [];
 
-        var query = $@"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on t.id = i.tipo
@@ -210,7 +210,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
 
     public Inmueble? GetById(string id)
     {
-        var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
+        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
         join Personas p on p.dni = propietario
         join TipoInmueble t on t.id = i.tipo
         where i.id = @id";
@@ -231,15 +231,39 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> ListConMasReservas365Dias()
     {
         List<Inmueble> inmuebles = [];
-            var query = @"select *, count(r.id) as total_reservas, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
-            from Reservas r
-            join Inmuebles i on i.id = r.inmueble
-            join TipoInmueble t on t.id = i.tipo
-            join Personas p on p.dni = i.propietario
-            where datediff(now(), r.fecha_inicio) < 365
-            group by r.inmueble
-            order by total_reservas desc
-            limit 5;";
+        var query = @"select 
+    i.id as i_id,
+    i.direccion,
+    i.latitud,
+    i.longitud,
+    i.capacidad,
+    i.precio,
+    i.porcentaje_reserva,
+    i.listado,
+    p.dni as p_dni,
+    p.nombre as p_nombre,
+    p.apellido,
+    p.telefono,
+    p.email,
+    t.id as t_id,
+    t.nombre as t_nombre,
+    count(r.id) as total_reservas
+from Reservas r
+join Inmuebles i on i.id = r.inmueble
+join TipoInmueble t on t.id = i.tipo
+join Personas p on p.dni = i.propietario
+where datediff(now(), r.fecha_inicio) < 365
+group by 
+    i.id,
+    p.dni,
+    p.nombre,
+    p.apellido,
+    p.telefono,
+    p.email,
+    t.id,
+    t.nombre
+order by total_reservas desc
+limit 5;";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
@@ -253,7 +277,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> ListSinReservasEnXDias(int dias)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = @"select *, p.dni as p_dni, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on t.id = i.tipo
@@ -274,13 +298,13 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on t.id = i.tipo
             where i.listado = 1
             and not exists (
-                select 1 from reservas r
+                select 1, r.id as r_id from reservas r
                 where i.id = r.inmueble
                 and r.fecha_inicio <= @hasta
                 and r.fecha_fin >= @desde
@@ -302,14 +326,14 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     public List<Inmueble> ListarByDireccion(string direccion)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
             where i.direccion like @direccion";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
-        command.Parameters.Add("@direccion", MySqlDbType.VarChar).Value = "%"+direccion+"%";
+        command.Parameters.Add("@direccion", MySqlDbType.VarChar).Value = "%" + direccion + "%";
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
 
@@ -320,14 +344,14 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-private static Inmueble ParseInmueble(MySqlDataReader reader)
+    private static Inmueble ParseInmueble(MySqlDataReader reader)
     {
         var inmueble = new Inmueble
         {
             Id = reader.GetString("i_id"),
             Propietario = new Propietario
             {
-                Dni = reader.GetString("dni"),
+                Dni = reader.GetString("p_dni"),
                 Nombre = reader.GetString("p_nombre"),
                 Apellido = reader.GetString("apellido"),
                 Telefono = reader["telefono"] as string,

@@ -21,21 +21,30 @@
                 <button type="submit" class="btn btn-secondary">Buscar</button>
             </form>
         </div>
-        <div class="col-auto">
+        <div class="col-auto d-flex gap-2 align-items-center">
             <select v-model="filtroSeleccionado" v-on:change="filtrar" class="form-select form-select-sm bg-dark text-white border-secondary">
                 <option value="todos">Todos los inmuebles</option>
                 <option value="disponibles">Solo disponibles</option>
                 <option value="no_disponibles">No disponibles</option>
                 <option value="mas_reservados">Mas reservados en ultimos 365 dias</option>
                 <option value="sin_reservas">Sin reservas en ultimos X dias</option>
+                <option value="disponibles_fechas">Disponibles entre fechas</option>
             </select>
 
+            <span v-if="mostrarDias" class="text-black align-self-center">Dias:</span>
             <input v-if="mostrarDias" 
                 type="number" 
                 v-model="dias" 
                 v-on:change="filtrar"
                 placeholder="Dias"
                 class="form-control form-control-sm w-auto bg-dark text-white border-secondary"/>
+
+            <span v-if="mostrarFechas" class="text-black align-self-center">Desde:</span>
+            <input v-if="mostrarFechas" type="date" v-model="desde" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto"/>
+            
+            <span v-if="mostrarFechas" class="text-black align-self-center">Hasta:</span>
+            <input v-if="mostrarFechas" type="date" v-model="hasta" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto"/>
+
         </div>
     </div>
 
@@ -85,7 +94,10 @@
                     filtroSeleccionado: 'todos',
                     bloquear: false,
                     mostrarDias: false,
+                    mostrarFechas: false,
                     dias: '',
+                    desde: '',
+                    hasta: '',
                     lista: []
                 };
             },
@@ -114,6 +126,16 @@
                         if(!this.dias) return;
                     } else{
                         this.mostrarDias = false
+                    }
+
+                    if(this.filtroSeleccionado == "disponibles_fechas"){
+                        this.mostrarFechas = true;
+                        if(!this.desde || !this.hasta) return;
+                        const res = await fetch(`/Inmueble/ListarDisponiblesPorFechas?desde=${this.desde}&hasta=${this.hasta}`);
+                        this.lista = await res.json();
+                        return;
+                    } else{
+                        this.mostrarFechas = false;
                     }
 
                     const res = await fetch(`/Inmueble/FiltrarPorEstado?opcion=${this.filtroSeleccionado}&dias=${this.dias}`);

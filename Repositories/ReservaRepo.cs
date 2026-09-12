@@ -98,7 +98,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -107,6 +107,8 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             order by fecha_inicio";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@desde", desde.ToString("yyyy-MM-dd"));
+        command.Parameters.AddWithValue("@hasta", hasta.ToString("yyyy-MM-dd"));
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -118,15 +120,16 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarFinalizanEnXDias(int dias)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where fecha_fin between curdate() and curdate() + interval 30 day
+            where fecha_fin between curdate() and curdate() + interval @dias day
             order by fecha_inicio";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@dias", dias);
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
