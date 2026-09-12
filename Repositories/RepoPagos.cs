@@ -33,10 +33,10 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
     }
     public Pago FindById(string id)
     {
-        var query = @"select *, p.id as p_id, c.id as c_id
+        var query = @"select *, p.id as p_id, p.reserva as p_reserva, c.id as c_id, c.nombre as c_nombre
             from Pagos p
             join ConceptoPago c on c.id = p.concepto
-            where id = @id";
+            where p.id = @id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
@@ -47,6 +47,10 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
         return new Pago
         {
             Id = reader.GetString("p_id"),
+            Reserva = new Reserva
+            {
+                Id = reader.GetString("p_reserva")
+            },
             Concepto = new ConceptoPago
             {
                 Id = reader.GetInt32("c_id"),

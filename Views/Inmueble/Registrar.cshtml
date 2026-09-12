@@ -15,7 +15,8 @@
                     <input id="buscadorPropietario" list="options"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar propietario" 
-                    v-model="busquedaPropietario" 
+                    v-model="busquedaPropietario"
+                    autocomplete="off" 
                     @@input="buscarPropietarios"
                     @@change="rellenarPropietario">
                     <datalist id="options">
@@ -33,6 +34,7 @@
                     list="opcionesTipo"
                     class="form-control bg-dark text-white border-secondary"
                     placeholder="Escribi para buscar tipo"
+                    autocomplete="off" 
                     v-model="busquedaTipo"
                     @@input="buscarTipos"
                     @@change="rellenarTipo">
@@ -113,6 +115,10 @@
             },
             methods:{
                 buscarPropietarios(){
+                    this.rellenarPropietario();
+                    if (this.propietarioId) {
+                        return;
+                    }
                     clearTimeout(this.timerPropietario); 
                     this.timerPropietario = setTimeout(async () => {
                         let nombreBuscado = this.busquedaPropietario.trim();
@@ -130,6 +136,7 @@
                 },
 
                 rellenarPropietario(){
+                    this.propietarioId = '';
                     for (let p of this.personas) {
                         if (this.busquedaPropietario.includes(p.dni)) {
                             this.propietarioId = p.dni;
@@ -138,6 +145,10 @@
                 },
 
                 buscarTipos(){
+                    this.rellenarTipo();
+                    if (this.tipoId) {
+                        return;
+                    }
                     clearTimeout(this.timerTipo); 
                     this.timerTipo = setTimeout(async () => {
                         let tipoBuscado = this.busquedaTipo.trim();
@@ -155,6 +166,7 @@
                 },
 
                 rellenarTipo() {
+                this.tipoId = '';
                 for (let t of this.tipos) {
                     if (this.busquedaTipo == t.nombre) {
                         this.tipoId = t.id;

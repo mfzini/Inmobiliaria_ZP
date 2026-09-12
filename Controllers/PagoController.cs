@@ -23,22 +23,29 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     }
 
     [HttpGet]
-    public IActionResult Editar(string reservaId)
+    public IActionResult Editar(string id)
     {       
-        ViewBag.ReservaId = reservaId;
-        return View();
+        var pago = pagosRepo.FindById(id);
+        return View(pago);
     }
 
     
     [HttpPost]
-    public IActionResult Editar(Pago pago, string reservaId, [FromForm] int concepto)
+    public IActionResult Editar(Pago pago, [FromForm] int concepto)
     {       
-        pago.Reserva = new Reserva { Id = reservaId };
-        pago.Concepto = new ConceptoPago { Id = pago.Concepto.Id};
+        pago.Concepto = new ConceptoPago { Id = concepto};
         pagosRepo.Update(pago);
-        return Redirect($"/Reserva/Detalles/{reservaId}");
+        return Redirect($"/Reserva/Detalles/{pago.Reserva.Id}");
     }
 
+    [HttpGet]
+    public IActionResult Anular(string id)
+    {
+        var pago = pagosRepo.FindById(id);
+        pago.Anulado = !pago.Anulado;
+        pagosRepo.Update(pago);
+        return Redirect($"/Reserva/Detalles/{pago.Reserva.Id}");
+    }
 
 
 }
