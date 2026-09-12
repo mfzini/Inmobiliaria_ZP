@@ -59,7 +59,7 @@ create table if not exists Reservas(
     fecha_fin date not null
 );
 create table if not exists ConceptoPago(
-    id varchar(36) primary key default (uuid()),
+    id int auto_increment primary key,
     nombre varchar(20) not null
 );
 
@@ -69,7 +69,7 @@ create table if not exists Pagos(
     constraint fk_pago_reserva foreign key (reserva)
         references Reservas(id),
     monto decimal(10,2) not null,
-    concepto varchar(36) not null,
+    concepto int not null,
     constraint fk_concepto_pago foreign key (concepto)
         references ConceptoPago(id),
     fecha timestamp default now(),

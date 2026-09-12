@@ -26,8 +26,10 @@
 
                 <div class="mb-3">
                     <label asp-for="Concepto" class="form-label text-white">Concepto: </label>
-                    <select asp-for="Concepto" class="form-select bg-dark text-white border-secondary">
-                        <option value="prueba">hola</option>
+                    <select asp-for="Concepto" name="concepto" class="form-select bg-dark text-white border-secondary">
+                        <option value="1">Sena</option>
+                        <option value="2">Multa</option>
+                        <option value="3">Total</option>
                     </select>
                     <span asp-validation-for="Concepto" class="text-danger"></span>
                 </div>

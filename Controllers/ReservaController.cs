@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace inmobiliaria.Controllers;
 
-public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo) : Controller 
+public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo, RepoPagos pagosRepo) : Controller 
 {
     [HttpGet]
     public IActionResult Registrar()
@@ -191,7 +191,6 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         {
             return RedirectToAction(nameof(Listar));
         }
-
         try
         {
             var reserva = reservaRepo.FindByID(id);
@@ -199,26 +198,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             {
                 return NotFound();
             }
-
-            reserva.Pagos = new List<Pago>
-            {
-                new Pago
-                {
-                    Id = "1",
-                    Fecha = DateTime.Now,
-                    Concepto = new ConceptoPago { Id = 1, Nombre = "Seña" },
-                    Monto = 35000,
-                    Anulado = false
-                },
-                new Pago
-                {
-                    Id = "2",
-                    Fecha = DateTime.Now,
-                    Concepto = new ConceptoPago { Id = 2, Nombre = "Alquiler Total" },
-                    Monto = 150000,
-                    Anulado = true
-                }
-            };
+            var pagosReserva = pagosRepo.FindByReserva(reserva);
+            reserva.Pagos = pagosReserva;
             return View(reserva);
         } catch(Exception e)
         {

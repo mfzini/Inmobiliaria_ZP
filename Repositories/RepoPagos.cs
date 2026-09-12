@@ -62,9 +62,9 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
     public List<Pago> FindByReserva(Reserva reserva)
     {
         List<Pago> pagos = [];
-        var query = @"select p.*, p.id as p_id, c.id as c_id
+        var query = @"select p.*, p.id as p_id, c.id as c_id, c.nombre as c_nombre
             from Pagos p
-            join join Reservas r on r.id = p.reserva
+            join Reservas r on r.id = p.reserva
             join ConceptoPago c on c.id = p.concepto
             where reserva = @reserva";
         using MySqlConnection connection = new(connectionString);
@@ -80,7 +80,7 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
                 Concepto = new ConceptoPago
                 {
                     Id = reader.GetInt32("c_id"),
-                    Nombre = reader.GetString("nombre")
+                    Nombre = reader.GetString("c_nombre")
                 },
                 Monto = reader.GetDecimal("monto"),
                 Fecha = reader.GetDateTime("fecha"),
