@@ -8,4 +8,6 @@ public class Usuario : Persona
 
     public string Role {get; set; } = "";
 
+    public Imagen? Avatar { get; set; }
+
 }

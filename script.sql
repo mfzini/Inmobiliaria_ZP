@@ -76,3 +76,15 @@ create table if not exists Pagos(
     anulado boolean default 0
     
 );
+
+
+create table if not exists Usuario(
+    dni varchar(64) primary key,
+    apellido varchar(64) not null,
+    nombre varchar(64) not null,
+    email varchar(64) unique not null,
+    telefono varchar(64) default "_",
+    password varchar(64) not null,
+    rol varchar(64) not null,
+    urlAvatar varchar(255) not null default
+);
