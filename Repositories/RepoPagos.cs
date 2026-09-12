@@ -19,6 +19,17 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
         connection.Open();
         return command.ExecuteNonQuery();
     }
+    public int Update(Pago pago)
+    {
+        var query = "update Pagos set concepto = @concepto, anulado = @anulado where id = @id";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@id", pago.Id);
+        command.Parameters.AddWithValue("@concepto", pago.Concepto.Id);
+        command.Parameters.AddWithValue("@anulado", pago.Anulado);
+        connection.Open();
+        return command.ExecuteNonQuery();
+    }
     public Pago FindById(string id)
     {
         var query = @"select *, p.id as p_id, c.id as c_id
