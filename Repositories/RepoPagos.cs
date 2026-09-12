@@ -9,13 +9,14 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
     public int Create(Pago pago)
     {
         var id = Guid.NewGuid().ToString();
-        var query = "insert into Pagos (id, reserva, concepto, monto) values (@id, @reserva, @concepto, @monto)";
+        var query = "insert into Pagos (id, reserva, concepto, monto, fecha) values (@id, @reserva, @concepto, @monto, @fecha)";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@reserva", pago.Reserva.Id);
         command.Parameters.AddWithValue("@concepto", pago.Concepto.Id);
         command.Parameters.AddWithValue("@monto", pago.Monto);
+        command.Parameters.AddWithValue("@fecha", pago.Fecha);
         connection.Open();
         return command.ExecuteNonQuery();
     }

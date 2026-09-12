@@ -1,25 +1,25 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
+using inmobiliaria.Repositories;
 
 namespace inmobiliaria.Controllers;
 
-public class PagoController : Controller
+public class PagoController(RepoPagos pagosRepo) : Controller
 {
     [HttpGet]
     public IActionResult Registrar(string reservaId)
     {       
-        ViewBag.ReservaId = "reserva123";
+        ViewBag.ReservaId = reservaId;
+        return View();
+    }
 
-        var pagoPrueba = new Pago
-        {
-            Reserva = new Reserva { Id = ViewBag.ReservaId },
-            Monto = 45000,
-            Fecha = DateTime.Now,
-            Concepto = new ConceptoPago { Id = 1, Nombre = "Alquiler" }
-        };
-
-        return View(pagoPrueba);
+    [HttpPost]
+    public IActionResult Registrar(Pago pago, string reservaId)
+    {       
+        pago.Reserva = new Reserva { Id = reservaId };
+        pagosRepo.Create(pago);
+        return Redirect($"/Reserva/Detalles/{reservaId}");
     }
 
     [HttpGet]

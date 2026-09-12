@@ -59,8 +59,7 @@ create table if not exists Reservas(
     fecha_fin date not null
 );
 create table if not exists ConceptoPago(
-    id varchar(36) primary key default (uuid())
-        on update cascade,
+    id varchar(36) primary key default (uuid()),
     nombre varchar(20) not null
 );
 
