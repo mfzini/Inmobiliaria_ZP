@@ -228,42 +228,20 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return null;
     }
 
-    public List<Inmueble> ListConMasReservas365Dias()
+    public List<Inmueble> ListConMasReservas365Dias(int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select 
-    i.id as i_id,
-    i.direccion,
-    i.latitud,
-    i.longitud,
-    i.capacidad,
-    i.precio,
-    i.porcentaje_reserva,
-    i.listado,
-    p.dni as p_dni,
-    p.nombre as p_nombre,
-    p.apellido,
-    p.telefono,
-    p.email,
-    t.id as t_id,
-    t.nombre as t_nombre,
-    count(r.id) as total_reservas
-from Reservas r
-join Inmuebles i on i.id = r.inmueble
-join TipoInmueble t on t.id = i.tipo
-join Personas p on p.dni = i.propietario
-where datediff(now(), r.fecha_inicio) < 365
-group by 
-    i.id,
-    p.dni,
-    p.nombre,
-    p.apellido,
-    p.telefono,
-    p.email,
-    t.id,
-    t.nombre
-order by total_reservas desc
-limit 5;";
+        var query = $@"select i.id as i_id, i.direccion, i.latitud, i.longitud, i.capacidad,
+            i.precio, i.porcentaje_reserva, i.listado, p.dni as p_dni, p.nombre as p_nombre,
+            p.apellido, p.telefono, p.email, t.id as t_id, t.nombre as t_nombre, count(r.id) as total_reservas
+            from Reservas r
+            join Inmuebles i on i.id = r.inmueble
+            join TipoInmueble t on t.id = i.tipo
+            join Personas p on p.dni = i.propietario
+            where listado = 1 and datediff(now(), r.fecha_inicio) < 365
+            group by i.id, p.dni, p.nombre, p.apellido, p.telefono, p.email, t.id, t.nombre
+            order by total_reservas desc
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
@@ -274,15 +252,17 @@ limit 5;";
         }
         return inmuebles;
     }
-    public List<Inmueble> ListSinReservasEnXDias(int dias)
+
+    public List<Inmueble> ListSinReservasEnXDias(int dias, int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, p.dni as p_dni, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = $@"select *, p.dni as p_dni, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on t.id = i.tipo
             left join Reservas r on i.id = r.inmueble and r.fecha_inicio >= now() - interval @dias day
-            where r.id is null;";
+            where r.id is null
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@dias", dias);
@@ -295,10 +275,10 @@ limit 5;";
         return inmuebles;
     }
 
-    public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta)
+    public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta, int page = 1, int limit = 10)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on p.dni = i.propietario
             join TipoInmueble t on t.id = i.tipo
@@ -308,7 +288,8 @@ limit 5;";
                 where i.id = r.inmueble
                 and r.fecha_inicio <= @hasta
                 and r.fecha_fin >= @desde
-            )";
+            )
+            limit {(page - 1) * limit}, {limit}";
 
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -316,6 +297,35 @@ limit 5;";
         command.Parameters.AddWithValue("@hasta", hasta.ToString("yyyy-MM-dd"));
         connection.Open();
         using MySqlDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            inmuebles.Add(ParseInmueble(reader));
+        }
+        return inmuebles;
+    }
+    public List<Inmueble> FindByTipoAndCapacidadAndFechas(int tipo, int capacidad,
+                                                            DateTime fecha_inicio, DateTime fecha_fin,
+                                                            int page = 1, int limit = 10)
+    {
+        List<Inmueble> inmuebles = [];
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+            join TipoInmueble t on i.tipo = t.id
+            join Personas p on i.propietario = p.dni
+            where i.tipo = @tipo and i.capacidad = @capacidad and i.listado = 1
+            and not exists (
+                select 1, r.id as r_id from reservas r
+                where i.id = r.inmueble
+                and r.fecha_inicio <= @hasta
+                and r.fecha_fin >= @desde
+            )
+            limit {(page - 1) * limit}, {limit}";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@tipo", tipo);
+        command.Parameters.AddWithValue("@capacidad", capacidad);
+        command.Parameters.AddWithValue("@fecha_inicio", fecha_inicio.ToString("yyyy-MM-dd"));
+        command.Parameters.AddWithValue("@fecha_fin", fecha_fin.ToString("yyyy-MM-dd"));
+        using var reader = command.ExecuteReader();
         while (reader.Read())
         {
             inmuebles.Add(ParseInmueble(reader));
@@ -343,6 +353,7 @@ limit 5;";
         }
         return inmuebles;
     }
+
 
     private static Inmueble ParseInmueble(MySqlDataReader reader)
     {

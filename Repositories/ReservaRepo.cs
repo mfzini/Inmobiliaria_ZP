@@ -95,7 +95,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         return reservas;
     }
 
-    public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta)
+    public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
         var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
@@ -117,7 +117,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         }
         return reservas;
     }
-    public List<Reserva> ListarFinalizanEnXDias(int dias)
+    public List<Reserva> ListarFinalizanEnXDias(int dias, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
         var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
@@ -126,7 +126,8 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
             where fecha_fin between curdate() and curdate() + interval @dias day
-            order by fecha_inicio";
+            order by fecha_inicio
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@dias", dias);
@@ -174,15 +175,16 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         };
     }
 
-    public List<Reserva> ListarPorInmueble(Inmueble inmueble)
+    public List<Reserva> ListarPorInmueble(Inmueble inmueble, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where inmueble = @inmueble";
+            where inmueble = @inmueble
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@inmueble", inmueble.Id);
@@ -195,15 +197,16 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         return reservas;
     }
 
-    public List<Reserva> ListarNoFinalizadasPorInmueble(Inmueble inmueble)
+    public List<Reserva> ListarNoFinalizadasPorInmueble(Inmueble inmueble, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where r.inmueble = @inmueble and fecha_fin > curdate()";
+            where r.inmueble = @inmueble and fecha_fin > curdate()
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@inmueble", inmueble.Id);

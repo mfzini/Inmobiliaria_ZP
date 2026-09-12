@@ -69,9 +69,9 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         return command.ExecuteNonQuery();
     }
 
-    public List<Persona> ListAll()
+    public List<Persona> ListAll(int page = 1, int limit = 10)
     {
-        var query = @"select * from Personas";
+        var query = $@"select * from Personas limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
@@ -91,10 +91,13 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         return personas;
     }
 
-    public List<Persona> ListPropietarios()
+    public List<Persona> ListPropietarios(int page = 1, int limit = 10)
     {
         List<Persona> propietarios = [];
-        var query = @"select distinct dni, nombre, apellido, email, telefono from Personas join Inmuebles on dni = propietario";
+        var query = $@"select distinct dni, nombre, apellido, email, telefono
+            from Personas
+            join Inmuebles on dni = propietario
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
@@ -112,10 +115,13 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         }
         return propietarios;
     }
-    public List<Persona> ListInquilinos()
+    public List<Persona> ListInquilinos(int page = 1, int limit = 10)
     {
         List<Persona> inquilinos = [];
-        var query = @"select distinct dni, nombre, apellido, email, telefono from Personas join Reservas on dni = inquilino";
+        var query = $@"select distinct dni, nombre, apellido, email, telefono
+            from Personas
+            join Reservas on dni = inquilino
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
