@@ -287,5 +287,12 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     }
 
 
+    [HttpGet]
+    public IActionResult Busqueda()
+    {
+
+        return View();
+    }
+
 
 }

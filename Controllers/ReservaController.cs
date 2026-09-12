@@ -199,6 +199,26 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             {
                 return NotFound();
             }
+
+            reserva.Pagos = new List<Pago>
+            {
+                new Pago
+                {
+                    Id = "1",
+                    Fecha = DateTime.Now,
+                    Concepto = new ConceptoPago { Id = 1, Nombre = "Seña" },
+                    Monto = 35000,
+                    Anulado = false
+                },
+                new Pago
+                {
+                    Id = "2",
+                    Fecha = DateTime.Now,
+                    Concepto = new ConceptoPago { Id = 2, Nombre = "Alquiler Total" },
+                    Monto = 150000,
+                    Anulado = true
+                }
+            };
             return View(reserva);
         } catch(Exception e)
         {
@@ -233,5 +253,23 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             return Json(new { Error = e.Message });
         }
     }
+
+    [HttpGet]
+    public IActionResult Extender(string id)
+    {
+        var reservaPrueba = new Reserva
+        {
+            Id = "reserva-fantasma-1",
+            Inmueble = new Inmueble { Direccion = "San Martín 1234" },
+            Inquilino = new Persona { Nombre = "Juan", Apellido = "Perez", Dni = "38123456" },
+            FechaInicio = DateTime.Now,
+            FechaFin = DateTime.Now
+        };
+
+        return View(reservaPrueba);
+    }
+
+
+
 
 }

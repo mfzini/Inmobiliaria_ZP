@@ -1,0 +1,41 @@
+@model inmobiliaria.Models.Pago
+@{
+    ViewData["Title"] = "Registrar Pago";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
+            <h3 class="text-center mb-4 text-white">Registrar Pago 💳</h3>
+
+            <form asp-action="Crear" method="post">
+                
+                <input type="hidden" asp-for="Reserva.Id" value="@ViewBag.ReservaId" />
+
+                <div class="mb-3">
+                    <label asp-for="Monto" class="form-label text-white">Monto: </label>
+                    <input asp-for="Monto" type="number" step="0.01" class="form-control bg-dark text-white border-secondary" placeholder="0.00">
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Concepto" class="form-label text-white">Concepto: </label>
+                    <select asp-for="Concepto" class="form-select bg-dark text-white border-secondary">
+                        <option value="">-- Seleccione un concepto --</option>
+                    </select>
+                    <span asp-validation-for="Concepto" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Fecha" class="form-label text-white">Fecha: </label>
+                    <input asp-for="Fecha" type="date" class="form-control bg-dark text-white border-secondary" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-dark border-secondary text-white">Registrar Pago 📝</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
