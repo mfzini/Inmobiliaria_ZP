@@ -1,3 +1,4 @@
+@model List<inmobiliaria.Models.Inmueble>
 @{
     ViewData["Title"] = "Búsqueda Avanzada";
 }
@@ -7,7 +8,7 @@
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Búsqueda Avanzada de Inmuebles 🔍</h3>
 
-            <form asp-action="BusquedaAvanzada" method="get" class="mb-4">
+            <form asp-action="Busqueda" method="get" class="mb-4">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-white">Fecha Inicio: </label>
@@ -29,9 +30,13 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-white">Tipo de Inmueble: </label>
                         <select name="tipo" class="form-select bg-dark text-white border-secondary">
-                            <option value="1">Departamento</option>
-                            <option value="2">Casa</option>
-                            <option value="3">Local Comercial</option>
+                            <option value="">Selecciona un tipo</option>
+                            @if(ViewBag.Tipos != null){
+                                    @foreach(var tipo in ViewBag.Tipos)
+                                {
+                                    <option value="@tipo.Id">@tipo.Nombre</option>
+                                }
+                            }
                         </select>
                     </div>
                 </div>
@@ -53,21 +58,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Av. Mitre 450</td>
-                        <td>2 personas</td>
-                        <td>$45.000</td>
-                    </tr>
-                    <tr>
-                        <td>Pedernera 820</td>
-                        <td>4 personas</td>
-                        <td>$60.000</td>
-                    </tr>
-                    <tr>
-                        <td>Lavalle 1100</td>
-                        <td>3 personas</td>
-                        <td>$35.000</td>
-                    </tr>
+                    @foreach (var i in Model)
+                    {
+                        <tr>
+                            <td>@i.Direccion</td>
+                            <td>@i.Capacidad personas</td>
+                            <td>$@i.Precio</td>
+                        </tr>
+                    }
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-secondary">No hay inmuebles disponibles</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
 

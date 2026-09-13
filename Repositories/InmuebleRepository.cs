@@ -309,14 +309,15 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+            from inmuebles i
             join TipoInmueble t on i.tipo = t.id
             join Personas p on i.propietario = p.dni
-            where i.tipo = @tipo and i.capacidad = @capacidad and i.listado = 1
+            where i.tipo = @tipo and i.capacidad >= @capacidad and i.listado = 1
             and not exists (
-                select 1, r.id as r_id from reservas r
+                select 1 from reservas r
                 where i.id = r.inmueble
-                and r.fecha_inicio <= @hasta
-                and r.fecha_fin >= @desde
+                and r.fecha_inicio <= @fecha_fin
+                and r.fecha_fin >= @fecha_inicio
             )
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
@@ -325,6 +326,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         command.Parameters.AddWithValue("@capacidad", capacidad);
         command.Parameters.AddWithValue("@fecha_inicio", fecha_inicio.ToString("yyyy-MM-dd"));
         command.Parameters.AddWithValue("@fecha_fin", fecha_fin.ToString("yyyy-MM-dd"));
+        connection.Open();
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {

@@ -235,22 +235,91 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
     }
 
+
     [HttpGet]
     public IActionResult Extender(string id)
     {
-        var reservaPrueba = new Reserva
+        var reservaAnterior = reservaRepo.FindByID(id);
+        if (reservaAnterior == null) return NotFound();
+
+        var nueva = new Reserva
         {
-            Id = "reserva-fantasma-1",
-            Inmueble = new Inmueble { Direccion = "San Martín 1234" },
-            Inquilino = new Persona { Nombre = "Juan", Apellido = "Perez", Dni = "38123456" },
-            FechaInicio = DateTime.Now,
-            FechaFin = DateTime.Now
+            Id = reservaAnterior.Id,
+            Inmueble = reservaAnterior.Inmueble,
+            Inquilino = reservaAnterior.Inquilino,
+            FechaInicio = reservaAnterior.FechaFin,
         };
 
-        return View(reservaPrueba);
+        return View(nueva);
     }
 
+    [HttpPost]
+    public IActionResult Extender(string Inmueble, string Inquilino, DateTime FechaInicio, DateTime FechaFin, string idAnterior)
+    {
+        if (FechaFin <= FechaInicio)
+        {
+            return RedirectToAction("Extender", new { id = idAnterior });
+        }
 
+        var nuevaReservaExtendida = new Reserva
+        {
+            Inmueble = new Inmueble {Id= Inmueble},
+            Inquilino = new Persona{Dni= Inquilino},
+            FechaInicio = FechaInicio,
+            FechaFin = FechaFin
+        };
+
+        reservaRepo.Create(nuevaReservaExtendida);
+        return RedirectToAction("Listar");
+    }
+
+    [HttpGet]
+    public IActionResult FinalizarTemprano(string id)
+    {
+        var reserva = reservaRepo.FindByID(id);
+        if(reserva == null){
+            return NotFound();
+        };
+
+        DateTime FechaFinalizacion = DateTime.Today; 
+        ViewBag.FechaFinalizacion = FechaFinalizacion.ToString("dd/MM/yyyy"); 
+
+        int diasTotales = (reserva.FechaFin - reserva.FechaInicio).Days;
+        int diasPasados = (FechaFinalizacion - reserva.FechaInicio).Days;
+        int diasRestantes = (reserva.FechaFin - FechaFinalizacion).Days;
+
+        decimal precioAlquilerDia = reserva.Inmueble.Precio / 30m; 
+        decimal montoAlquilerRestante = diasRestantes * precioAlquilerDia;
+        decimal multaCalculada = 0;
+
+        if(diasPasados < (diasTotales / 2))
+        {
+            multaCalculada = montoAlquilerRestante * 0.50m;
+        }
+        else
+        {
+            multaCalculada = montoAlquilerRestante * 0.25m;
+        }
+
+        ViewBag.MontoMulta = Math.Round(multaCalculada, 2);
+        return View(reserva);
+
+    }
+
+    [HttpPost]
+    public IActionResult HacerFinalizacion(string idReserva, decimal montoMulta)
+    {
+        var pagoMulta = new Pago
+        {
+            Reserva = new Reserva { Id = idReserva }, 
+            Concepto = new ConceptoPago { Id = 2 }, // para multa
+            Monto = montoMulta,
+            Fecha = DateTime.Today,
+        };
+
+        pagosRepo.Create(pagoMulta);
+        return RedirectToAction("Detalles", new {id = idReserva});
+    }
 
 
 }

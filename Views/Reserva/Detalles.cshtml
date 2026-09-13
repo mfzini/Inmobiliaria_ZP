@@ -61,6 +61,7 @@
             <div class="d-flex justify-content-between mt-4">
                 <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
                 <a asp-action="Extender" asp-route-id="@Model.Id" class="btn btn-warning">📅 Extender Reserva</a>
+                <a asp-action="FinalizarTemprano" asp-route-id="@Model.Id" class="btn btn-danger">✖️Finalizar</a>
                 <a asp-action="Listar" class="btn btn-secondary">Volver al Listado</a>
             </div>
         </div>

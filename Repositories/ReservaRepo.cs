@@ -155,11 +155,13 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         var t_nombre = reader.GetString("t_nombre");
         var tipo = new TipoInmueble { Nombre = t_nombre };
         var direccion = reader.GetString("direccion");
+        var precio = reader.GetDecimal("precio");
         var inmueble = new Inmueble
         {
             Id = reader.GetString("inmueble"),
             Direccion = direccion,
-            Tipo = tipo
+            Tipo = tipo,
+            Precio = precio
         };
 
         var id = reader.GetString("r_id");

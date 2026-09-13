@@ -1,0 +1,46 @@
+@model inmobiliaria.Models.Reserva
+@{
+    ViewData["Title"] = "Finalización Anticipada";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="bg-body text-white p-4 rounded border border-danger shadow" data-bs-theme="dark">
+            <h3 class="text-center mb-3 text-danger">Finalización Anticipada ⚠️</h3>
+
+            <dl class="row my-4">
+                <dt class="col-sm-5 text-secondary">Inmueble:</dt>
+                <dd class="col-sm-7">@Model.Inmueble.Direccion</dd>
+
+                <dt class="col-sm-5 text-secondary">Inquilino:</dt>
+                <dd class="col-sm-7">@Model.Inquilino.Nombre @Model.Inquilino.Apellido (@Model.Inquilino.Dni)</dd>
+
+                <dt class="col-sm-5 text-secondary">Fecha Inicio:</dt>
+                <dd class="col-sm-7">@Model.FechaInicio.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-5 text-secondary">Fecha Fin Original:</dt>
+                <dd class="col-sm-7 text-warning fw-bold">@Model.FechaFin.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-5 text-secondary">Fecha Finalizacion Reserva:</dt>
+                <dd class="col-sm-7 text-warning fw-bold">@ViewBag.FechaFinalizacion</dd>
+
+                <dt class="col-sm-5 text-white fs-5">Monto de Multa:</dt>
+                <dd class="col-sm-7 text-danger fs-5 fw-bold">$@ViewBag.MontoMulta</dd>
+            </dl>
+
+            <form asp-action="HacerFinalizacion" method="post">
+                <input type="hidden" name="idReserva" value="@Model.Id" />
+                <input type="hidden" name="montoMulta" value="@ViewBag.MontoMulta" />
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-danger fw-bold py-2">
+                        💵 Pagar y Finalizar Reserva
+                    </button>
+                    <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-secondary">
+                        ❌ Cancelar 
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

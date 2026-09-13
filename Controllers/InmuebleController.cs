@@ -288,10 +288,18 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
 
     [HttpGet]
-    public IActionResult Busqueda()
+    public IActionResult Busqueda(DateTime? fechaInicio, DateTime? fechaFin, int? capacidad, int? tipo)
     {
 
-        return View();
+        ViewBag.Tipos = tipoInmuebleRepo.ListAll();
+        List<Inmueble> inmuebles = [];
+
+        if (fechaInicio != null && fechaFin != null && capacidad != null && tipo != null)
+        {
+            inmuebles = inmuebleRepo.FindByTipoAndCapacidadAndFechas((int)tipo, (int)capacidad, (DateTime)fechaInicio, (DateTime)fechaFin);
+        }
+
+        return View(inmuebles);
     }
 
 
