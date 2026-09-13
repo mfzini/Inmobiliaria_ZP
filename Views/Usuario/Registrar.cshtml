@@ -2,37 +2,92 @@
     ViewData["Title"] = "Registrar Empleado";
 }
 
-<div class="row justify-content-center mt-4">
+<div id="registroUsuario" class="row justify-content-center mt-4">
     <div class="col-md-5">
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Registrar Empleado 👤</h3>
 
-            <form asp-action="Registrar" method="post">
+            <form asp-action="Registrar" method="post" enctype="multipart/form-data">
+                
+                <div class="mb-3">
+                    <label class="form-label text-white">DNI: </label>
+                    <input type="text" name="Dni" class="form-control bg-dark text-white border-secondary" required />
+                </div>
                 
                 <div class="mb-3">
                     <label class="form-label text-white">Nombre: </label>
-                    <input type="text" name="nombre" class="form-control bg-dark text-white border-secondary" placeholder="" required>
+                    <input type="text" name="Nombre" class="form-control bg-dark text-white border-secondary" required />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Apellido: </label>
-                    <input type="text" name="apellido" class="form-control bg-dark text-white border-secondary" placeholder="" required>
+                    <input type="text" name="Apellido" class="form-control bg-dark text-white border-secondary" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Telefono: </label>
+                    <input type="text" name="Telefono" class="form-control bg-dark text-white border-secondary" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Email: </label>
+                    <input type="email" name="Email" class="form-control bg-dark text-white border-secondary" required />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Contrasena: </label>
-                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary" placeholder="" required>
+                    <input type="password" name="Password" class="form-control bg-dark text-white border-secondary" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Rol: </label>
+                    <select name="Role" class="form-select bg-dark text-white border-secondary" required>
+                        <option value="Empleado">Empleado</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Avatar / Foto: </label>
-                    <input type="file" name="avatar" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                    <input type="file" name="avatarFile" v-on:change="previsualizar" class="form-control bg-dark text-white border-secondary" accept="image/*" />
+                    
+                    <div class="text-center mt-3" v-if="preview">
+                        <img v-bind:src="preview" width="120" height="120" class="rounded-circle border border-secondary object-fit-cover shadow" />
+                    </div>
                 </div>
 
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-dark border-secondary text-white">Registrar 📝</button>
+                    <a asp-action="Listar" class="btn btn-danger mt-2 text-center">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    preview: null
+                };
+            },
+            methods: {
+                previsualizar(event) {
+                    const file = event.target.files[0];
+                    if (!file) {
+                        this.preview = null;
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.preview = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }).mount('#registroUsuario');
+    </script>
+}

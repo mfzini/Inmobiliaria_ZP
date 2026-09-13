@@ -1,3 +1,4 @@
+@model List<inmobiliaria.Models.Usuario>
 @{
     ViewData["Title"] = "Listado de Empleados";
 }
@@ -17,39 +18,34 @@
                         <th>Avatar👤</th>
                         <th>Nombre y Apellido📝</th>
                         <th>Email✉️</th>
+                        <th>Rol🛡️</th>
                         <th class="text-end">Acciones⚙️</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <img src="aca foto" class="rounded-circle border border-secondary" width="40" height="40" alt="Avatar" />
-                        </td>
-                        <td>Lucas Rodriguez</td>
-                        <td>lucas@inmobiliaria.com</td>
-                        <td class="text-end">
-                            <a asp-action="Editar" asp-route-id="1" class="btn btn-outline-light btn-sm me-1">✏️ Editar</a>
-                            <a asp-action="Eliminar" asp-route-id="1" class="btn btn-outline-danger btn-sm">🗑️ Borrar</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <img src="avatar" class="rounded-circle border border-secondary" width="40" height="40" alt="Avatar" />
-                        </td>
-                        <td>Mariana Gomez</td>
-                        <td>mariana@inmobiliaria.com</td>
-                        <td class="text-end">
-                            <a asp-action="Editar" asp-route-id="2" class="btn btn-outline-light btn-sm me-1">✏️ Editar</a>
-                            <a asp-action="Eliminar" asp-route-id="2" class="btn btn-outline-danger btn-sm">🗑️ Borrar</a>
-                        </td>
-                    </tr>
+                @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (usuario.Avatar != null)
+                                {
+                                    <img src="@usuario.Avatar.Url" class="rounded-circle border border-secondary object-fit-cover" width="40" height="40" alt="Avatar" />
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Sin foto</span>
+                                }
+                            </td>
+                            <td>@usuario.Nombre @usuario.Apellido</td>
+                            <td>@usuario.Email</td>
+                            <td>@usuario.Role</td>
+                            <td class="text-end">
+                                <a asp-action="Editar" asp-route-id="@usuario.Dni" class="btn btn-outline-light btn-sm me-1">✏️ Editar</a>
+                                <a asp-action="Eliminar" asp-route-id="@usuario.Dni" class="btn btn-outline-danger btn-sm">❌ Eliminar</a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
-
-            <div class="d-flex justify-content-end mt-3">
-                <a asp-controller="Reserva" asp-action="Listar" class="btn btn-secondary">Volver al Panel</a>
-            </div>
         </div>
     </div>
 </div>

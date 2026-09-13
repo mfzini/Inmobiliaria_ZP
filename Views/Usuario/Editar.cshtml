@@ -1,16 +1,21 @@
-@model dynamic
+@model inmobiliaria.Models.Usuario
 @{
     ViewData["Title"] = "Editar Empleado";
 }
 
-<div class="row justify-content-center mt-4">
+<div id="editarUsuario" class="row justify-content-center mt-4">
     <div class="col-md-5">
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Editar Empleado 👤</h3>
 
-            <form asp-action="Editar" method="post">
+            <form asp-action="Editar" method="post" enctype="multipart/form-data">
                 
-                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="dni" value="@Model.Dni" />
+
+                <div class="mb-3">
+                    <label class="form-label text-white">DNI: </label>
+                    <input type="text" class="form-control bg-dark text-white border-secondary" value="@Model.Dni" disabled>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Nombre: </label>
@@ -23,20 +28,61 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-white">Nueva Contrasena (opcional): </label>
-                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary" placeholder="Dejar en blanco para mantener la actual">
+                    <label class="form-label text-white">Teléfono: </label>
+                    <input type="text" name="telefono" class="form-control bg-dark text-white border-secondary" value="@Model.Telefono">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-white">Cambiar Avatar: </label>
-                    <input type="file" name="avatar" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                    <label class="form-label text-white">Email: </label>
+                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary" value="@Model.Email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Rol: </label>
+                    <select name="role" class="form-select bg-dark text-white border-secondary" required>
+                        <option value="Empleado">Empleado</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-white">Avatar / Foto: </label>
+                    <input type="file" name="avatarFile" v-on:change="previsualizar" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                    
+                    <div class="text-center mt-3" v-if="preview">
+                        <img v-bind:src="preview" width="120" height="120" class="rounded-circle border border-secondary object-fit-cover shadow">
+                    </div>
                 </div>
 
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary text-white">Guardar Cambios 💾</button>
-                    <a asp-controller="Reserva" asp-action="Listar" class="btn btn-link text-secondary mt-2 text-decoration-none text-center">Cancelar</a>
+                    <a asp-action="Listar" class="btn btn-danger mt-2 text-center">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    preview: "@Model.Avatar?.Url"
+                };
+            },
+            methods: {
+                previsualizar(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.preview = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }).mount('#editarUsuario');
+    </script>
+}

@@ -78,13 +78,18 @@ create table if not exists Pagos(
 );
 
 
-create table if not exists Usuario(
+create table if not exists Usuarios(
     dni varchar(64) primary key,
     apellido varchar(64) not null,
     nombre varchar(64) not null,
     email varchar(64) unique not null,
     telefono varchar(64) default "_",
     password varchar(64) not null,
-    rol varchar(64) not null,
-    urlAvatar varchar(255) not null default
+    role varchar(64) not null,
+    avatar varchar(255) not null default ""
 );
+
+insert into TipoInmueble (nombre) values ("casa"), ("casita"), ("rancho"), ("palacio"), ("edificio");
+
+insert into ConceptoPago (nombre) values ("adelanto"), ("multa"), ("total");
+

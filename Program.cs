@@ -9,6 +9,7 @@ builder.Services.AddScoped<InmuebleRepository>();
 builder.Services.AddScoped<ReservaRepo>();
 builder.Services.AddScoped<TipoInmuebleRepo>();
 builder.Services.AddScoped<RepoPagos>();
+builder.Services.AddScoped<UsuariosRepo>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

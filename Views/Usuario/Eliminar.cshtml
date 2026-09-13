@@ -1,4 +1,4 @@
-@model inmobiliaria.Models.Persona // cambiar modelo
+@model inmobiliaria.Models.Usuario 
 @{
     ViewData["Title"] = "Eliminar Empleado";
 }
@@ -12,8 +12,8 @@
             <form asp-action="Eliminar" method="post">
                 <input type="hidden" asp-for="Dni" />
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-danger">Borrar</button>
-                    <a asp-action="Listar" class="btn btn-dark border-secondary text-white">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">🗑️Borrar</button>
+                    <a asp-action="Listar" class="btn btn-dark border-secondary text-white">❌Cancelar</a>
                 </div>
             </form>
         </div>
