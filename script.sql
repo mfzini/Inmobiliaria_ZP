@@ -80,10 +80,8 @@ create table if not exists Pagos(
 
 create table if not exists Usuarios(
     dni varchar(64) primary key,
-    apellido varchar(64) not null,
-    nombre varchar(64) not null,
-    email varchar(64) unique not null,
-    telefono varchar(64) default "_",
+    constraint fk_usuario_persona foreign key (dni)
+        references Personas(dni),
     password varchar(64) not null,
     role varchar(64) not null,
     avatar varchar(255) not null default ""
