@@ -91,7 +91,8 @@ create table if not exists Logs(
     dni varchar(64) not null,
     constraint fk_log_dni foreign key (dni)
         references Personas(dni),
-    entry varchar(250) not null
+    entry varchar(250) not null,
+    createdAt timestamp default current_timestamp
 );
 
 insert into TipoInmueble (nombre) values ('casa'), ('casita'), ('rancho'), ('palacio');
