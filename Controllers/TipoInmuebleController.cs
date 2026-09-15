@@ -1,17 +1,20 @@
 using inmobiliaria.Models;
 using inmobiliaria.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller 
 {
+    [Authorize]
     [HttpGet]
     public IActionResult Registrar()
     {
         return View();
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Registrar(TipoInmueble tipo)
     {
@@ -31,12 +34,14 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
         
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Listar()
     {
         return View(tipoRepo.ListAll());
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Eliminar(int id)
     {
@@ -49,6 +54,7 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
         return View(tipo);
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(TipoInmueble tipo)
     {
@@ -63,6 +69,7 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
         }
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult buscarTipo(string tipoBuscado)
     {

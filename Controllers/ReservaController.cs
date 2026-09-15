@@ -2,18 +2,20 @@ using inmobiliaria.DTO;
 using inmobiliaria.Models;
 using inmobiliaria.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo, RepoPagos pagosRepo) : Controller 
 {
+    [Authorize]
     [HttpGet]
     public IActionResult Registrar()
     {
         return View();
     }
 
-    
+    [Authorize]
     [HttpPost]
     public IActionResult Registrar(ReservaDTO dto)
     {
@@ -49,32 +51,35 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
     }
     
-
+    [Authorize]
     [HttpGet]
     public IActionResult Listar()
     {
         return View();
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult ListarTodas()
     {
         return Json(reservaRepo.GetPage());
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult ListarVigentes(DateTime desde, DateTime hasta)
     {
         return Json(reservaRepo.ListarVigentes(desde, hasta));
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult ListarPorTerminar(int dias)
     {
         return Json(reservaRepo.ListarFinalizanEnXDias(dias));
     }
 
-
+    [Authorize]
     [HttpGet]
     public IActionResult Editar(string id)
     {
@@ -110,6 +115,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Editar(string id, ReservaDTO dto)
     {
@@ -146,6 +152,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         return RedirectToAction(nameof(Listar));
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Eliminar(string id)
     {
@@ -169,6 +176,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(Reserva reserva)
     {
@@ -184,6 +192,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Detalles(string id)
     {
@@ -208,6 +217,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult BuscarDireccion(string direccionBuscada)
     {
@@ -221,6 +231,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult BuscarInquilino(string nombreBuscado)
     {
@@ -236,6 +247,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
     }
 
 
+    [Authorize]
     [HttpGet]
     public IActionResult Extender(string id)
     {
@@ -253,6 +265,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         return View(nueva);
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Extender(string Inmueble, string Inquilino, DateTime FechaInicio, DateTime FechaFin, string idAnterior)
     {
@@ -273,6 +286,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         return RedirectToAction("Listar");
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult FinalizarTemprano(string id)
     {
@@ -306,6 +320,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult HacerFinalizacion(string idReserva, decimal montoMulta)
     {

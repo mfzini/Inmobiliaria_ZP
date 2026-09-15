@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
 using System.Runtime.InteropServices;
 using inmobiliaria.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEnvironment environment, InmuebleRepository repoInmueble) : Controller
 {
 
+    [Authorize]
     [HttpGet]
     public IActionResult TraerFotos(string id)
     {
@@ -17,6 +19,7 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
         return Ok(new { inmueble.Imagenes, inmueble.Portada});
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CambiarPortada(string id, IFormFile portadaFile)
     {
@@ -38,6 +41,7 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
         return Ok(new { url = img.Url });
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Alta(string id, [FromForm] List<IFormFile> imagenes)
     {
@@ -63,6 +67,7 @@ public class ImagenesController(ImagesRepo repoImages, [FromServices] IWebHostEn
         return Ok(inmueble.Imagenes);
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(string id)
     {

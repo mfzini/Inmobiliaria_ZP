@@ -1,17 +1,20 @@
 using inmobiliaria.Models;
 using inmobiliaria.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class PersonaController(PersonaRepository repo, InmuebleRepository inmuebleRepo) : Controller
 {
+    [Authorize]
     [HttpGet]
     public IActionResult Registrar()
     {
         return View();
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Registrar(Persona persona)
     {
@@ -31,12 +34,14 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
 
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Listar()
     {
         return View(repo.ListAll());
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Editar(string id)
     {
@@ -60,6 +65,7 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
         }
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Editar(Persona persona, string oldDni)
     {
@@ -78,6 +84,7 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
         return RedirectToAction(nameof(Listar));
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Eliminar(string id)
     {
@@ -89,6 +96,7 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
         return View(persona);
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(Persona persona)
     {
@@ -110,6 +118,7 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
         }
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Detalles(string id)
     {
@@ -135,6 +144,7 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
 
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult BuscarNombre(string nombreBuscado)
     {

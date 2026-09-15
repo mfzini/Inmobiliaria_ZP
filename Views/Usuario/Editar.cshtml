@@ -37,13 +37,20 @@
                     <input type="email" name="email" class="form-control bg-dark text-white border-secondary" value="@Model.Email" required>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-white">Rol: </label>
-                    <select name="role" class="form-select bg-dark text-white border-secondary" required>
-                        <option value="Empleado">Empleado</option>
-                        <option value="Administrador">Administrador</option>
-                    </select>
-                </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="mb-3">
+                        <label class="form-label text-white">Rol: </label>
+                        <select asp-for="Role" class="form-select bg-dark text-white border-secondary" required>
+                            <option value="Empleado">Empleado</option>
+                            <option value="Administrador">Administrador</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                }
+                else{
+                    <input type="hidden" asp-for="Role"/>
+                }
 
                 <div class="mb-3">
                     <label class="form-label text-white">Avatar / Foto: </label>
@@ -56,7 +63,12 @@
 
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary text-white">Guardar Cambios 💾</button>
-                    <a asp-action="Listar" class="btn btn-danger mt-2 text-center">Cancelar</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Listar" class="btn btn-danger mt-2 text-center">Cancelar</a>
+                    } else{
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-danger mt-2 text-center">Cancelar</a>
+                    }
                 </div>
             </form>
         </div>

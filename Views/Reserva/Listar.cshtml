@@ -47,7 +47,10 @@
                     <td>{{new Date(r.fechaFin).toLocaleDateString()}}</td>
                     <td class="text-end">
                         <a :href="'/Reserva/Editar/' + r.id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
-                        <a :href="'/Reserva/Eliminar/' + r.id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a :href="'/Reserva/Eliminar/' + r.id" class="btn btn-sm btn-outline-danger">❌ Eliminar</a>
+                        }
                         <a :href="'/Reserva/Detalles/' + r.id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
                     </td>
                 </tr>

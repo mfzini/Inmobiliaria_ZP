@@ -57,6 +57,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return RedirectToAction("Index", "Home");
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Logout()
     {
@@ -64,13 +65,33 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return RedirectToAction("Login", "Usuario");
     }
 
+    [Authorize]
+    [HttpGet]
+    public IActionResult Perfil()
+    {
+        var dni = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(dni))
+        {
+            return NotFound();
+        }
+        
+        var usuario = repoUsuarios.FindByDni(dni); 
+        if (usuario == null)
+        {
+            return NotFound();
+        }
 
+        return View("Editar", usuario);
+    }
+
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Registrar()
     {
         return View();
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Registrar(Usuario usuario, IFormFile? avatarFile)
     {
@@ -114,6 +135,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return RedirectToAction(nameof(Listar));
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult BuscarPersona(string dni)
     {
@@ -129,6 +151,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         });
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Editar(string id)
     {
@@ -138,6 +161,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return View(usuario);
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Editar(Usuario usuario, IFormFile? avatarFile)
     {
@@ -150,9 +174,17 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         }
 
         repoUsuarios.Update(usuario);
-        return RedirectToAction(nameof(Listar));
+
+        if (User.IsInRole("Administrador"))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
+        return RedirectToAction("Index", "Home");
     }
 
+
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Listar()
     {
@@ -160,6 +192,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return View(usuarios);
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Eliminar(string id)
     {
@@ -168,6 +201,8 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return View(usuario);
     }
 
+
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(Usuario usuario)
     {

@@ -2,11 +2,13 @@ using inmobiliaria.DTO;
 using inmobiliaria.Models;
 using inmobiliaria.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaRepository personaRepo, TipoInmuebleRepo tipoInmuebleRepo) : Controller
 {
+    [Authorize]
     [HttpGet]
     public IActionResult Registrar()
     {
@@ -16,6 +18,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Registrar(InmuebleDTO dto)
     {
@@ -63,12 +66,14 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
     }
 
 
+    [Authorize]
     [HttpGet]
     public IActionResult Listar()
     {
         return View(inmuebleRepo.GetPage());
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult BuscarPorDireccion(string? direccion)
     {
@@ -80,6 +85,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return Json(inmuebleRepo.ListarByDireccion(direccion));
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Editar(string id)
     {
@@ -120,6 +126,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         }
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Editar(string id, InmuebleDTO dto)
     {
@@ -169,6 +176,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return RedirectToAction(nameof(Listar));
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpGet]
     public IActionResult Eliminar(string id)
     {
@@ -193,6 +201,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
     }
 
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     public IActionResult Eliminar(Inmueble inmueble)
     {
@@ -213,6 +222,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Detalles(string id)
     {
@@ -236,6 +246,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         }
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Fotos(string id)
     {
@@ -249,13 +260,14 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return View(inmueble);
     }
 
-
+    [Authorize]
     [HttpGet]
     public IActionResult ListarDisponiblesPorFechas(DateTime desde, DateTime hasta)
     {   
         return Json(inmuebleRepo.ListarDisponibles(desde, hasta));
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult FiltrarPorEstado(string opcion, int dias)
     {
@@ -286,7 +298,7 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return Json(inmuebleRepo.GetPage());
     }
 
-
+    [Authorize]
     [HttpGet]
     public IActionResult Busqueda(DateTime? fechaInicio, DateTime? fechaFin, int? capacidad, int? tipo)
     {

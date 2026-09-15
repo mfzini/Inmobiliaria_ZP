@@ -76,7 +76,10 @@
                 <td>{{ i.listado }}</td>
                 <td class="text-end">
                     <a :href="'/Inmueble/Editar/' + i.id" class="btn btn-sm btn-outline-light me-1">✏️ Editar</a>
-                    <a :href="'/Inmueble/Eliminar/' + i.id" class="btn btn-sm btn-outline-danger me-1">❌ Eliminar</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a :href="'/Inmueble/Eliminar/' + i.id" class="btn btn-sm btn-outline-danger me-1">❌ Eliminar</a>
+                    }
                     <a :href="'/Inmueble/Detalles/' + i.id" class="btn btn-sm btn-outline-info me-1">🔍 Detalles</a>
                     <a :href="'/Inmueble/Fotos/' + i.id" class="btn btn-sm btn-outline-warning">📷 Fotos</a>
                 </td>

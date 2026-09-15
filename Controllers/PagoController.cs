@@ -2,11 +2,13 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
 using inmobiliaria.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
 public class PagoController(RepoPagos pagosRepo) : Controller
 {
+    [Authorize]
     [HttpGet]
     public IActionResult Registrar(string reservaId)
     {       
@@ -15,6 +17,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
         return View();
     }
 
+    [Authorize]
     [HttpPost]
     public IActionResult Registrar(Pago pago, string reservaId)
     {       
@@ -23,6 +26,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
         return Redirect($"/Reserva/Detalles/{reservaId}");
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Editar(string id)
     {       
@@ -30,7 +34,8 @@ public class PagoController(RepoPagos pagosRepo) : Controller
         return View(pago);
     }
 
-    
+
+    [Authorize]    
     [HttpPost]
     public IActionResult Editar(Pago pago, [FromForm] int concepto)
     {       
@@ -39,6 +44,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
         return Redirect($"/Reserva/Detalles/{pago.Reserva.Id}");
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Anular(string id)
     {

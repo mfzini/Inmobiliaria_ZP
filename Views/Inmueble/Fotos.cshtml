@@ -50,8 +50,11 @@
                         <div class="bg-dark p-2 rounded text-center">
                             <img v-bind:src="foto.url" width="120" height="90" class="rounded d-block mb-2">
                             <div class="card-body p-1">
-                                <button type="button" v-on:click="eliminarFoto(foto.id)"
-                                class="btn btn-danger btn-sm w-100 py-0">Borrar</button>
+                                @if (User.IsInRole("Administrador"))
+                                {       
+                                    <button type="button" v-on:click="eliminarFoto(foto.id)"
+                                        class="btn btn-danger btn-sm w-100 py-0">Borrar</button>
+                                }
                             </div>
                         </div>
                     </div>
