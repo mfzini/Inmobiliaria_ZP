@@ -17,7 +17,10 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="m-0 text-white">Listado de Empleados 👥</h3>
-                <a asp-action="Registrar" class="btn btn-success btn-sm">➕ Nuevo Empleado</a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Logs" class="btn btn-outline-info btn-sm">📋 Ver Logs Usuarios</a>
+                    <a asp-action="Registrar" class="btn btn-success btn-sm">➕ Nuevo Empleado</a>
+                </div>
             </div>
 
             <table class="table table-dark table-striped align-middle">

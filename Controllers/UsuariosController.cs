@@ -211,5 +211,11 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         return RedirectToAction(nameof(Listar));
     }
 
+    [Authorize(Policy = "Administrador")]
+    [HttpGet]
+    public IActionResult Logs()
+    {
+        return View();
+    }
 
 }
