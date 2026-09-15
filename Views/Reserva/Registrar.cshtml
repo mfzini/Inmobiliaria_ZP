@@ -84,6 +84,10 @@
             },
             methods:{
                 buscarInmuebles(){
+                    this.rellenarInmueble();
+                    if (this.inmuebleId) {
+                        return;
+                    }
                     clearTimeout(this.timerInmueble); 
                     this.timerInmueble = setTimeout(async () => {
                         let direccionBuscada = this.busquedaInmueble.trim();
@@ -101,6 +105,7 @@
                 },
 
                 rellenarInmueble(){
+                    this.inmuebleId = '';
                     for (let inm of this.inmuebles) {
                         if (this.busquedaInmueble == inm.direccion) {
                             this.inmuebleId = inm.id;
@@ -109,6 +114,10 @@
                 },
 
                 buscarInquilinos(){
+                    this.rellenarInquilino();
+                    if (this.inquilinoId) {
+                        return;
+                    }
                     clearTimeout(this.timerInquilino); 
                     this.timerInquilino = setTimeout(async () => {
                         let nombreBuscado = this.busquedaInquilino.trim();
@@ -126,6 +135,7 @@
                 },
 
                 rellenarInquilino(){
+                    this.inquilinoId = '';
                     for (let p of this.inquilinos) {
                         if (this.busquedaInquilino.includes(p.dni)) {
                             this.inquilinoId = p.dni;

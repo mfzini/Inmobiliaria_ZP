@@ -12,7 +12,7 @@ namespace inmobiliaria.Repositories
 
 		protected void Log(HttpContext ctx, MySqlTransaction tx, string entry)
 		{
-			var user_id = ctx.User.FindFirstValue("NameIdentifier");
+			var user_id = ctx.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			var query = @"insert into Logs (dni, entry) values (@dni, @entry)";
 			using MySqlCommand command = new(query, tx.Connection, tx);
 			command.Parameters.AddWithValue("@dni", user_id);
