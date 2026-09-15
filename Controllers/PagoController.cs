@@ -11,6 +11,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     public IActionResult Registrar(string reservaId)
     {       
         ViewBag.ReservaId = reservaId;
+        ViewBag.Conceptos = pagosRepo.ListAllConceptos();
         return View();
     }
 

@@ -21,9 +21,11 @@
                 <div class="mb-3">
                     <label class="form-label text-white">Concepto: </label>
                     <select asp-for="Concepto.Id" class="form-select bg-dark text-white border-secondary" required>
-                        <option value="1">Sena</option>
-                        <option value="2">Multa</option>
-                        <option value="3">Total</option>
+                        <option value="" disabled selected>Seleccione un concepto de pago</option>
+                        @foreach (var c in ViewBag.Conceptos)
+                        {
+                            <option value="@c.Id">@c.Nombre</option>
+                        }
                     </select>
                     <span asp-validation-for="Concepto.Id" class="text-danger"></span>
                 </div>

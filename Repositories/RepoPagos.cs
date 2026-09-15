@@ -63,6 +63,25 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
 
     }
 
+    public List<ConceptoPago> ListAllConceptos()
+    {
+        var conceptos = new List<ConceptoPago>();
+        var query = @"select id, nombre from ConceptoPago order by nombre";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            conceptos.Add(new ConceptoPago
+            {
+                Id = reader.GetInt32("id"),
+                Nombre = reader.GetString("nombre")
+            });
+        }
+        return conceptos;
+    }
+
     public List<Pago> FindByReserva(Reserva reserva)
     {
         List<Pago> pagos = [];
