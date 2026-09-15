@@ -25,8 +25,8 @@ namespace inmobiliaria.Repositories
 		{
 			List<Log> logs = [];
 			var query = $@"select l.dni as dni, l.createdAt as l_created_at, l.entry, p.nombre, p.apellido
-				from Logs
-				join Persona p on p.dni = l.dni
+				from Logs l
+				join Personas p on p.dni = l.dni
 				limit {(page - 1) * limit}, {limit}";
 
 			using MySqlConnection connection = new(connectionString);
