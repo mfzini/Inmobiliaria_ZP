@@ -10,13 +10,13 @@ namespace inmobiliaria.Repositories
 		protected readonly IConfiguration configuration = configuration;
 		protected readonly string? connectionString = configuration["ConnectionStrings:DefaultConnection"];
 
-		protected void Log(HttpContext ctx, MySqlTransaction tx, string action)
+		protected void Log(HttpContext ctx, MySqlTransaction tx, string entry)
 		{
-			var user_id = ctx.User.FindFirstValue(ClaimTypes.NameIdentifier);
-			var query = @"insert into Logs (user_id, action) values (@dni, @action)";
+			var user_id = ctx.User.FindFirstValue("NameIdentifier");
+			var query = @"insert into Logs (dni, entry) values (@dni, @entry)";
 			using MySqlCommand command = new(query, tx.Connection, tx);
 			command.Parameters.AddWithValue("@dni", user_id);
-			command.Parameters.AddWithValue("@action", action);
+			command.Parameters.AddWithValue("@entry", entry);
 			command.ExecuteNonQuery();
 		}
 	}

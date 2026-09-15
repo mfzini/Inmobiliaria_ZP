@@ -16,7 +16,8 @@
                         list="opcionesInmueble"
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi direccion para buscar" 
-                        v-model="busquedaInmueble" 
+                        v-model="busquedaInmueble"
+                        autocomplete="off" 
                         @@input="buscarInmuebles"
                         @@change="rellenarInmueble">
                     <datalist id="opcionesInmueble">
@@ -33,7 +34,8 @@
                         list="opcionesInquilino"
                         class="form-control bg-dark text-white border-secondary"
                         placeholder="Escribi para buscar inquilino" 
-                        v-model="busquedaInquilino" 
+                        v-model="busquedaInquilino"
+                        autocomplete="off" 
                         @@input="buscarInquilinos"
                         @@change="rellenarInquilino">
                     <datalist id="opcionesInquilino">
