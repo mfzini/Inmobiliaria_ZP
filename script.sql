@@ -8,7 +8,7 @@ create table if not exists Personas(
     apellido varchar(64) not null,
     nombre varchar(64) not null,
     email varchar(64) unique not null,
-    telefono varchar(64) default "_"
+    telefono varchar(64) default '_'
 );
 
 create table if not exists TipoInmueble(
@@ -77,17 +77,26 @@ create table if not exists Pagos(
     
 );
 
-
 create table if not exists Usuarios(
     dni varchar(64) primary key,
     constraint fk_usuario_persona foreign key (dni)
         references Personas(dni),
     password varchar(64) not null,
     role varchar(64) not null,
-    avatar varchar(255) not null default ""
+    avatar varchar(255) not null default ''
 );
 
-insert into TipoInmueble (nombre) values ("casa"), ("casita"), ("rancho"), ("palacio"), ("edificio");
+create table if not exists Logs(
+    dni varchar(64) not null,
+    constraint fk_log_dni foreign key (dni)
+        references Personas(dni),
+    entry varchar(250) not null
+);
 
-insert into ConceptoPago (nombre) values ("adelanto"), ("multa"), ("total");
+insert into TipoInmueble (nombre) values ('casa'), ('casita'), ('rancho'), ('palacio'), ('edificio');
 
+insert into ConceptoPago (nombre) values ('adelanto'), ('multa'), ('total');
+
+insert into Personas (dni, nombre, apellido, email) values ('1', 'Lionel', 'Hutz', 'lionel_hutz@example.com');
+insert into Inmuebles (propietario, tipo, direccion, capacidad, listado) values (1, 1, 'calle falsa 123', 4, 1);
+insert into Usuarios (dni, password, role) values (1, 'password', 'admin');

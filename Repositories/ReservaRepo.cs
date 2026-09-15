@@ -1,11 +1,13 @@
+using System.Security.Claims;
 using inmobiliaria.Models;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 using MySql.Data.MySqlClient;
 
 namespace inmobiliaria.Repositories;
 
 public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configuration)
 {
-    public int Create(Reserva reserva)
+    public void Create(Reserva reserva, HttpContext ctx)
     {
         if (reserva.Inmueble == null || reserva.Inmueble.Id == null)
         {
@@ -26,12 +28,20 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         command.Parameters.AddWithValue("@fecha_inicio", reserva.FechaInicio.ToString("yyyy-MM-dd"));
         command.Parameters.AddWithValue("@fecha_fin", reserva.FechaFin.ToString("yyyy-MM-dd"));
         connection.Open();
-        var res = command.ExecuteNonQuery();
-        if (res == 1)
+        using var tx = connection.BeginTransaction();
+        command.Transaction = tx;
+        try
         {
+            if (command.ExecuteNonQuery() == 0) return;
             reserva.Id = id;
+            Log(ctx, tx, $"creo la reserva {reserva}");
+            tx.Commit();
         }
-        return res;
+        catch (Exception)
+        {
+            tx.Rollback();
+            throw;
+        }
     }
 
     public int Update(Reserva reserva)

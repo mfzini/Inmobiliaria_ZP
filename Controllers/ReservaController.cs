@@ -44,7 +44,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             FechaFin = dto.FechaFin
         };
 
-        reservaRepo.Create(reserva);
+        reservaRepo.Create(reserva, HttpContext);
         return RedirectToAction(nameof(Listar));
 
     }
@@ -269,7 +269,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             FechaFin = FechaFin
         };
 
-        reservaRepo.Create(nuevaReservaExtendida);
+        reservaRepo.Create(nuevaReservaExtendida, HttpContext);
         return RedirectToAction("Listar");
     }
 
