@@ -1,5 +1,5 @@
 SET GLOBAL time_zone = '-03:00';
-drop database if exists inmobiliaria_pz;
+-- drop database if exists inmobiliaria_pz;
 create database if not exists inmobiliaria_pz;
 
 use inmobiliaria_pz;
