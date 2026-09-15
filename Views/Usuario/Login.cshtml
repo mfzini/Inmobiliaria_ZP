@@ -7,6 +7,13 @@
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Iniciar Sesion 🔐</h3>
 
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger py-2 text-center" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+
             <form asp-action="Login" method="post">
 
                 <div class="mb-3">

@@ -9,9 +9,10 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
     public List<Usuario> ListAll()
     {
         List<Usuario> usuarios = [];
-        var query = @"select dni, nombre, apellido, telefono, email, password, role, avatar 
-                    from Usuarios
-                    order by apellido, nombre";
+        var query = @"select u.dni, p.nombre, p.apellido, p.telefono, p.email, u.password, u.role, u.avatar 
+                    from Usuarios u
+                    inner join Personas p on u.dni = p.dni
+                    order by p.apellido, p.nombre";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();
@@ -23,12 +24,31 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
         return usuarios;
     }
 
+    public Usuario? FindByEmail(string email)
+    {
+        var query = @"select u.dni, p.nombre, p.apellido, p.telefono, p.email, u.password, u.role, u.avatar 
+                    from Usuarios u
+                    join Personas p on u.dni = p.dni
+                    where p.email = @email";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@email", email);
+        connection.Open();
+        var reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return null;      
+        } 
+        
+        return ParseUsuario(reader);
+    }
+
     public Usuario? FindByDni(string dni)
     {
-        var query = @"select dni, nombre, apellido, telefono, email, password, role, avatar 
-                    from Usuarios
-                    where dni = @dni";
-
+        var query = @"select u.dni, p.nombre, p.apellido, p.telefono, p.email, u.password, u.role, u.avatar 
+                    from Usuarios u
+                    inner join Personas p on u.dni = p.dni
+                    where u.dni = @dni";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@dni", dni);
@@ -41,8 +61,8 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
 
     public int Create(Usuario usuario)
     {
-        var query = @"insert into Usuarios (dni, nombre, apellido, telefono, email, password, role, avatar) 
-                    values (@dni, @nombre, @apellido, @telefono, @email, @password, @role, @avatar)";
+        var query = @"insert into Usuarios (dni, password, role, avatar) 
+                    values (@dni, @password, @role, @avatar)";
         
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -61,10 +81,13 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
 
     public int Update(Usuario usuario)
     {
-        var query = @"update Usuarios 
-                    set nombre = @nombre, apellido = @apellido, telefono = @telefono, 
-                    email = @email, role = @role, avatar = @avatar 
-                    where dni = @dni";
+        var query = @"update Personas 
+                    set nombre = @nombre, apellido = @apellido, telefono = @telefono, email = @email 
+                    where dni = @dni;
+                    
+                    update Usuarios 
+                    set role = @role, avatar = @avatar 
+                    where dni = @dni;";
 
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);

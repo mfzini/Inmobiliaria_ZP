@@ -1,3 +1,4 @@
+@model inmobiliaria.Models.Usuario
 @{
     ViewData["Title"] = "Registrar Empleado";
 }
@@ -7,31 +8,34 @@
         <div class="bg-body text-white p-4 rounded border border-secondary shadow" data-bs-theme="dark">
             <h3 class="text-center mb-4 text-white">Registrar Empleado 👤</h3>
 
+
             <form asp-action="Registrar" method="post" enctype="multipart/form-data">
                 
                 <div class="mb-3">
                     <label class="form-label text-white">DNI: </label>
-                    <input type="text" name="Dni" class="form-control bg-dark text-white border-secondary" required />
+                    <input type="text" name="Dni" v-model="dni" class="form-control bg-dark text-white border-secondary" required />
+                    <button type="button" class="btn btn-outline-light btn-sm mt-2" @@click="buscar">Buscar Persona 🔍</button>
+                    <span asp-validation-for="Dni" class="text-danger"></span>
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label text-white">Nombre: </label>
-                    <input type="text" name="Nombre" class="form-control bg-dark text-white border-secondary" required />
+                    <input type="text" name="Nombre" v-model="nombre" class="form-control bg-dark text-white border-secondary" required />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Apellido: </label>
-                    <input type="text" name="Apellido" class="form-control bg-dark text-white border-secondary" required />
+                    <input type="text" name="Apellido" v-model="apellido" class="form-control bg-dark text-white border-secondary" required />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Telefono: </label>
-                    <input type="text" name="Telefono" class="form-control bg-dark text-white border-secondary" />
+                    <input type="text" name="Telefono" v-model="telefono" class="form-control bg-dark text-white border-secondary" />
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-white">Email: </label>
-                    <input type="email" name="Email" class="form-control bg-dark text-white border-secondary" required />
+                    <input type="email" name="Email" v-model="email" class="form-control bg-dark text-white border-secondary" required />
                 </div>
 
                 <div class="mb-3">
@@ -70,10 +74,40 @@
         Vue.createApp({
             data() {
                 return {
-                    preview: null
+                    preview: null,
+                    dni: '',
+                    nombre: '',
+                    apellido: '',
+                    telefono: '',
+                    email: ''
                 };
             },
             methods: {
+                buscar(){
+                    if(!this.dni){
+                        alert("para buscar ingresa un DNI");
+                        return;
+                    } else{
+                        fetch('/Usuario/BuscarPersona?dni=' + this.dni)
+                        .then(res => {
+                            if(!res.ok){
+                                alert('no se encontro una persona con ese dni');
+                                return null;
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            if(data){
+                                this.nombre = data.nombre;
+                                this.apellido = data.apellido;
+                                this.telefono = data.telefono;
+                                this.email = data.email;
+                            }
+                        })
+                    }
+                },
+
+
                 previsualizar(event) {
                     const file = event.target.files[0];
                     if (!file) {
@@ -86,7 +120,7 @@
                         this.preview = e.target.result;
                     };
                     reader.readAsDataURL(file);
-                }
+                },
             }
         }).mount('#registroUsuario');
     </script>
