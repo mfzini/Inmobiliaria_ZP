@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace inmobiliaria.Controllers;
 
 public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository personasRepo) : Controller
 {
-    
+    private readonly PasswordHasher<Usuario> hasher = new();
 
     [AllowAnonymous]
     [HttpGet]
@@ -26,10 +27,10 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
     [HttpPost]
     public async Task<IActionResult> Login(string email, string password)
     {
-        
-        var usuario = repoUsuarios.FindByEmail(email);
 
-        if (usuario == null || usuario.Password != password)
+        var usuario = repoUsuarios.FindByEmail(email);
+        var ok = hasher.VerifyHashedPassword(usuario, usuario.Password, password)  == PasswordVerificationResult.Success;
+        if (usuario == null || !ok)
         {
             ViewBag.Error = "Email o contraseña incorrectos.";
             return View();
@@ -44,7 +45,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         };
 
         var claimsIdentity = new ClaimsIdentity(
-            claims, 
+            claims,
             CookieAuthenticationDefaults.AuthenticationScheme,
             ClaimTypes.NameIdentifier, ClaimTypes.Role);
 
@@ -101,6 +102,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
             TempData["Mensaje"] = "Esa persona ya existia, se le asigno un usuario y rol";
         }
 
+        usuario.Password = hasher.HashPassword(usuario, usuario.Password);
         repoUsuarios.Create(usuario);
 
         if (avatarFile != null && avatarFile.Length > 0)
@@ -109,7 +111,7 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
             repoUsuarios.UploadAvatar(img, usuario);
         }
 
-        return RedirectToAction(nameof(Listar)); 
+        return RedirectToAction(nameof(Listar));
     }
 
     [HttpGet]
@@ -118,7 +120,8 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
         var persona = personasRepo.FindByDni(dni);
         if (persona == null) return NotFound();
 
-        return Json(new {
+        return Json(new
+        {
             nombre = persona.Nombre,
             apellido = persona.Apellido,
             telefono = persona.Telefono,
