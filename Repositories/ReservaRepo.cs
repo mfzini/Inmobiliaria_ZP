@@ -34,7 +34,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         {
             if (command.ExecuteNonQuery() == 0) return;
             reserva.Id = id;
-            Log(ctx, tx, $"creo la reserva {reserva}");
+            WriteLog(ctx, tx, $"creo la reserva {reserva}");
             tx.Commit();
         }
         catch (Exception)

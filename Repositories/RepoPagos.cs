@@ -6,30 +6,51 @@ namespace inmobiliaria.Repositories;
 
 public class RepoPagos(IConfiguration config) : RepositorioBase(config)
 {
-    public int Create(Pago pago)
+    public void Create(HttpContext ctx, Pago pago)
     {
         var id = Guid.NewGuid().ToString();
         var query = "insert into Pagos (id, reserva, concepto, monto, fecha) values (@id, @reserva, @concepto, @monto, @fecha)";
         using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        using MySqlCommand command = new(query, connection, tx);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@reserva", pago.Reserva.Id);
         command.Parameters.AddWithValue("@concepto", pago.Concepto.Id);
         command.Parameters.AddWithValue("@monto", pago.Monto);
         command.Parameters.AddWithValue("@fecha", pago.Fecha);
-        connection.Open();
-        return command.ExecuteNonQuery();
+        try
+        {
+            command.ExecuteNonQuery();
+            WriteLog(ctx, tx, $"creó {pago}");
+            tx.Commit();
+        } catch (Exception)
+        {
+            tx.Rollback();
+            throw;
+        }
     }
-    public int Update(Pago pago)
+    public void Update(HttpContext ctx, Pago pago)
     {
+        Pago original = FindById(pago.Id);
         var query = "update Pagos set concepto = @concepto, anulado = @anulado where id = @id";
         using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        using MySqlCommand command = new(query, connection, tx);
         command.Parameters.AddWithValue("@id", pago.Id);
         command.Parameters.AddWithValue("@concepto", pago.Concepto.Id);
         command.Parameters.AddWithValue("@anulado", pago.Anulado);
-        connection.Open();
-        return command.ExecuteNonQuery();
+        try
+        {
+            command.ExecuteNonQuery();
+            WriteLog(ctx, tx, $"actualizó {original} >> {pago}");
+            tx.Commit();
+        } catch (Exception)
+        {
+            tx.Rollback();
+            throw;
+        }
     }
     public Pago FindById(string id)
     {
