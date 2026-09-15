@@ -22,7 +22,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     public IActionResult Registrar(Pago pago, string reservaId)
     {       
         pago.Reserva = new Reserva { Id = reservaId };
-        pagosRepo.Create(pago);
+        pagosRepo.Create(HttpContext, pago);
         return Redirect($"/Reserva/Detalles/{reservaId}");
     }
 
@@ -40,7 +40,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     public IActionResult Editar(Pago pago, [FromForm] int concepto)
     {       
         pago.Concepto = new ConceptoPago { Id = concepto};
-        pagosRepo.Update(pago);
+        pagosRepo.Update(HttpContext, pago);
         return Redirect($"/Reserva/Detalles/{pago.Reserva.Id}");
     }
 
@@ -50,7 +50,7 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     {
         var pago = pagosRepo.FindById(id);
         pago.Anulado = !pago.Anulado;
-        pagosRepo.Update(pago);
+        pagosRepo.Update(HttpContext, pago);
         return Redirect($"/Reserva/Detalles/{pago.Reserva.Id}");
     }
 

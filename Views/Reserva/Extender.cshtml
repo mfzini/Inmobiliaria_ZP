@@ -38,6 +38,13 @@
                     <span asp-validation-for="FechaFin" class="text-danger"></span>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label text-white">Nuevo Monto por Extension: </label>
+                    <input type="number" step="0.01" min="0" name="MontoExtension" 
+                        class="form-control bg-dark text-white border-secondary" placeholder="0.00">
+                    <small class="text-secondary">Este monto se registra como un nuevo pago del periodo extendido.</small>
+                </div>
+
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-warning text-dark fw-bold">Guardar Extension 💾</button>
                     <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-link text-secondary mt-2 text-decoration-none text-center">Cancelar</a>

@@ -267,7 +267,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
     [Authorize]
     [HttpPost]
-    public IActionResult Extender(string Inmueble, string Inquilino, DateTime FechaInicio, DateTime FechaFin, string idAnterior)
+    public IActionResult Extender(string Inmueble, string Inquilino, DateTime FechaInicio, DateTime FechaFin, decimal montoExtension, string idAnterior)
     {
         if (FechaFin <= FechaInicio)
         {
@@ -283,6 +283,20 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         };
 
         reservaRepo.Create(nuevaReservaExtendida, HttpContext);
+
+        if (montoExtension > 0)
+        {
+            var pagoNuevo = new Pago
+            {
+                Reserva = nuevaReservaExtendida, 
+                Concepto = new ConceptoPago { Id = 1 }, 
+                Monto = montoExtension,
+                Fecha = DateTime.Today
+            };
+
+            pagosRepo.Create(HttpContext, pagoNuevo);
+        }
+
         return RedirectToAction("Listar");
     }
 
@@ -332,7 +346,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             Fecha = DateTime.Today,
         };
 
-        pagosRepo.Create(pagoMulta);
+        pagosRepo.Create(HttpContext, pagoMulta);
         return RedirectToAction("Detalles", new {id = idReserva});
     }
 
