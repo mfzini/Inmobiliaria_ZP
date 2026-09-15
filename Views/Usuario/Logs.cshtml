@@ -1,4 +1,4 @@
-<!-- List<inmobiliaria.Models.LogDTO>
+@model List<inmobiliaria.Models.Log>
 @{
     ViewData["Title"] = "Historial de Logs";
 }
@@ -17,16 +17,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (Log item in Model)
             {
                 <tr>
-                    <td>@item.Usuario</td>
-                    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                    <td class="text-end">nose</td>
+                    <td>@item.Usuario.Nombre</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td class="text-end">@item.Entry</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
--->

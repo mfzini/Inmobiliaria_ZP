@@ -215,7 +215,8 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
     [HttpGet]
     public IActionResult Logs()
     {
-        return View();
+        var logs = personasRepo.GetLogs();
+        return View(logs);
     }
 
 }
