@@ -1,4 +1,5 @@
 SET GLOBAL time_zone = '-03:00';
+drop database if exists inmobiliaria_pz;
 create database if not exists inmobiliaria_pz;
 
 use inmobiliaria_pz;
@@ -81,7 +82,7 @@ create table if not exists Usuarios(
     dni varchar(64) primary key,
     constraint fk_usuario_persona foreign key (dni)
         references Personas(dni),
-    password varchar(64) not null,
+    password varchar(250) not null,
     role varchar(64) not null,
     avatar varchar(255) not null default ''
 );
@@ -93,10 +94,13 @@ create table if not exists Logs(
     entry varchar(250) not null
 );
 
-insert into TipoInmueble (nombre) values ('casa'), ('casita'), ('rancho'), ('palacio'), ('edificio');
+insert into TipoInmueble (nombre) values ('casa'), ('casita'), ('rancho'), ('palacio');
 
 insert into ConceptoPago (nombre) values ('adelanto'), ('multa'), ('total');
 
-insert into Personas (dni, nombre, apellido, email) values ('1', 'Lionel', 'Hutz', 'lionel_hutz@example.com');
+insert into Personas (dni, nombre, apellido, email) values ('0', 'Lionel', 'Hutz', 'lionel_hutz@example.com');
+insert into Personas (dni, nombre, apellido, email) values ('1', 'Marge', 'Simpson', 'MSipmson@example.com');
 insert into Inmuebles (propietario, tipo, direccion, capacidad, listado) values (1, 1, 'calle falsa 123', 4, 1);
-insert into Usuarios (dni, password, role) values (1, 'password', 'admin');
+insert into Usuarios (dni, password, role) values (0, 'AQAAAAIAAYagAAAAEMBNPa0pAIV1tpEWpllLo3M7Tosycs8TLEnpiymtCrH3fZucUu8DSRemLJ7b+DlWqw==', 'admin');
+
+
