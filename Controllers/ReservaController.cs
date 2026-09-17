@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
-public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo, RepoPagos pagosRepo) : Controller 
+public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo, RepoPagos pagosRepo) : Controller
 {
     [Authorize]
     [HttpGet]
@@ -26,7 +26,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
         Persona? inquilino = personaRepo.FindByDni(dto.Inquilino);
         Inmueble? inmueble = inmuebleRepo.GetById(dto.Inmueble);
-        
+
         if (inquilino == null)
         {
             ModelState.AddModelError("Inquilino", "Ese inquilino no existe");
@@ -37,9 +37,10 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             ModelState.AddModelError("Inmueble", "No existe ese inmueble");
         }
 
-
+        var monto = ((decimal)(dto.FechaFin - dto.FechaInicio).TotalDays) * inmueble.Precio;
         Reserva reserva = new Reserva
         {
+            Monto = monto,
             Inmueble = inmueble,
             Inquilino = inquilino,
             FechaInicio = dto.FechaInicio,
@@ -50,7 +51,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         return RedirectToAction(nameof(Listar));
 
     }
-    
+
     [Authorize]
     [HttpGet]
     public IActionResult Listar()
@@ -90,7 +91,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         try
         {
             var reserva = reservaRepo.FindByID(id);
-            if(reserva == null)
+            if (reserva == null)
             {
                 return NotFound();
             }
@@ -99,7 +100,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
                 Inquilino = reserva.Inquilino.Dni,
                 Inmueble = reserva.Inmueble.Id,
                 FechaInicio = reserva.FechaInicio,
-                FechaFin = reserva.FechaFin
+                FechaFin = reserva.FechaFin,
+                Monto = reserva.Monto
             };
 
             ViewBag.ReservaId = id;
@@ -107,7 +109,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             ViewBag.TextoInquilino = $"{reserva.Inquilino.Nombre} {reserva.Inquilino.Apellido} ({reserva.Inquilino.Dni})";
             return View(dto);
 
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
             return RedirectToAction(nameof(Listar));
@@ -138,14 +141,15 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             ModelState.AddModelError("Inmueble", "No existe ese inmueble");
         }
 
-
+        var monto = ((decimal)(dto.FechaFin - dto.FechaInicio).TotalDays) * inmueble.Precio;
         Reserva reserva = new Reserva
         {
             Id = id,
             Inmueble = inmueble,
             Inquilino = inquilino,
             FechaInicio = dto.FechaInicio,
-            FechaFin = dto.FechaFin
+            FechaFin = dto.FechaFin,
+            Monto = monto
         };
 
         reservaRepo.Update(reserva);
@@ -164,12 +168,13 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         try
         {
             var reserva = reservaRepo.FindByID(id);
-            if(reserva == null)
+            if (reserva == null)
             {
                 return NotFound();
             }
             return View(reserva);
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
             return RedirectToAction(nameof(Listar));
@@ -183,13 +188,14 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         try
         {
             reservaRepo.Delete(reserva);
-            return RedirectToAction(nameof(Listar));    
-        } catch(Exception e)
+            return RedirectToAction(nameof(Listar));
+        }
+        catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
             return RedirectToAction(nameof(Listar));
         }
-        
+
     }
 
     [Authorize]
@@ -203,14 +209,15 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         try
         {
             var reserva = reservaRepo.FindByID(id);
-            if(reserva == null)
+            if (reserva == null)
             {
                 return NotFound();
             }
             var pagosReserva = pagosRepo.FindByReserva(reserva);
             reserva.Pagos = pagosReserva;
             return View(reserva);
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
             return RedirectToAction(nameof(Listar));
@@ -225,7 +232,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         {
             var res = inmuebleRepo.ListarByDireccion(direccionBuscada);
             return Json(res);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return Json(new { Error = e.Message });
         }
@@ -273,13 +281,15 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         {
             return RedirectToAction("Extender", new { id = idAnterior });
         }
-
+        var objInmueble = inmuebleRepo.GetById(Inmueble);
+        var monto = ((decimal)(FechaFin - FechaInicio).TotalDays) * objInmueble.Precio;
         var nuevaReservaExtendida = new Reserva
         {
-            Inmueble = new Inmueble {Id= Inmueble},
-            Inquilino = new Persona{Dni= Inquilino},
+            Inmueble = new Inmueble { Id = Inmueble },
+            Inquilino = new Persona { Dni = Inquilino },
             FechaInicio = FechaInicio,
-            FechaFin = FechaFin
+            FechaFin = FechaFin,
+            Monto = monto
         };
 
         reservaRepo.Create(nuevaReservaExtendida, HttpContext);
@@ -288,8 +298,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         {
             var pagoNuevo = new Pago
             {
-                Reserva = nuevaReservaExtendida, 
-                Concepto = new ConceptoPago { Id = 1 }, 
+                Reserva = nuevaReservaExtendida,
+                Concepto = new ConceptoPago { Id = 1 },
                 Monto = montoExtension,
                 Fecha = DateTime.Today
             };
@@ -305,22 +315,24 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
     public IActionResult FinalizarTemprano(string id)
     {
         var reserva = reservaRepo.FindByID(id);
-        if(reserva == null){
+        if (reserva == null)
+        {
             return NotFound();
-        };
+        }
+        ;
 
-        DateTime FechaFinalizacion = DateTime.Today; 
-        ViewBag.FechaFinalizacion = FechaFinalizacion.ToString("dd/MM/yyyy"); 
+        DateTime FechaFinalizacion = DateTime.Today;
+        ViewBag.FechaFinalizacion = FechaFinalizacion.ToString("dd/MM/yyyy");
 
         int diasTotales = (reserva.FechaFin - reserva.FechaInicio).Days;
         int diasPasados = (FechaFinalizacion - reserva.FechaInicio).Days;
         int diasRestantes = (reserva.FechaFin - FechaFinalizacion).Days;
 
-        decimal precioAlquilerDia = reserva.Inmueble.Precio / 30m; 
+        decimal precioAlquilerDia = reserva.Inmueble.Precio / 30m;
         decimal montoAlquilerRestante = diasRestantes * precioAlquilerDia;
         decimal multaCalculada = 0;
 
-        if(diasPasados < (diasTotales / 2))
+        if (diasPasados < (diasTotales / 2))
         {
             multaCalculada = montoAlquilerRestante * 0.50m;
         }
@@ -340,14 +352,14 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
     {
         var pagoMulta = new Pago
         {
-            Reserva = new Reserva { Id = idReserva }, 
+            Reserva = new Reserva { Id = idReserva },
             Concepto = new ConceptoPago { Id = 2 }, // para multa
             Monto = montoMulta,
             Fecha = DateTime.Today,
         };
 
         pagosRepo.Create(HttpContext, pagoMulta);
-        return RedirectToAction("Detalles", new {id = idReserva});
+        return RedirectToAction("Detalles", new { id = idReserva });
     }
 
 

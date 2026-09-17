@@ -15,5 +15,5 @@ public class ReservaDTO
     public DateTime FechaInicio { get; set;}
     [Required(ErrorMessage = "La fecha de fin es obligatoria")]
     public DateTime FechaFin {get; set;}
-    
+    public decimal Monto { get; set; }
 }

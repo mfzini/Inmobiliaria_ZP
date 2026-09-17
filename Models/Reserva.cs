@@ -1,19 +1,21 @@
 namespace inmobiliaria.Models;
+
 using System.ComponentModel.DataAnnotations;
 
 public class Reserva
 {
     [Key]
-    public string? Id {get; set;}
+    public string? Id { get; set; }
     [Required]
-    public Inmueble? Inmueble {get; set;}
+    public Inmueble? Inmueble { get; set; }
     [Required]
-    public Persona? Inquilino {get; set;}
+    public Persona? Inquilino { get; set; }
     [Required]
-    public DateTime FechaInicio { get; set;}
+    public DateTime FechaInicio { get; set; }
     [Required]
-    public DateTime FechaFin {get; set;}
+    public DateTime FechaFin { get; set; }
 
+    public decimal Monto { get; set; }
     public List<Pago> Pagos { get; set; } = []; // otro detalle que agregue para mostrar pagos por reserva
     public override string ToString()
     {

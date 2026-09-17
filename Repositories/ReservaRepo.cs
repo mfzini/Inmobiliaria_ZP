@@ -18,13 +18,14 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             throw new InvalidDataException("Falta setear Inquilino");
         }
         var id = Guid.NewGuid().ToString();
-        var query = @"insert into Reservas (id, inmueble, inquilino, fecha_inicio, fecha_fin) values
-            (@id, @inmueble, @inquilino, @fecha_inicio, @fecha_fin)";
+        var query = @"insert into Reservas (id, inmueble, inquilino, fecha_inicio, fecha_fin, monto) values
+            (@id, @inmueble, @inquilino, @fecha_inicio, @fecha_fin, @monto)";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@id", id);
         command.Parameters.AddWithValue("@inmueble", reserva.Inmueble.Id);
         command.Parameters.AddWithValue("@inquilino", reserva.Inquilino.Dni);
+        command.Parameters.AddWithValue("@monto", reserva.Monto);
         command.Parameters.AddWithValue("@fecha_inicio", reserva.FechaInicio.ToString("yyyy-MM-dd"));
         command.Parameters.AddWithValue("@fecha_fin", reserva.FechaFin.ToString("yyyy-MM-dd"));
         connection.Open();
@@ -68,7 +69,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
 
     public Reserva? FindByID(string id)
     {
-        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
+        var query = @"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -87,7 +88,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> GetPage(int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -108,7 +109,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -131,7 +132,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarFinalizanEnXDias(int dias, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -178,20 +179,22 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         var id = reader.GetString("r_id");
         var fecha_inicio = reader.GetDateTime("fecha_inicio");
         var fecha_fin = reader.GetDateTime("fecha_fin");
+        var monto = reader.GetDecimal("r_monto");
         return new Reserva
         {
             Id = id,
             Inmueble = inmueble,
             Inquilino = inquilino,
             FechaInicio = fecha_inicio,
-            FechaFin = fecha_fin
+            FechaFin = fecha_fin,
+            Monto = monto
         };
     }
 
     public List<Reserva> ListarPorInmueble(Inmueble inmueble, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -213,7 +216,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarNoFinalizadasPorInmueble(Inmueble inmueble, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
@@ -235,7 +238,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
     public List<Reserva> ListarNoFinalizadas(int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];
-        var query = @$"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre
+        var query = @$"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble

@@ -50,6 +50,7 @@ create table if not exists ImagenesInmuebles(
 create table if not exists Reservas(
     id varchar(36) primary key default (uuid()),
     inmueble varchar(36) not null,
+    monto decimal(10,2) default 0,
     constraint fk_reserva_inmueble foreign key (inmueble)
         references Inmuebles(id),
     inquilino varchar(64) not null,
