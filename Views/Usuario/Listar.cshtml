@@ -53,8 +53,9 @@
                             <td>@usuario.Email</td>
                             <td>@usuario.Role</td>
                             <td class="text-end">
-                                <a asp-action="Editar" asp-route-id="@usuario.Dni" class="btn btn-outline-light btn-sm me-1">✏️ Editar</a>
+                                <a asp-action="Editar" asp-route-id="@usuario.Dni" class="btn btn-outline-light btn-sm">✏️ Editar</a>
                                 <a asp-action="Eliminar" asp-route-id="@usuario.Dni" class="btn btn-outline-danger btn-sm">❌ Eliminar</a>
+                                <a asp-action="LogsUsuario" asp-route-dni="@usuario.Dni" class="btn btn-outline-info btn-sm">📋 Logs</a>
                             </td>
                         </tr>
                     }

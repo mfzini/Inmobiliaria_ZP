@@ -426,6 +426,8 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         reserva.FechaCancelacion = DateTime.Today;
         reservaRepo.Update(HttpContext, reserva, "finalizo");
 
+
+
         var pagoMulta = new Pago
         {
             Reserva = reserva,

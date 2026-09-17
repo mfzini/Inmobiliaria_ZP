@@ -218,10 +218,30 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
 
     [Authorize(Policy = "Administrador")]
     [HttpGet]
-    public IActionResult Logs()
+    public IActionResult Logs(int pagina = 1)
     {
-        var logs = personasRepo.GetLogs();
+        int tamano = 7;
+        var logs = personasRepo.GetLogs(pagina, tamano);
+
+        ViewBag.Pagina = pagina;
+        ViewBag.HaySiguiente = logs.Count == tamano;
+
         return View(logs);
     }
+
+    [Authorize(Policy = "Administrador")]
+    [HttpGet]
+    public IActionResult LogsUsuario(string dni, int pagina = 1)
+    {
+        int tamano = 7;
+        var logsUsuario = personasRepo.GetLogsByDni(dni, pagina, tamano);
+
+        ViewBag.dni = dni;
+        ViewBag.Pagina = pagina;
+        ViewBag.HaySiguiente = logsUsuario.Count == tamano;
+
+        return View(logsUsuario);
+    }
+    
 
 }

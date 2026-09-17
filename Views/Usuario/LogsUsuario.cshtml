@@ -4,11 +4,12 @@
 
     var Pagina = ViewBag.Pagina ?? 1;
     var HaySiguiente = ViewBag.HaySiguiente ?? false;
+    var Dni = ViewBag.Dni as string;
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Historial de logs: </h2>
+        <h2>Historial de logs del Usuario: </h2>
     </div>
 
     <table class="table table-dark table-hover">
@@ -41,7 +42,7 @@
             @if (Pagina > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="~/Usuario/Logs?pagina=@(Pagina - 1)" aria-label="Anterior">
+                    <a class="page-link" href="~/Usuario/LogsUsuario?dni=@Dni&pagina=@(Pagina - 1)" aria-label="Anterior">
                         Anterior
                     </a>
                 </li>
@@ -60,7 +61,7 @@
             @if (HaySiguiente)
             {
                 <li class="page-item">
-                    <a class="page-link" href="~/Usuario/Logs?pagina=@(Pagina + 1)" aria-label="Siguiente">
+                    <a class="page-link" href="~/Usuario/LogsUsuario?dni=@Dni&pagina=@(Pagina + 1)" aria-label="Siguiente">
                         Siguiente
                     </a>
                 </li>

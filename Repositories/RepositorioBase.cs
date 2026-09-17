@@ -21,12 +21,13 @@ namespace inmobiliaria.Repositories
 			command.ExecuteNonQuery();
 		}
 
-		public List<Log> GetLogs(int page = 1, int limit = 10)
+		public List<Log> GetLogs(int page = 1, int limit = 7)
 		{
 			List<Log> logs = [];
 			var query = $@"select l.dni as dni, l.createdAt as l_created_at, l.entry, p.nombre, p.apellido
 				from Logs l
 				join Personas p on p.dni = l.dni
+				order by l.createdAt DESC
 				limit {(page - 1) * limit}, {limit}";
 
 			using MySqlConnection connection = new(connectionString);
