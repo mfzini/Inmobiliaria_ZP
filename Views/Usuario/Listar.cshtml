@@ -1,6 +1,8 @@
 @model List<inmobiliaria.Models.Usuario>
 @{
     ViewData["Title"] = "Listado de Empleados";
+    var Pagina = ViewBag.Pagina ?? 1;
+    var HaySiguiente = ViewBag.HaySiguiente ?? false;
 }
 
 <div class="row justify-content-center mt-4">
@@ -58,6 +60,48 @@
                     }
                 </tbody>
             </table>
+
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @if (Pagina > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="~/Usuario/Listar?pagina=@(Pagina - 1)" aria-label="Anterior">
+                                Anterior
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Anterior</span>
+                        </li>
+                    }
+
+                    <li class="page-item active">
+                        <span class="page-link">@Pagina</span>
+                    </li>
+
+                    @if (HaySiguiente)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="~/Usuario/Listar?pagina=@(Pagina + 1)" aria-label="Siguiente">
+                                Siguiente
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">Siguiente</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+
+
+
         </div>
     </div>
 </div>

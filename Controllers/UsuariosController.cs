@@ -186,9 +186,14 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
 
     [Authorize(Policy = "Administrador")]
     [HttpGet]
-    public IActionResult Listar()
+    public IActionResult Listar(int pagina = 1)
     {
-        var usuarios = repoUsuarios.ListAll();
+        int tamano = 7;
+        var usuarios = repoUsuarios.ListAll(pagina, tamano);
+
+        ViewBag.Pagina = pagina;
+        ViewBag.HaySiguiente = usuarios.Count == tamano;
+
         return View(usuarios);
     }
 

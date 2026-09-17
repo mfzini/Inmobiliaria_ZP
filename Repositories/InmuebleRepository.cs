@@ -335,14 +335,16 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-    public List<Inmueble> ListarByDireccion(string direccion)
+    public List<Inmueble> ListarByDireccion(string direccion, int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
-        var query = @"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
+        var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
             from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
-            where i.direccion like @direccion";
+            where i.direccion like @direccion
+            order by i.precio
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.Add("@direccion", MySqlDbType.VarChar).Value = "%" + direccion + "%";

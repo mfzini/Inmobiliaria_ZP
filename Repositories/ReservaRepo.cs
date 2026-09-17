@@ -114,7 +114,8 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
             where fecha_inicio >= @desde and fecha_fin <= @hasta
-            order by fecha_inicio";
+            order by fecha_inicio
+            limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@desde", desde.ToString("yyyy-MM-dd"));

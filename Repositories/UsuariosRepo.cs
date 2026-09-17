@@ -6,13 +6,14 @@ namespace inmobiliaria.Repositories;
 public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment) : RepositorioBase(config)
 {
 
-    public List<Usuario> ListAll()
+    public List<Usuario> ListAll(int page = 1, int limit = 7)
     {
         List<Usuario> usuarios = [];
-        var query = @"select u.dni, p.nombre, p.apellido, p.telefono, p.email, u.password, u.role, u.avatar 
+        var query = $@"select u.dni, p.nombre, p.apellido, p.telefono, p.email, u.password, u.role, u.avatar 
                     from Usuarios u
                     inner join Personas p on u.dni = p.dni
-                    order by p.apellido, p.nombre";
+                    order by p.apellido, p.nombre
+                    limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();

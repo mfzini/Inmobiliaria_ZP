@@ -69,9 +69,11 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         return command.ExecuteNonQuery();
     }
 
-    public List<Persona> ListAll(int page = 1, int limit = 10)
+    public List<Persona> ListAll(int page = 1, int limit = 7)
     {
-        var query = $@"select * from Personas limit {(page - 1) * limit}, {limit}";
+        var query = $@"select * from Personas
+            order by apellido, nombre
+             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         connection.Open();

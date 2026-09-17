@@ -75,14 +75,14 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
     [Authorize]
     [HttpGet]
-    public IActionResult BuscarPorDireccion(string? direccion)
+    public IActionResult BuscarPorDireccion(string? direccion, int pagina = 1)
     {
         if (string.IsNullOrWhiteSpace(direccion))
         {
-            return Json(inmuebleRepo.GetPage());
+            return Json(inmuebleRepo.GetPage(pagina));
         }
 
-        return Json(inmuebleRepo.ListarByDireccion(direccion));
+        return Json(inmuebleRepo.ListarByDireccion(direccion, pagina));
     }
 
     [Authorize]
@@ -262,40 +262,40 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
     [Authorize]
     [HttpGet]
-    public IActionResult ListarDisponiblesPorFechas(DateTime desde, DateTime hasta)
+    public IActionResult ListarDisponiblesPorFechas(DateTime desde, DateTime hasta, int pagina = 1)
     {   
-        return Json(inmuebleRepo.ListarDisponibles(desde, hasta));
+        return Json(inmuebleRepo.ListarDisponibles(desde, hasta, pagina));
     }
 
     [Authorize]
     [HttpGet]
-    public IActionResult FiltrarPorEstado(string opcion, int dias)
+    public IActionResult FiltrarPorEstado(string opcion, int dias, int pagina = 1)
     {
         if (opcion == "disponibles")
         {
-            return Json(inmuebleRepo.FindByListingStatus(true));
+            return Json(inmuebleRepo.FindByListingStatus(true, pagina));
         }
 
         if (opcion == "no_disponibles")
         {
-            return Json(inmuebleRepo.FindByListingStatus(false));
+            return Json(inmuebleRepo.FindByListingStatus(false, pagina));
         }
 
         if (opcion == "mas_reservados")
         {
-            return Json(inmuebleRepo.ListConMasReservas365Dias());
+            return Json(inmuebleRepo.ListConMasReservas365Dias(pagina));
         }
 
         if (opcion == "sin_reservas")
         {
             if(dias > 0)
             {
-                return Json(inmuebleRepo.ListSinReservasEnXDias(dias));    
+                return Json(inmuebleRepo.ListSinReservasEnXDias(dias, pagina));    
             }
             return Json(new List<Inmueble>());
         }
 
-        return Json(inmuebleRepo.GetPage());
+        return Json(inmuebleRepo.GetPage(pagina));
     }
 
     [Authorize]

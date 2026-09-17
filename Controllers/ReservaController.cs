@@ -60,23 +60,23 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
     [Authorize]
     [HttpGet]
-    public IActionResult ListarTodas()
+    public IActionResult ListarTodas(int pagina = 1)
     {
-        return Json(reservaRepo.GetPage());
+        return Json(reservaRepo.GetPage(pagina, 7));
     }
 
     [Authorize]
     [HttpGet]
-    public IActionResult ListarVigentes(DateTime desde, DateTime hasta)
+    public IActionResult ListarVigentes(DateTime desde, DateTime hasta, int pagina = 1)
     {
-        return Json(reservaRepo.ListarVigentes(desde, hasta));
+        return Json(reservaRepo.ListarVigentes(desde, hasta, pagina, 7));
     }
 
     [Authorize]
     [HttpGet]
-    public IActionResult ListarPorTerminar(int dias)
+    public IActionResult ListarPorTerminar(int dias, int pagina = 1)
     {
-        return Json(reservaRepo.ListarFinalizanEnXDias(dias));
+        return Json(reservaRepo.ListarFinalizanEnXDias(dias, pagina, 7));
     }
 
     [Authorize]

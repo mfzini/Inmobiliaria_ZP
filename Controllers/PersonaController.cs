@@ -36,9 +36,15 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
 
     [Authorize]
     [HttpGet]
-    public IActionResult Listar()
+    public IActionResult Listar(int pagina = 1)
     {
-        return View(repo.ListAll());
+        int tamano = 7;
+        var lista = repo.ListAll(pagina, tamano);
+
+        ViewBag.Pagina = pagina;
+        ViewBag.HaySiguiente = lista.Count == tamano;
+
+        return View(lista);
     }
 
     [Authorize]

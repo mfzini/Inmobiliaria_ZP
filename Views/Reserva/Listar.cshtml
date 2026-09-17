@@ -18,14 +18,14 @@
 
         <!--inputs para vigentes-->
         <span v-if="filtro == 'vigentes'" class="text-black align-self-center">Desde:</span>
-        <input v-if="filtro == 'vigentes'" type="date" v-model="desde" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+        <input v-if="filtro == 'vigentes'" type="date" v-model="desde" v-on:change="filtrar(1)" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
         
         <span v-if="filtro == 'vigentes'" class="text-black align-self-center">Hasta:</span>
-        <input v-if="filtro == 'vigentes'" type="date" v-model="hasta" v-on:change="filtrar" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+        <input v-if="filtro == 'vigentes'" type="date" v-model="hasta" v-on:change="filtrar(1)" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
     
         <!-- input para terminan en x dias -->
         <span v-if="filtro == 'terminan_en'" class="text-black align-self-center">Dias:</span>
-        <input v-if="filtro == 'terminan_en'" type="number" v-model="dias" v-on:change="filtrar" placeholder="Cantidad de dias" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
+        <input v-if="filtro == 'terminan_en'" type="number" v-model="dias" v-on:change="filtrar(1)" placeholder="Cantidad de dias" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" />
 
     </div>
 
@@ -59,6 +59,31 @@
                 </tr>
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination">
+            <li v-if="pagina > 1" class="page-item">
+                <a class="page-link" href="#" v-on:click.prevent="irPagina(pagina - 1)">Anterior</a>
+            </li>
+            <li v-else class="page-item disabled">
+                <span class="page-link">Anterior</span>
+            </li>
+
+            <li class="page-item active">
+                <span class="page-link">{{ pagina }}</span>
+            </li>
+
+            <li v-if="haySiguiente" class="page-item">
+                <a class="page-link" href="#" v-on:click.prevent="irPagina(pagina + 1)">Siguiente</a>
+            </li>
+            <li v-else class="page-item disabled">
+                <span class="page-link">Siguiente</span>
+            </li>
+        </ul>
+    </nav>
+
+
+
 </div>
 
 
@@ -72,14 +97,27 @@
                     desde: '',
                     hasta: '',
                     dias: '',
-                    lista: []
+                    lista: [],
+                    pagina: 1,           
+                    haySiguiente: false
                 };
             },
             methods:{
+                irPagina(pag){
+                    if(this.filtro === 'todas'){
+                        this.cargarTodas(pag);
+                    } else {
+                        this.filtrar(pag);
+                    }
+                },
 
-                async cargarTodas(){
-                    const res = await fetch('/Reserva/ListarTodas');
+
+
+                async cargarTodas(pag = 1){
+                    this.pagina = pag;
+                    const res = await fetch('/Reserva/ListarTodas?pagina=${this.pagina}');
                     this.lista = await res.json();
+                    this.haySiguiente = this.lista.length === 7;
                 },
 
                 cambiarFiltro() {
@@ -87,23 +125,25 @@
                     this.hasta = '';
                     this.dias = '';
                     if(this.filtro == "todas"){
-                        this.cargarTodas();
+                        this.cargarTodas(1);
                     }
                 },
 
-                async filtrar() {
+                async filtrar(pag = 1) {
+                    this.pagina = pag;
                     if (this.filtro == "vigentes" && this.desde && this.hasta) {
-                        const res = await fetch(`/Reserva/ListarVigentes?desde=${this.desde}&hasta=${this.hasta}`);
+                        const res = await fetch(`/Reserva/ListarVigentes?desde=${this.desde}&hasta=${this.hasta}&pagina=${this.pagina}`);
                         this.lista = await res.json();
                     } else if (this.filtro == "terminan_en" && this.dias) {
-                        const res = await fetch(`/Reserva/ListarPorTerminar?dias=${this.dias}`);
+                        const res = await fetch(`/Reserva/ListarPorTerminar?dias=${this.dias}&pagina=${this.pagina}`);
                         this.lista = await res.json();
+                        this.haySiguiente = this.lista.length === 7;
                     }
                 },
 
             },
             mounted(){
-                this.cargarTodas();
+                this.cargarTodas(1);
             }
         }).mount('#listadoReservas');
     </script>
