@@ -87,7 +87,7 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
                     where dni = @dni;
                     
                     update Usuarios 
-                    set role = @role, avatar = @avatar 
+                    set role = @role, avatar = @avatar, password = @password 
                     where dni = @dni;";
 
         using MySqlConnection connection = new(connectionString);
@@ -99,6 +99,7 @@ public class UsuariosRepo(IConfiguration config, IWebHostEnvironment environment
         command.Parameters.AddWithValue("@email", usuario.Email);
         command.Parameters.AddWithValue("@role", usuario.Role);
         command.Parameters.AddWithValue("@avatar", usuario.Avatar?.Url ?? "");
+        command.Parameters.AddWithValue("@password", usuario.Password);
 
         connection.Open();
         return command.ExecuteNonQuery();

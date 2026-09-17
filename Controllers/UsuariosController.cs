@@ -163,10 +163,26 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
 
     [Authorize]
     [HttpPost]
-    public IActionResult Editar(Usuario usuario, IFormFile? avatarFile)
+    public IActionResult Editar(Usuario usuario, IFormFile? avatarFile, string? nuevaPassword)
     {
         var actual = repoUsuarios.FindByDni(usuario.Dni!);
-        usuario.Avatar = actual?.Avatar;
+        if (actual == null) return NotFound();
+        usuario.Avatar = actual.Avatar;
+
+        if (!User.IsInRole("Administrador"))
+        {
+            usuario.Role = actual.Role;
+        }
+
+        if (!string.IsNullOrWhiteSpace(nuevaPassword))
+        {
+            usuario.Password = hasher.HashPassword(usuario, nuevaPassword);
+        }
+        else
+        {
+            usuario.Password = actual.Password;
+        }
+
 
         if (avatarFile != null)
         {

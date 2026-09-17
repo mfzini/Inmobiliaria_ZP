@@ -9,7 +9,7 @@
             <h3 class="text-center mb-4 text-white">Editar Persona</h3>
 
             <form asp-action="Editar" method="post">
-                <input type="hidden" name="oldDni" value=@Model.Dni>
+                <input type="hidden" name="oldDni" value="@Model.Dni"/>
                 <div class="mb-3">
                     <label asp-for="Dni" class="form-label text-white">DNI: </label>
                     <input asp-for="Dni" class="form-control bg-dark text-white border-secondary">

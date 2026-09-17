@@ -75,30 +75,22 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
     [HttpPost]
     public IActionResult Editar(Persona persona, string oldDni)
     {
-        if (!ModelState.IsValid)
+        if (persona.Dni != oldDni && repo.FindByDni(persona.Dni) != null)
         {
-            return View(persona);
+            ModelState.AddModelError("Dni", "Ese DNI ya lo tiene otra persona");
         }
-
-        if(persona.Dni != oldDni && repo.FindByDni(persona.Dni) != null)
-        {
-            ModelState.AddModelError("Dni", "Ese Dni que ingresaste ya lo tiene otra persona");
-            return View(persona);
-        }
-
 
         var x = repo.FindByEmail(persona.Email);
-
-        if(x != null)
+        if (x != null && x.Dni != oldDni)
         {
-            if(persona.Dni != x.Dni)
-            {
-                ModelState.AddModelError("Email", "Ese email ya lo tiene otra persona");
-                return View(persona);
-            }
+            ModelState.AddModelError("Email", "Ese email ya lo tiene otra persona");
         }
 
-        
+        if (!ModelState.IsValid)
+        {
+            persona.Dni = oldDni;
+            return View(persona);
+        }
 
         repo.Update(persona, oldDni);
         return RedirectToAction(nameof(Listar));
