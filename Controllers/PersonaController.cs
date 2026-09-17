@@ -86,6 +86,20 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
             return View(persona);
         }
 
+
+        var x = repo.FindByEmail(persona.Email);
+
+        if(x != null)
+        {
+            if(persona.Dni != x.Dni)
+            {
+                ModelState.AddModelError("Email", "Ese email ya lo tiene otra persona");
+                return View(persona);
+            }
+        }
+
+        
+
         repo.Update(persona, oldDni);
         return RedirectToAction(nameof(Listar));
     }

@@ -18,6 +18,14 @@ El diagrama de entidad-relacion se encuentra en la carpeta `docs`, consideramos
 
 ![Diagrama](docs/Diagrama.png)
 
+## 🔑 Usuarios de prueba
+
+**Admin**: 
+mail: lionel_hutz@example.com
+password: password
+
+
+
 ### Para levantar la base de datos: 
 
 1. **Ejecutar el script.sql** en su gestor de base de datos de preferencia (BDs compatibles MariaDB y MySQL):

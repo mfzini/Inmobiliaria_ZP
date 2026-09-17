@@ -142,6 +142,30 @@ public class PersonaRepository(IConfiguration configuration) : RepositorioBase(c
         return inquilinos;
     }
 
+    public Persona FindByEmail(string email)
+    {
+        var query = "select * from Personas where email = @email";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@email", email);
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
+        {
+            return new Persona
+            {
+                Dni = reader.GetString(nameof(Persona.Dni)),
+                Nombre = reader.GetString(nameof(Persona.Nombre)),
+                Apellido = reader.GetString(nameof(Persona.Apellido)),
+                Telefono = reader[nameof(Persona.Telefono)] as string,
+                Email = reader.GetString(nameof(Persona.Email))
+            };
+        }
+        return null;
+    }
+
+
+
     public List<Persona> FindByNombre(string nombre)
     {
         nombre = "%" + nombre + "%";
