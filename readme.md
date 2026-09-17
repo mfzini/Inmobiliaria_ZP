@@ -16,7 +16,7 @@
 El diagrama de entidad-relacion se encuentra en la carpeta `docs`, consideramos
 **Persona** tanto como inquilinos y propietarios.
 
-![Diagrama](docs/diagrama.png)
+![Diagrama](docs/Diagrama.png)
 
 ## 🔑 Usuarios de prueba
 
