@@ -15,6 +15,7 @@ public class Reserva
     [Required]
     public DateTime FechaFin { get; set; }
 
+    public DateTime? FechaCancelacion { get; set; }
     public decimal Monto { get; set; }
     public List<Pago> Pagos { get; set; } = []; // otro detalle que agregue para mostrar pagos por reserva
     public override string ToString()

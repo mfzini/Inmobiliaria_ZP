@@ -58,7 +58,8 @@ create table if not exists Reservas(
         references Personas(dni)
         ON UPDATE CASCADE,
     fecha_inicio date not null,
-    fecha_fin date not null
+    fecha_fin date not null,
+    fecha_cancelacion date default null
 );
 create table if not exists ConceptoPago(
     id int auto_increment primary key,

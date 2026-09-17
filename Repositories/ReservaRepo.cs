@@ -47,11 +47,12 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
 
     public int Update(Reserva reserva)
     {
-        var query = @"update Reservas set fecha_inicio=@fecha_inicio, fecha_fin=@fecha_fin where id=@id";
+        var query = @"update Reservas set fecha_inicio=@fecha_inicio, fecha_fin=@fecha_fin, fecha_cancelacion = @fecha_cancelacion where id=@id";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
         command.Parameters.AddWithValue("@fecha_inicio", reserva.FechaInicio);
         command.Parameters.AddWithValue("@fecha_fin", reserva.FechaFin);
+        command.Parameters.AddWithValue("@fecha_cancelacion", reserva.FechaCancelacion);
         command.Parameters.AddWithValue("@id", reserva.Id);
         connection.Open();
         return command.ExecuteNonQuery();
@@ -179,6 +180,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         var id = reader.GetString("r_id");
         var fecha_inicio = reader.GetDateTime("fecha_inicio");
         var fecha_fin = reader.GetDateTime("fecha_fin");
+        var fecha_cancelacion = reader["fecha_cancelacion"] as DateTime?;
         var monto = reader.GetDecimal("r_monto");
         return new Reserva
         {
@@ -187,6 +189,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             Inquilino = inquilino,
             FechaInicio = fecha_inicio,
             FechaFin = fecha_fin,
+            FechaCancelacion = fecha_cancelacion,
             Monto = monto
         };
     }
@@ -221,7 +224,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where r.inmueble = @inmueble and fecha_fin > curdate()
+            where r.inmueble = @inmueble and fecha_fin > curdate() and fecha_cancelacion is null
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);
@@ -243,7 +246,7 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
             join Personas p on p.dni = r.inquilino
             join Inmuebles i on i.id = r.inmueble
             join TipoInmueble t on t.id = i.tipo
-            where fecha_fin > curdate()
+            where fecha_fin > curdate() and fecha_cancelacion is null
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);

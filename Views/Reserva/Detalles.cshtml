@@ -23,11 +23,27 @@
 
                 <dt class="col-sm-4 text-secondary">Fecha Fin:</dt>
                 <dd class="col-sm-8">@Model.FechaFin.ToString("dd-MM-yyyy")</dd>
+
+                <dt class="col-sm-4 text-secondary">Precio Diario:</dt>
+                <dd class="col-sm-8">$@Model.Inmueble.Precio</dd>
+
+                <dt class="col-sm-4 text-secondary">Monto Total Reserva:</dt>
+                <dd class="col-sm-8 fw-bold text-success">$@Model.Monto</dd>
+
+                @if (Model.FechaCancelacion != null)
+                {
+                    <dt class="col-sm-4 text-danger">Fecha Cancelación:</dt>
+                    <dd class="col-sm-8 text-danger">@Model.FechaCancelacion?.ToString("dd-MM-yyyy")</dd>
+                }
+
             </dl>
 
             <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
                 <h4 class="m-0">Pagos Vinculados 💳</h4>
-                <a asp-controller="Pago" asp-action="Registrar" asp-route-reservaId="@Model.Id" class="btn btn-success btn-sm">➕ Cargar Pago</a>
+                @if (Model.FechaCancelacion == null)
+                {
+                    <a asp-controller="Pago" asp-action="Registrar" asp-route-reservaId="@Model.Id" class="btn btn-success btn-sm">➕ Cargar Pago</a>
+                }
             </div>
 
             <table class="table table-dark table-striped">
@@ -59,9 +75,15 @@
 
 
             <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
-                <a asp-action="Extender" asp-route-id="@Model.Id" class="btn btn-warning">📅 Extender Reserva</a>
-                <a asp-action="FinalizarTemprano" asp-route-id="@Model.Id" class="btn btn-danger">✖️Finalizar</a>
+                @if (Model.FechaCancelacion == null)
+                {
+                    <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Editar</a>
+                    <a asp-action="Extender" asp-route-id="@Model.Id" class="btn btn-warning">📅 Extender Reserva</a>
+                    <a asp-action="FinalizarTemprano" asp-route-id="@Model.Id" class="btn btn-danger">✖️Finalizar</a>
+                }
+                else{
+                    <span class="text-muted align-self-center fst-italic">Esta reserva ya se finalizo antes de la fecha original</span>
+                }
                 <a asp-action="Listar" class="btn btn-secondary">Volver al Listado</a>
             </div>
         </div>
