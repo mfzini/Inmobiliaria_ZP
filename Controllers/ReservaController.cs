@@ -42,6 +42,14 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         if (inmueble == null)
         {
             ModelState.AddModelError("Inmueble", "No existe ese inmueble");
+        } else if (!inmueble.Listado)
+        {
+            ModelState.AddModelError("Inmueble", "El inmueble seleccionado no esta disponible para alquilar");
+        }
+
+        if (inmueble != null && reservaRepo.InmuebleOcupado(dto.Inmueble, dto.FechaInicio, dto.FechaFin))
+        {
+            ModelState.AddModelError(string.Empty, "Ese inmueble esta ocupado en otras fechas");
         }
 
         if (!ModelState.IsValid)
@@ -230,17 +238,23 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
     [HttpPost]
     public IActionResult Eliminar(Reserva reserva)
     {
+
+        if (string.IsNullOrEmpty(reserva.Id))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
         try
         {
             reservaRepo.Delete(reserva);
-            return RedirectToAction(nameof(Listar));
+            TempData["Mensaje"] = "Reserva eliminada correctamente.";
         }
         catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
-            return RedirectToAction(nameof(Listar));
+            TempData["Error"] = "No se puede eliminar la reserva porque tiene pagos asociados";
         }
-
+        return RedirectToAction(nameof(Listar));
     }
 
     [Authorize]

@@ -36,10 +36,17 @@ public class TipoInmuebleController(TipoInmuebleRepo tipoRepo) : Controller
 
     [Authorize]
     [HttpGet]
-    public IActionResult Listar()
+    public IActionResult Listar(int pagina = 1)
     {
-        return View(tipoRepo.ListAll());
+        int tamano = 7;
+        var tipos = tipoRepo.GetPage(pagina, tamano);
+
+        ViewBag.Pagina = pagina;
+        ViewBag.HaySiguiente = tipos.Count == tamano;
+
+        return View(tipos);
     }
+
 
     [Authorize(Policy = "Administrador")]
     [HttpGet]

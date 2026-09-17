@@ -45,9 +45,9 @@
                     <small class="text-secondary">Este monto se registra como un nuevo pago del periodo extendido.</small>
                 </div>
 
-                <div class="d-grid mt-4">
+                <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-warning text-dark fw-bold">Guardar Extension 💾</button>
-                    <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-link text-secondary mt-2 text-decoration-none text-center">Cancelar</a>
+                    <a asp-action="Detalles" asp-route-id="@Model.Id" class="btn btn-danger">Cancelar</a>
                 </div>
             </form>
         </div>

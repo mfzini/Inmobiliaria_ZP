@@ -31,6 +31,12 @@ public class PagoController(RepoPagos pagosRepo) : Controller
     public IActionResult Editar(string id)
     {       
         var pago = pagosRepo.FindById(id);
+        if (pago == null)
+        {
+            return NotFound();
+        }
+        ViewBag.Conceptos = pagosRepo.ListAllConceptos();
+
         return View(pago);
     }
 

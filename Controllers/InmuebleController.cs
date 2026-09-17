@@ -206,13 +206,13 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         try
         {
             inmuebleRepo.Delete(inmueble);
-            return RedirectToAction(nameof(Listar));    
+            TempData["Mensaje"] = "Inmueble eliminado correctamente."; 
         } catch(Exception e)
         {
             Console.Error.WriteLine(e.Message);
-            return RedirectToAction(nameof(Listar));
+            TempData["Error"] = "No se puede eliminar el inmueble porque tiene fotos o reservas asociadas";
         }
-        
+        return RedirectToAction(nameof(Listar));
     }
 
     [Authorize]

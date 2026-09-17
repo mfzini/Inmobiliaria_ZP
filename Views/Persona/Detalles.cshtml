@@ -30,11 +30,12 @@
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
-                        <th>Direccion</th>
-                        <th>Tipo</th>
-                        <th>Precio</th>
-                        <th>Disponible</th>
-                        <th>Acciones</th>
+                        <th>Direccion 📍</th>
+                        <th>Tipo 📃</th>
+                        <th>Precio 💵</th>
+                        <th>%Porcentaje Reserva 💳</th>
+                        <th>Disponible ❓</th>
+                        <th>Acciones ⚙️</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +45,7 @@
                             <td>@inm.Direccion</td>
                             <td>@inm.Tipo.Nombre</td>
                             <td>@inm.Precio</td>
+                            <td>@inm.PorcentajeReserva</td>
                             <td>@inm.Listado</td>
                             <td>
                                 <a asp-controller="Inmueble" asp-action="Detalles" asp-route-id="@inm.Id" class="btn btn-info btn-sm">Ver</a>

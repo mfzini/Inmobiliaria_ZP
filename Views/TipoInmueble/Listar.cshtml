@@ -1,6 +1,8 @@
 @model List<inmobiliaria.Models.TipoInmueble>
 @{
     ViewData["Title"] = "Listar Tipos de Inmueble";
+    var Pagina = ViewBag.Pagina ?? 1;
+    var HaySiguiente = ViewBag.HaySiguiente ?? false;
 }
 
 <div class="container mt-4">
@@ -31,6 +33,52 @@
                     </td>
                 </tr>
             }
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-white py-3">No se encontraron tipos de inmueble</td>
+                </tr>
+            }
         </tbody>
     </table>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (Pagina > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="~/TipoInmueble/Listar?pagina=@(Pagina - 1)" aria-label="Anterior">
+                        Anterior
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Anterior</span>
+                </li>
+            }
+
+            <li class="page-item active">
+                <span class="page-link">@Pagina</span>
+            </li>
+
+            @if (HaySiguiente)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="~/TipoInmueble/Listar?pagina=@(Pagina + 1)" aria-label="Siguiente">
+                        Siguiente
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente</span>
+                </li>
+            }
+        </ul>
+    </nav>
+
+
 </div>

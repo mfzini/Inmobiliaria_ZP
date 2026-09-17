@@ -94,6 +94,11 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
     [HttpGet]
     public IActionResult Eliminar(string id)
     {
+        if (string.IsNullOrEmpty(id))
+        {
+            return RedirectToAction(nameof(Listar));
+        }
+
         var persona = repo.FindByDni(id);
         if (persona == null)
         {
@@ -115,13 +120,14 @@ public class PersonaController(PersonaRepository repo, InmuebleRepository inmueb
         try
         {
             repo.Delete(persona);
-            return RedirectToAction(nameof(Listar));    
+            TempData["Mensaje"] = "Persona eliminada correctamente"; 
         }
         catch (Exception e)
         {
             Console.Error.WriteLine(e.Message);
-            return RedirectToAction(nameof(Listar));
+            TempData["Error"] = "No podes eliminar esta persona porque tiene otros registros asociados";
         }
+        return RedirectToAction(nameof(Listar));
     }
 
     [Authorize]

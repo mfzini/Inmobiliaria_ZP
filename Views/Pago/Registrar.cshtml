@@ -36,9 +36,9 @@
                     <span asp-validation-for="Fecha" class="text-danger"></span>
                 </div>
 
-                <div class="d-grid mt-4">
+                <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-dark border-secondary text-white">Registrar Pago 📝</button>
-                    <a asp-controller="Reserva" asp-action="Detalles" asp-route-id="@ViewBag.ReservaId" class="btn btn-link text-secondary mt-2 text-decoration-none text-center">Cancelar</a>
+                    <a asp-controller="Reserva" asp-action="Detalles" asp-route-id="@ViewBag.ReservaId" class="btn btn-danger">Cancelar</a>
                 </div>
             </form>
         </div>

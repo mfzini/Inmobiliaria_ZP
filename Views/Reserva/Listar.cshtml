@@ -4,6 +4,24 @@
 }
 
 <div id="listadoReservas" class="container mt-4">
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Listado de reservas: </h2>
         <a asp-action="Registrar" class="btn btn-primary">➕ Registrar Reserva 📅</a>
@@ -76,7 +94,7 @@
     </table>
 
     <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
             <li v-if="pagina > 1" class="page-item">
                 <a class="page-link" href="#" v-on:click.prevent="cambiarPagina(pagina - 1)">Anterior</a>
             </li>

@@ -342,7 +342,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
             from Inmuebles i
             join Personas p on i.propietario = p.dni
             join TipoInmueble t on i.tipo = t.id
-            where i.direccion like @direccion
+            where i.listado = 1 and i.direccion like @direccion
             order by i.precio
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);

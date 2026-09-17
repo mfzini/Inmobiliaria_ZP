@@ -27,9 +27,10 @@
                 <div class="mb-3">
                     <label class="form-label text-white">Concepto: </label>
                     <select name="concepto" class="form-select bg-dark text-white border-secondary">
-                        <option value="1">Sena</option>
-                        <option value="2">Multa</option>
-                        <option value="3">Total</option>
+                        @foreach (var c in ViewBag.Conceptos)
+                        {
+                            <option value="@c.Id" selected="@(Model.Concepto?.Id == c.Id)">@c.Nombre</option>
+                        }
                     </select>
                     <span asp-validation-for="Concepto" class="text-danger"></span>
                 </div>

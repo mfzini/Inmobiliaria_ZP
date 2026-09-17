@@ -24,6 +24,28 @@ public class TipoInmuebleRepo(IConfiguration config) : RepositorioBase(config)
         return tipos;
     }
 
+    public List<TipoInmueble> GetPage(int page = 1, int limit = 7)
+    {
+        List<TipoInmueble> tipos = [];
+        var query = $@"select * from TipoInmueble 
+                        order by nombre 
+                    limit {(page - 1) * limit}, {limit}";
+
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            tipos.Add(new TipoInmueble
+            {
+                Id = reader.GetInt32("id"),
+                Nombre = reader.GetString("nombre")
+            });
+        }
+        return tipos;
+    }
+
     public void CreateTipoInmueble(TipoInmueble tipo)
     {
         var query = "insert into TipoInmueble (nombre) values (@nombre)";

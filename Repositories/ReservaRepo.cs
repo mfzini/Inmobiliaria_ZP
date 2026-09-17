@@ -107,6 +107,25 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         return reservas;
     }
 
+    public bool InmuebleOcupado(string idInmueble, DateTime inicio, DateTime fin)
+    {
+        var query = @"select count(*) from Reservas 
+                        where inmueble = @idInmueble 
+                        and fecha_cancelacion is null
+                        and fecha_inicio < @fin 
+                        and fecha_fin > @inicio";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@idInmueble", idInmueble);
+        command.Parameters.AddWithValue("@inicio", inicio.ToString("yyyy-MM-dd"));
+        command.Parameters.AddWithValue("@fin", fin.ToString("yyyy-MM-dd"));
+
+        connection.Open();
+        long total = Convert.ToInt64(command.ExecuteScalar());
+        return total > 0;
+    }
+
+
     public List<Reserva> ListarVigentes(DateTime desde, DateTime hasta, int page = 1, int limit = 10)
     {
         List<Reserva> reservas = [];

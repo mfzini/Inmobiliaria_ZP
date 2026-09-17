@@ -53,8 +53,10 @@
                 <thead>
                     <tr>
                         <th>Dirección📍</th>
+                        <th>Tipo 🏢</th>
                         <th>Capacidad👥</th>
                         <th>Precio💵</th>
+                        <th>Reserva % 💳</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,8 +64,10 @@
                     {
                         <tr>
                             <td>@i.Direccion</td>
+                            <td>@i.Tipo.Nombre</td>
                             <td>@i.Capacidad personas</td>
                             <td>$@i.Precio</td>
+                            <td>@i.PorcentajeReserva</td>
                         </tr>
                     }
                     @if (Model.Count == 0)
