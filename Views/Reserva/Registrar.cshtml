@@ -48,19 +48,42 @@
 
                 <div class="mb-3">
                     <label asp-for="FechaInicio" class="form-label text-white">Fecha de Inicio: </label>
-                    <input asp-for="FechaInicio" type="date" class="form-control bg-dark text-white border-secondary">
+                    <input asp-for="FechaInicio" type="date" v-model="fechaInicio" class="form-control bg-dark text-white border-secondary">
                     <span asp-validation-for="FechaInicio" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="FechaFin" class="form-label text-white">Fecha de Fin: </label>
-                    <input asp-for="FechaFin" type="date" class="form-control bg-dark text-white border-secondary">
+                    <input asp-for="FechaFin" type="date" v-model="fechaFin" class="form-control bg-dark text-white border-secondary">
                     <span asp-validation-for="FechaFin" class="text-danger"></span>
                 </div>
 
                 <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-dark border-secondary text-white">Registrar 📝</button>
+                    <button type="button" class="btn btn-warning fw-bold text-dark" @@click="calcularYMostrarModal">
+                        Calcular Primer Pago 💵
+                    </button>
                 </div>
+
+                <div class="modal fade" id="myModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content text-dark">
+                            <div class="modal-header text-white">
+                                <h5 class="modal-title">Confirmar Seña</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center text-white">
+                                <p>El porcentaje del alquiler que pide es este:</p>
+                                <h3 class="text-success fw-bold">${{ montoCalculado }}</h3>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Aceptar y Pagar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </form>
         </div>
     </div>
@@ -79,10 +102,36 @@
                     inquilinoId: '',
                     busquedaInquilino: '',
                     inquilinos: [],
-                    timerInquilino: null
+                    timerInquilino: null,
+                    fechaInicio: '',
+                    fechaFin: '',
+                    montoCalculado: 0
                 };
             },
             methods:{
+
+
+                calcularYMostrarModal(){
+                    if(!this.inmuebleId || !this.fechaInicio || !this.fechaFin){
+                        alert("Te falta completar el inmueble y elegir las fechas de la reserva");
+                        return;
+                    }
+
+                    fetch(`/Reserva/CalcularPorcentajeInicial?idInmueble=${this.inmuebleId}&fechaInicio=${this.fechaInicio}&fechaFin=${this.fechaFin}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            this.montoCalculado = data;
+                            const myModal = new bootstrap.Modal('#myModal');
+                            myModal.show();
+                        }).catch(err => {
+                            console.error(err);
+                            alert("Error: " + err.message);
+                        });;
+                },
+
+
+
+
                 buscarInmuebles(){
                     this.rellenarInmueble();
                     if (this.inmuebleId) {

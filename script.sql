@@ -98,7 +98,7 @@ create table if not exists Logs(
 
 insert into TipoInmueble (nombre) values ('casa'), ('casita'), ('rancho'), ('palacio');
 
-insert into ConceptoPago (nombre) values ('adelanto'), ('multa'), ('total');
+insert into ConceptoPago (nombre) values ('adelanto'), ('multa'), ('total'), ('primer pago');
 
 insert into Personas (dni, nombre, apellido, email) values ('0', 'Lionel', 'Hutz', 'lionel_hutz@example.com');
 insert into Personas (dni, nombre, apellido, email) values ('1', 'Marge', 'Simpson', 'MSipmson@example.com');

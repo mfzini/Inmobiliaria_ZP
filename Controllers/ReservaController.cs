@@ -8,6 +8,7 @@ namespace inmobiliaria.Controllers;
 
 public class ReservaController(ReservaRepo reservaRepo, PersonaRepository personaRepo, InmuebleRepository inmuebleRepo, RepoPagos pagosRepo) : Controller
 {
+
     [Authorize]
     [HttpGet]
     public IActionResult Registrar()
@@ -24,6 +25,12 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             return View(dto);
         }
 
+        if (dto.FechaFin <= dto.FechaInicio)
+        {
+            ModelState.AddModelError("FechaFin", "La fecha fin debe ser mayor a la fecha inicio.");
+            return View(dto);
+        }
+
         Persona? inquilino = personaRepo.FindByDni(dto.Inquilino);
         Inmueble? inmueble = inmuebleRepo.GetById(dto.Inmueble);
 
@@ -37,18 +44,56 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             ModelState.AddModelError("Inmueble", "No existe ese inmueble");
         }
 
-        var monto = ((decimal)(dto.FechaFin - dto.FechaInicio).TotalDays) * inmueble.Precio;
+        if (!ModelState.IsValid)
+        {
+            return View(dto);
+        }
+
+        decimal montoTotal = (dto.FechaFin - dto.FechaInicio).Days * inmueble!.Precio;
+        
+        
         Reserva reserva = new Reserva
         {
-            Monto = monto,
             Inmueble = inmueble,
             Inquilino = inquilino,
             FechaInicio = dto.FechaInicio,
-            FechaFin = dto.FechaFin
+            FechaFin = dto.FechaFin,
+            Monto = montoTotal
         };
 
         reservaRepo.Create(reserva, HttpContext);
+        decimal montoPrimerPago = montoTotal * (inmueble.PorcentajeReserva / 100m);
+
+        Pago pago = new Pago
+        {
+            Reserva = reserva,
+            Monto = Math.Round(montoPrimerPago, 2),
+            Concepto = new ConceptoPago { Id = 4 }, 
+            Fecha = DateTime.Now
+        };
+
+        pagosRepo.Create(HttpContext, pago);
         return RedirectToAction(nameof(Listar));
+
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult CalcularPorcentajeInicial(string idInmueble, DateTime FechaInicio, DateTime FechaFin)
+    {
+        if (string.IsNullOrEmpty(idInmueble) || FechaFin <= FechaInicio)
+        {
+            return BadRequest();
+        }
+
+        var inmueble = inmuebleRepo.GetById(idInmueble);
+        if (inmueble == null)
+        {
+            return NotFound();
+        }
+
+        var monto = (FechaFin - FechaInicio).Days * inmueble.Precio;
+        return Json(monto * inmueble.PorcentajeReserva / 100m);
 
     }
 
