@@ -86,15 +86,15 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         return ParseReserva(reader);
     }
 
-    public List<Reserva> GetPage(int page = 1, int limit = 10)
+    public List<Reserva> GetPage(int page = 1, int limit = 7)
     {
         List<Reserva> reservas = [];
         var query = $@"select *, r.id as r_id, i.id as i_id, p.nombre as p_nombre, p.apellido as p_apellido, t.nombre as t_nombre, r.monto as r_monto
             from Reservas r
-            join Personas p on p.dni = r.inquilino
-            join Inmuebles i on i.id = r.inmueble
-            join TipoInmueble t on t.id = i.tipo
-            order by fecha_inicio
+            join Personas p on r.inquilino = p.dni
+            join Inmuebles i on r.inmueble = i.id
+            join TipoInmueble t on i.tipo = t.id
+            order by r.fecha_inicio
             limit {(page - 1) * limit}, {limit}";
         using MySqlConnection connection = new(connectionString);
         using MySqlCommand command = new(query, connection);

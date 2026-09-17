@@ -68,13 +68,6 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
 
     [Authorize]
     [HttpGet]
-    public IActionResult Listar()
-    {
-        return View(inmuebleRepo.GetPage());
-    }
-
-    [Authorize]
-    [HttpGet]
     public IActionResult BuscarPorDireccion(string? direccion, int pagina = 1)
     {
         if (string.IsNullOrWhiteSpace(direccion))
@@ -260,6 +253,47 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return View(inmueble);
     }
 
+    
+    [Authorize]
+    [HttpGet]
+    public IActionResult Listar()
+    {
+        return View();
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult ListarTodos(string? direccion, int pagina = 1)
+    {
+        if (string.IsNullOrWhiteSpace(direccion))
+        {
+            return Json(inmuebleRepo.GetPage(pagina));
+        }
+
+        return Json(inmuebleRepo.ListarByDireccion(direccion, pagina));
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult ListarPorDisponibilidad(bool disponible, int pagina = 1)
+    {
+        return Json(inmuebleRepo.FindByListingStatus(disponible, pagina));
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult ListarMasReservados(int pagina = 1)
+    {
+        return Json(inmuebleRepo.ListConMasReservas365Dias(pagina));
+    }
+    
+    [Authorize]
+    [HttpGet]
+    public IActionResult ListarSinReservas(int dias = 30, int pagina = 1)
+    {
+        return Json(inmuebleRepo.ListSinReservasEnXDias(dias, pagina));
+    }
+
     [Authorize]
     [HttpGet]
     public IActionResult ListarDisponiblesPorFechas(DateTime desde, DateTime hasta, int pagina = 1)
@@ -267,36 +301,8 @@ public class InmuebleController(InmuebleRepository inmuebleRepo, PersonaReposito
         return Json(inmuebleRepo.ListarDisponibles(desde, hasta, pagina));
     }
 
-    [Authorize]
-    [HttpGet]
-    public IActionResult FiltrarPorEstado(string opcion, int dias, int pagina = 1)
-    {
-        if (opcion == "disponibles")
-        {
-            return Json(inmuebleRepo.FindByListingStatus(true, pagina));
-        }
 
-        if (opcion == "no_disponibles")
-        {
-            return Json(inmuebleRepo.FindByListingStatus(false, pagina));
-        }
 
-        if (opcion == "mas_reservados")
-        {
-            return Json(inmuebleRepo.ListConMasReservas365Dias(pagina));
-        }
-
-        if (opcion == "sin_reservas")
-        {
-            if(dias > 0)
-            {
-                return Json(inmuebleRepo.ListSinReservasEnXDias(dias, pagina));    
-            }
-            return Json(new List<Inmueble>());
-        }
-
-        return Json(inmuebleRepo.GetPage(pagina));
-    }
 
     [Authorize]
     [HttpGet]

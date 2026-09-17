@@ -96,7 +96,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-    public List<Inmueble> FindByListingStatus(bool listado, int page = 1, int limit = 10)
+    public List<Inmueble> FindByListingStatus(bool listado, int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
@@ -140,7 +140,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-    public List<Inmueble> GetPage(int page = 1, int limit = 10)
+    public List<Inmueble> GetPage(int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre from Inmuebles i
@@ -228,7 +228,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return null;
     }
 
-    public List<Inmueble> ListConMasReservas365Dias(int page = 1, int limit = 10)
+    public List<Inmueble> ListConMasReservas365Dias(int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select i.id as i_id, i.direccion, i.latitud, i.longitud, i.capacidad,
@@ -253,7 +253,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-    public List<Inmueble> ListSinReservasEnXDias(int dias, int page = 1, int limit = 10)
+    public List<Inmueble> ListSinReservasEnXDias(int dias, int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select *, p.dni as p_dni, r.id as r_id, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
@@ -275,7 +275,7 @@ public class InmuebleRepository(IConfiguration configuration) : RepositorioBase(
         return inmuebles;
     }
 
-    public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta, int page = 1, int limit = 10)
+    public List<Inmueble> ListarDisponibles(DateTime desde, DateTime hasta, int page = 1, int limit = 7)
     {
         List<Inmueble> inmuebles = [];
         var query = $@"select *, p.dni as p_dni, i.id as i_id, p.nombre as p_nombre, t.id as t_id, t.nombre as t_nombre
