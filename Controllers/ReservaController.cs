@@ -205,7 +205,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
             Monto = monto
         };
 
-        reservaRepo.Update(reserva);
+        reservaRepo.Update(HttpContext, reserva);
         return RedirectToAction(nameof(Listar));
     }
 
@@ -424,7 +424,7 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         }
 
         reserva.FechaCancelacion = DateTime.Today;
-        reservaRepo.Update(reserva);
+        reservaRepo.Update(HttpContext, reserva, "finalizo");
 
         var pagoMulta = new Pago
         {

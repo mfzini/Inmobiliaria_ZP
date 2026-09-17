@@ -45,17 +45,29 @@ public class ReservaRepo(IConfiguration configuration) : RepositorioBase(configu
         }
     }
 
-    public int Update(Reserva reserva)
+    public int Update(HttpContext ctx, Reserva reserva, string motivo = "actualizo")
     {
         var query = @"update Reservas set fecha_inicio=@fecha_inicio, fecha_fin=@fecha_fin, fecha_cancelacion = @fecha_cancelacion where id=@id";
         using MySqlConnection connection = new(connectionString);
-        using MySqlCommand command = new(query, connection);
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        using MySqlCommand command = new(query, connection, tx);
         command.Parameters.AddWithValue("@fecha_inicio", reserva.FechaInicio);
         command.Parameters.AddWithValue("@fecha_fin", reserva.FechaFin);
         command.Parameters.AddWithValue("@fecha_cancelacion", reserva.FechaCancelacion);
         command.Parameters.AddWithValue("@id", reserva.Id);
-        connection.Open();
-        return command.ExecuteNonQuery();
+        try
+        {
+            var r = command.ExecuteNonQuery();
+            WriteLog(ctx, tx, $"{motivo} reserva {reserva.Id}");
+            tx.Commit();
+            return r;
+        }
+        catch (Exception)
+        {
+            tx.Rollback();
+            throw;
+        }
     }
 
     public int Delete(Reserva reserva)
