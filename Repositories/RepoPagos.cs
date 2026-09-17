@@ -84,6 +84,24 @@ public class RepoPagos(IConfiguration config) : RepositorioBase(config)
 
     }
 
+    public ConceptoPago? FindConceptoByNombre(string nombre)
+    {
+        var query = @"select id, nombre from ConceptoPago where nombre = @nombre limit 1";
+        using MySqlConnection connection = new(connectionString);
+        using MySqlCommand command = new(query, connection);
+        command.Parameters.AddWithValue("@nombre", nombre.Trim());
+        connection.Open();
+        using var reader = command.ExecuteReader();
+
+        if (!reader.Read()) return null;
+
+        return new ConceptoPago
+        {
+            Id = reader.GetInt32("id"),
+            Nombre = reader.GetString("nombre")
+        };
+    }
+
     public List<ConceptoPago> ListAllConceptos()
     {
         var conceptos = new List<ConceptoPago>();

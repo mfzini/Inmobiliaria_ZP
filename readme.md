@@ -16,14 +16,14 @@
 El diagrama de entidad-relacion se encuentra en la carpeta `docs`, consideramos
 **Persona** tanto como inquilinos y propietarios.
 
-![Diagrama](docs/Diagrama.png)
+![Diagrama](docs/diagrama.png)
 
 ## 🔑 Usuarios de prueba
 
-**Admin**: 
-mail: lionel_hutz@example.com
-password: password
-
+| Rol | Correo Electrónico | Contraseña | DNI |
+| :--- | :--- | :--- | :--- |
+| 👑 **Administrador** | `lionel_hutz@example.com` | `password` | `0` |
+| 💼 **Empleado** | `lucia.fernandez@example.com` | `password` | `3` |
 
 
 ### Para levantar la base de datos: 

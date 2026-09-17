@@ -29,8 +29,15 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
     {
 
         var usuario = repoUsuarios.FindByEmail(email);
-        var ok = hasher.VerifyHashedPassword(usuario, usuario.Password, password)  == PasswordVerificationResult.Success;
-        if (usuario == null || !ok)
+
+        if (usuario == null)
+        {
+            ViewBag.Error = "Email o contraseña incorrectos.";
+            return View();
+        }
+
+        var ok = hasher.VerifyHashedPassword(usuario, usuario.Password, password);  
+        if (ok != PasswordVerificationResult.Success)
         {
             ViewBag.Error = "Email o contraseña incorrectos.";
             return View();
@@ -95,6 +102,21 @@ public class UsuarioController(UsuariosRepo repoUsuarios, PersonaRepository pers
     [HttpPost]
     public IActionResult Registrar(Usuario usuario, IFormFile? avatarFile)
     {
+
+        if (string.IsNullOrWhiteSpace(usuario.Password))
+        {
+            ModelState.AddModelError("Password", "La contrasena es obligatoria.");
+        }
+
+        if (string.IsNullOrWhiteSpace(usuario.Dni))
+        {
+            ModelState.AddModelError("Dni", "El DNI es obligatorio.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(usuario);
+        }
 
         var usuarioExistente = repoUsuarios.FindByDni(usuario.Dni!);
         if (usuarioExistente != null)

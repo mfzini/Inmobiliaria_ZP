@@ -72,11 +72,18 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         reservaRepo.Create(reserva, HttpContext);
         decimal montoPrimerPago = montoTotal * (inmueble.PorcentajeReserva / 100m);
 
+        var concepto = pagosRepo.FindConceptoByNombre("primer pago");
+        if (concepto == null)
+        {
+            ModelState.AddModelError(string.Empty, "No se encontró el concepto de pago en el sistema.");
+            return View(dto);
+        }
+
         Pago pago = new Pago
         {
             Reserva = reserva,
             Monto = Math.Round(montoPrimerPago, 2),
-            Concepto = new ConceptoPago { Id = 4 }, 
+            Concepto = concepto, 
             Fecha = DateTime.Now
         };
 
@@ -363,15 +370,19 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
 
         if (montoExtension > 0)
         {
-            var pagoNuevo = new Pago
+            var conceptoAdelanto = pagosRepo.FindConceptoByNombre("adelanto");
+            if (conceptoAdelanto != null)
             {
-                Reserva = nuevaReservaExtendida,
-                Concepto = new ConceptoPago { Id = 1 },
-                Monto = montoExtension,
-                Fecha = DateTime.Today
-            };
+                var pagoNuevo = new Pago
+                {
+                    Reserva = nuevaReservaExtendida,
+                    Concepto = conceptoAdelanto,
+                    Monto = montoExtension,
+                    Fecha = DateTime.Today
+                };
 
-            pagosRepo.Create(HttpContext, pagoNuevo);
+                pagosRepo.Create(HttpContext, pagoNuevo);
+            }
         }
 
         return RedirectToAction("Detalles", new { id = nuevaReservaExtendida.Id });
@@ -426,17 +437,22 @@ public class ReservaController(ReservaRepo reservaRepo, PersonaRepository person
         reserva.FechaCancelacion = DateTime.Today;
         reservaRepo.Update(HttpContext, reserva, "finalizo");
 
-
-
-        var pagoMulta = new Pago
+        if (montoMulta > 0)
         {
-            Reserva = reserva,
-            Concepto = new ConceptoPago { Id = 2 },
-            Monto = montoMulta,
-            Fecha = DateTime.Now,
-        };
+            var conceptoMulta = pagosRepo.FindConceptoByNombre("multa");
+            if (conceptoMulta != null)
+            {
+                var pagoMulta = new Pago
+                {
+                    Reserva = reserva,
+                    Concepto = conceptoMulta,
+                    Monto = montoMulta,
+                    Fecha = DateTime.Now,
+                };
 
-        pagosRepo.Create(HttpContext, pagoMulta);
+                pagosRepo.Create(HttpContext, pagoMulta);
+            }
+        }
 
         return RedirectToAction("Detalles", new { id = idReserva });
 
